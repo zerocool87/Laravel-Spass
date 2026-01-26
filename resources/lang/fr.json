@@ -1,0 +1,42 @@
+{
+    "Library": "Bibliothèque",
+    "No documents available.": "Aucun document disponible.",
+    "Dashboard": "Tableau de bord",
+    "You're logged in!": "Vous êtes connecté !",
+    "Profile Information": "Informations du profil",
+    "Update your account's profile information and email address.": "Mettez à jour les informations de votre compte et votre adresse e-mail.",
+    "Name": "Nom",
+    "Email": "E-mail",
+    "Your email address is unverified.": "Votre adresse e-mail n'est pas vérifiée.",
+    "Click here to re-send the verification email.": "Cliquez ici pour renvoyer l'e-mail de vérification.",
+
+    "View": "Voir",
+    "Download": "Télécharger",
+    "Open in new tab": "Ouvrir dans un nouvel onglet",
+
+    "Preview not available for this file type.": "Aperçu non disponible pour ce type de fichier.",
+    "You can download the file to view it on your device.": "Vous pouvez télécharger le fichier pour le visualiser sur votre appareil.",
+    "Previewable file types:": "Types de fichiers prévisualisables :",
+
+    "PDF viewer failed to initialize; using browser fallback.": "Le visualiseur PDF n'a pas pu être initialisé ; utilisation du navigateur en secours.",
+    "Error:": "Erreur :",
+
+    "Prev": "Préc",
+    "Next": "Suiv",
+    "Fit width": "Ajuster largeur",
+    "Fit page": "Ajuster page",
+    "Rotate": "Pivoter",
+    "Page": "Page",
+    "Zoom": "Zoom",
+    "Loading": "Chargement",
+    "100%": "100 %",
+    "Admin - Users": "Admin - Utilisateurs",
+    "Admin - Documents": "Admin - Documents",
+    "Profile": "Profil",
+    "Log Out": "Se déconnecter",
+    "Close": "Fermer",
+    "Save": "Enregistrer",
+    "Cancel": "Annuler",
+    "Delete Account": "Supprimer le compte",
+    "Are you sure you want to delete your account?": "Êtes-vous sûr de vouloir supprimer votre compte ?"
+}

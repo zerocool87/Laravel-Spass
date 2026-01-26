@@ -14,7 +14,7 @@
                                 <div class="text-sm text-cyan-300">{{ $doc->description }}</div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <a href="{{ route('documents.download', $doc) }}" class="inline-flex px-3 py-1 neon-btn">Download</a>
+                                <a href="{{ route('documents.download', $doc) }}" class="inline-flex px-3 py-1 neon-btn">{{ __('Download') }}</a>
                             </div>
                         </li>
                     @endforeach
