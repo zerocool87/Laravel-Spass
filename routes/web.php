@@ -25,6 +25,28 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
     Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
     Route::patch('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+
+    // Documents management
+    Route::get('/documents', [\App\Http\Controllers\Admin\DocumentController::class, 'index'])->name('documents.index');
+    Route::get('/documents/create', [\App\Http\Controllers\Admin\DocumentController::class, 'create'])->name('documents.create');
+    Route::post('/documents', [\App\Http\Controllers\Admin\DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/{document}/edit', [\App\Http\Controllers\Admin\DocumentController::class, 'edit'])->name('documents.edit');
+    Route::patch('/documents/{document}', [\App\Http\Controllers\Admin\DocumentController::class, 'update'])->name('documents.update');
+    Route::delete('/documents/{document}', [\App\Http\Controllers\Admin\DocumentController::class, 'destroy'])->name('documents.destroy');
+
+    // Document download (admin-only route kept for backwards compatibility)
+    Route::get('/documents/{document}/download', [\App\Http\Controllers\Admin\DocumentController::class, 'download'])->name('admin.documents.download');
+});
+
+// Public/Authenticated routes for documents (download & library)
+Route::middleware('auth')->group(function(){
+    Route::get('/documents/{document}/download', [\App\Http\Controllers\Admin\DocumentController::class, 'download'])->name('documents.download');
+    Route::get('/library', function(){
+        $documents = App\Models\Document::where('visible_to_all', true)
+            ->orWhereHas('users', function($q){ $q->where('users.id', auth()->id()); })
+            ->latest()->paginate(20);
+        return view('library.index', compact('documents'));
+    })->name('library.index');
 });
 
 require __DIR__.'/auth.php';

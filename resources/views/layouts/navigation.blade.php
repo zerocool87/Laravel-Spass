@@ -16,6 +16,9 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-gray-200 hover:text-white">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('library.index')" :active="request()->routeIs('library.index')" class="text-gray-200 hover:text-white">
+                        {{ __('Library') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -37,7 +40,10 @@
                     <x-slot name="content">
                         @if(Auth::user()->isAdmin())
                         <x-dropdown-link :href="route('admin.users.index')">
-                            {{ __('Admin') }}
+                            {{ __('Admin - Users') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('admin.documents.index')">
+                            {{ __('Admin - Documents') }}
                         </x-dropdown-link>
                         @endif
 
