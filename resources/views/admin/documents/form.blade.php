@@ -26,7 +26,7 @@
     @error('visible_to_all')<div class="text-red-400">{{ $message }}</div>@enderror
 </div>
 
-<div class="mb-4">
+<div class="mb-4" id="assigned-users-wrapper">
     <label class="block text-gray-200 mb-2">Assign to specific users (required if not visible to all)</label>
     <select name="assigned_users[]" multiple class="block w-full bg-gray-800 text-gray-100 p-2 rounded">
         @foreach($users as $u)
@@ -35,6 +35,20 @@
     </select>
     @error('assigned_users')<div class="text-red-400">{{ $message }}</div>@enderror
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const cb = document.querySelector('input[name="visible_to_all"]');
+    const wrap = document.getElementById('assigned-users-wrapper');
+    function toggle(){
+        if(cb && wrap){
+            if(cb.checked){ wrap.style.display = 'none'; }
+            else { wrap.style.display = ''; }
+        }
+    }
+    if(cb){ cb.addEventListener('change', toggle); toggle(); }
+});
+</script>
 
 <div class="mb-4">
     <button type="submit" class="neon-btn">Save</button>
