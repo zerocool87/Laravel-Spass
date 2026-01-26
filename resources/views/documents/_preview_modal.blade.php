@@ -6,9 +6,11 @@
                 <div class="p-2 flex justify-between items-center bg-gray-800">
                     <h3 x-text="title" class="text-white"></h3>
                     <div class="flex items-center gap-2">
-                        <a :href="downloadUrl" class="neon-btn" target="_blank" rel="noopener" x-show="showNotPreviewable">{{ __('Download') }}</a>
-                        <a :href="embed" class="neon-btn" target="_blank" rel="noopener" x-show="!showNotPreviewable">{{ __('Open in new tab') }}</a>
+                        <button @click="close()" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('Close') }}</button>
+                        <a :href="downloadUrl" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" target="_blank" rel="noopener" x-show="showNotPreviewable">{{ __('Download') }}</a>
+                        <a :href="embed" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" target="_blank" rel="noopener" x-show="!showNotPreviewable">{{ __('Open in new tab') }}</a>
                     </div>
+                </div>
 
                 <div class="relative flex-1 min-h-0 min-w-0 overflow-auto">
                     <div x-show="loading" class="absolute inset-0 flex items-center justify-center z-10 bg-black/40">
@@ -18,7 +20,6 @@
                     <div x-show="showNotPreviewable" class="p-6 text-center text-cyan-200">
                         <p class="mb-2">{{ __('Preview not available for this file type.') }}</p>
                         <p class="text-sm text-cyan-300">{{ __('You can download the file to view it on your device.') }}</p>
-                        <div x-show="_lastError" class="mt-2 text-xs text-amber-300">{{ __('Error:') }} <span x-text="_lastError"></span></div>
 
                         <div class="mt-4 text-left">
                             <div class="text-sm font-semibold text-cyan-100">{{ __('Previewable file types:') }}</div>
@@ -34,22 +35,20 @@
                         <template x-if="isPdf() && !forceIframe">
                             <div class="h-full w-full min-w-0 flex flex-col">
                                 <div class="p-2 bg-gray-800 flex items-center gap-2">
-                                    <button @click.prevent="prevPage()" class="neon-btn" :disabled="currentPage<=1">{{ __('Prev') }}</button>
+                                    <button @click.prevent="prevPage()" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" :disabled="currentPage<=1">{{ __('Prev') }}</button>
                                     <div class="px-2 text-cyan-200">{{ __('Page') }} <span x-text="currentPage"></span> / <span x-text="totalPages"></span></div>
-                                    <button @click.prevent="nextPage()" class="neon-btn" :disabled="currentPage>=totalPages">{{ __('Next') }}</button>
+                                    <button @click.prevent="nextPage()" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" :disabled="currentPage>=totalPages">{{ __('Next') }}</button>
 
                                     <div class="border-l border-gray-700 h-6 mx-2"></div>
 
-                                    <button @click.prevent="setPdfZoom('page-width')" class="neon-btn">{{ __('Fit width') }}</button>
-                                    <button @click.prevent="setPdfZoom('page-fit')" class="neon-btn">{{ __('Fit page') }}</button>
-                                    <button @click.prevent="setPdfZoom('100')" class="neon-btn">{{ __('100%') }}</button>
-                                    <button @click.prevent="rotatePdf()" class="neon-btn">Rotate</button>
-                                    <a :href="downloadUrl" class="neon-btn" target="_blank" rel="noopener">{{ __('Download') }}</a>
-                                    <a :href="embed" class="neon-btn" target="_blank" rel="noopener">Open in new tab</a>
+                                    <button @click.prevent="setPdfZoom('page-width')" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('Fit width') }}</button>
+                                    <button @click.prevent="setPdfZoom('page-fit')" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('Fit page') }}</button>
+                                    <button @click.prevent="setPdfZoom('100')" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('100%') }}</button>
+                                    <button @click.prevent="rotatePdf()" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Rotate</button>
+                                    <a :href="downloadUrl" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" target="_blank" rel="noopener">{{ __('Download') }}</a>
+                                    <a :href="embed" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" target="_blank" rel="noopener">Open in new tab</a>
                                     <div class="ml-4 text-sm text-cyan-200">{{ __('Zoom') }}: <span x-text="pdfZoom"></span></div> 
                                     <div class="ml-4 text-sm text-cyan-200" x-show="_progress">Loading: <span x-text="_progress+'%'"></span></div>
-                                </div>
-
                                 </div>
                                 <div class="flex-1 min-h-0 min-w-0 modal-pdf-canvas-container overflow-auto flex items-center justify-center">
                                     <canvas id="pdf-canvas" class="w-auto inline-block mx-auto block" style="display:block;" aria-label="PDF canvas"></canvas>
@@ -59,8 +58,7 @@
 
                         <template x-if="isPdf() && forceIframe">
                             <div class="h-full w-full min-w-0">
-                                <div class="p-4 text-sm text-cyan-200">{{ __('PDF viewer failed to initialize; using browser fallback.') }} <span x-show="_lastError" class="block text-xs text-amber-300 mt-2">{{ __('Error:') }} <span x-text="_lastError"></span></span></div>
-                                <iframe x-show="!showNotPreviewable" :src="embed" class="w-full h-full block min-w-0" style="border:0;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals" allowfullscreen @load="loading=false" ref="pdfIframe"></iframe>
+                                    <iframe x-show="!showNotPreviewable" :src="embed" class="w-full h-full block min-w-0" style="border:0;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals" allowfullscreen @load="loading=false" ref="pdfIframe"></iframe>
                             </div>
                         </template>
 
@@ -126,7 +124,7 @@
                 totalPages:0,
                 scale:1,
                 forceIframe:false,
-                _lastError:null,
+                _progress:0,
 
                 isPdf(){ return this.mime === 'application/pdf'; },
 
@@ -144,7 +142,9 @@
                 async loadPdf(url){
                     try{
                         this.loading = true;
-                        this._lastError = null;
+                        // clear any previous error for internal only; do not expose to UI
+                        // error details are logged to console for diagnostics
+                        
                         if (!window.pdfjsLib) throw new Error('pdfjs not loaded');
                         // withCredentials to allow cookies for same-origin sessions
                         const loadingTask = window.pdfjsLib.getDocument({ url: url, withCredentials: true });
@@ -159,8 +159,8 @@
                         this.currentPage = 1;
                         await this.renderPage(this.currentPage);
                     } catch(e){
-                        console.error('loadPdf error', e);
-                        this._lastError = e?.message || String(e);
+                        // Log for diagnostics; do not show internal errors in the UI
+                        console.warn('PDF load failed, falling back to iframe viewer', e);
                         // fall back to browser's viewer
                         this.forceIframe = true;
                         this.showNotPreviewable = false;
@@ -227,8 +227,7 @@
                     try {
                         await renderTask.promise;
                     } catch (e) {
-                        console.error('renderPage error', e);
-                        this._lastError = e?.message || String(e);
+                        console.warn('renderPage error, falling back to iframe', e);
                         // fall back to iframe if rendering failed
                         this.forceIframe = true;
                     }
@@ -279,14 +278,13 @@
                                                     if (this.mime === 'application/pdf') {
                                         // initialize pdf viewer
                                         this.forceIframe = false;
-                                        this._lastError = null;
+                                        // clear previous internal error (not exposed to users)
                                         // Attach keyboard listener for navigation and close
                                         this._keyHandler = this._onKeyDown.bind(this);
                                         window.addEventListener('keydown', this._keyHandler);
                                         this.loadPdf(this.embed).catch(e => {
                                             // ensure we fall back to iframe rendering if pdf.js fails
-                                            console.warn('loadPdf catch fallback to iframe', e);
-                                            this._lastError = e?.message || String(e);
+                                            console.warn('loadPdf failed, falling back to iframe', e);
                                             this.forceIframe = true;
                                             this.loading = false;
                                         });
@@ -298,10 +296,9 @@
                                     this.loading = false;
                                 }
                             }).catch(err => {
-                                console.error('preview info error', err);
+                                console.warn('preview info error', err);
                                 this.showNotPreviewable = true;
                                 this.loading = false;
-                                this._lastError = err?.message || String(err);
                             });
                     } else {
                         this.loading = false;

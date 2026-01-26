@@ -28,12 +28,13 @@
             --muted: rgba(255,255,255,0.06);
         }
         body{font-family: 'Orbitron', 'Share Tech Mono', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#e6f7ff;}
-        .neon-btn{background: linear-gradient(90deg,var(--neon-pink),var(--neon-cyan)); color:#041017; font-weight:700; box-shadow: 0 8px 36px rgba(0,229,255,0.12), 0 0 18px rgba(255,68,204,0.08) inset; border-radius:10px; padding:8px 14px; display:inline-block;}
-        .neon-btn:hover{filter:brightness(1.06); transform: translateY(-1px);}
-        .neon-outline{border:1px solid rgba(0,229,255,0.12); box-shadow: 0 0 18px rgba(0,229,255,0.06);} 
+        /* Sober buttons: no gradients */
+        .neon-btn{background: rgba(255,255,255,0.03); color:#e6f7ff; font-weight:700; border:1px solid rgba(255,255,255,0.06); box-shadow: none; border-radius:10px; padding:8px 14px; display:inline-block;}
+        .neon-btn:hover{background: rgba(255,255,255,0.05); transform: translateY(-1px);}
+        .neon-outline{border:1px solid rgba(255,255,255,0.06); box-shadow: none; background: transparent;}
+        .neon-outline:hover{background: rgba(255,255,255,0.03);} 
         .neon-h1{color:var(--neon-cyan); text-shadow:0 2px 18px rgba(0,229,255,0.08); font-family: 'Orbitron', sans-serif;}
-        .neon-danger{background: linear-gradient(90deg,#ff416c,#ff4b2b); color:#fff; box-shadow: 0 8px 36px rgba(255,65,108,0.12);}
-        .cyber-table thead th{color:var(--neon-pink); border-bottom:1px solid rgba(255,68,204,0.06);} 
+        .neon-danger{background: rgba(244,63,94,0.18); color:#fff; box-shadow: none; border:1px solid rgba(244,63,94,0.12);}        .cyber-table thead th{color:var(--neon-pink); border-bottom:1px solid rgba(255,68,204,0.06);} 
         .cyber-table tr:nth-child(even){background: rgba(255,255,255,0.02);} 
         input, select, textarea{background:#071018;border:1px solid rgba(255,255,255,0.04); color:#e6f7ff; padding:8px; border-radius:6px;}
         input:focus, textarea:focus{outline:none; box-shadow:0 0 18px rgba(0,229,255,0.08); border-color:var(--neon-cyan);} 

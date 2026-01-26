@@ -17,6 +17,7 @@
                                     <div class="text-sm text-cyan-300">{{ $doc->description }}</div>
                                 </div>
                                 <div class="flex items-center gap-2">
+                                    <button type="button" onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})" class="inline-flex px-3 py-1 neon-btn">{{ __('View') }}</button>
                                     <a href="{{ route('documents.download', $doc) }}" class="inline-flex px-3 py-1 neon-btn">{{ __('Download') }}</a>
                                 </div>
                             </li>
@@ -27,7 +28,7 @@
                         {{ $documents->links() }}
                     </div>
                 @endif
-            </div>
+                @include('documents._preview_modal')            </div>
         </div>
     </div>
 </x-app-layout>

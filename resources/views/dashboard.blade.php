@@ -13,15 +13,12 @@
                 </div>
             </div>
 
-            @php
-                // Documents visible to the user: either visible_to_all or assigned to user
-                $documents = \App\Models\Document::where('visible_to_all', true)
-                    ->orWhereHas('users', function($q){ $q->where('users.id', auth()->id()); })
-                    ->latest()
-                    ->limit(10)->get();
-            @endphp
+            {{-- Library removed from dashboard to reduce clutter. Documents are still accessible via the Library page. --}}
 
-            @include('dashboard.documents', ['documents' => $documents])
+            {{-- Upcoming events section removed — calendar only on dashboard to save space. --}}
+
+            {{-- Visual calendar (FullCalendar) --}}
+            @include('dashboard.calendar')
         </div>
     </div>
 </x-app-layout>

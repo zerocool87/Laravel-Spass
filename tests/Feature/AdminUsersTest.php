@@ -18,6 +18,7 @@ class AdminUsersTest extends TestCase
         $response = $this->actingAs($admin)->get('/admin/users');
 
         $response->assertStatus(200);
-        $response->assertSee('Create User');
+        // The UI is localized to French by default; assert the translated label is present
+        $response->assertSee(__('Create User'));
     }
 }

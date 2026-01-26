@@ -36,11 +36,31 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
 
     // Document download (admin-only route kept for backwards compatibility)
     Route::get('/documents/{document}/download', [\App\Http\Controllers\Admin\DocumentController::class, 'download'])->name('admin.documents.download');
+
+    // Events management
+    Route::get('/events', [\App\Http\Controllers\Admin\EventController::class, 'index'])->name('events.index');
+    Route::get('/events/create', [\App\Http\Controllers\Admin\EventController::class, 'create'])->name('events.create');
+    Route::post('/events', [\App\Http\Controllers\Admin\EventController::class, 'store'])->name('events.store');
+    Route::get('/events/{event}/edit', [\App\Http\Controllers\Admin\EventController::class, 'edit'])->name('events.edit');
+    Route::patch('/events/{event}', [\App\Http\Controllers\Admin\EventController::class, 'update'])->name('events.update');
+    Route::delete('/events/{event}', [\App\Http\Controllers\Admin\EventController::class, 'destroy'])->name('events.destroy');
 });
 
-// Public/Authenticated routes for documents (download & library)
+// Public/Authenticated routes for documents (download, embed, info & library)
 Route::middleware('auth')->group(function(){
     Route::get('/documents/{document}/download', [\App\Http\Controllers\Admin\DocumentController::class, 'download'])->name('documents.download');
+    Route::get('/documents/{document}/embed', [\App\Http\Controllers\Admin\DocumentController::class, 'embed'])->name('documents.embed');
+    Route::get('/documents/{document}/info', [\App\Http\Controllers\Admin\DocumentController::class, 'info'])->name('documents.info');
+
+    // Events (publicly viewable for authenticated users)
+    Route::get('/events', [\App\Http\Controllers\EventController::class, 'index'])->name('events.index');
+
+    // Calendar UI + JSON feed for FullCalendar (declare before the catch-all show route)
+    Route::get('/events/calendar', [\App\Http\Controllers\EventController::class, 'calendar'])->name('events.calendar');
+    Route::get('/events/json', [\App\Http\Controllers\EventController::class, 'json'])->name('events.json');
+
+    Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
+
     Route::get('/library', function(){
         $documents = App\Models\Document::where('visible_to_all', true)
             ->orWhereHas('users', function($q){ $q->where('users.id', auth()->id()); })
