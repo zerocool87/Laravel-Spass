@@ -23,15 +23,17 @@
         <input type="checkbox" name="visible_to_all" value="1" class="mr-2" {{ old('visible_to_all', $document->visible_to_all ?? true) ? 'checked' : '' }}>
         <span class="ms-2">Visible to all users</span>
     </label>
+    @error('visible_to_all')<div class="text-red-400">{{ $message }}</div>@enderror
 </div>
 
 <div class="mb-4">
-    <label class="block text-gray-200 mb-2">Assign to specific users (optional)</label>
+    <label class="block text-gray-200 mb-2">Assign to specific users (required if not visible to all)</label>
     <select name="assigned_users[]" multiple class="block w-full bg-gray-800 text-gray-100 p-2 rounded">
         @foreach($users as $u)
             <option value="{{ $u->id }}" {{ in_array($u->id, $assigned ?? []) ? 'selected' : '' }}>{{ $u->name }} ({{ $u->email }})</option>
         @endforeach
     </select>
+    @error('assigned_users')<div class="text-red-400">{{ $message }}</div>@enderror
 </div>
 
 <div class="mb-4">

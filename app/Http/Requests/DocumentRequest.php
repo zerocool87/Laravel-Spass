@@ -12,13 +12,19 @@ class DocumentRequest extends FormRequest
         return $this->user() && $this->user()->isAdmin();
     }
 
+    protected function prepareForValidation(): void
+    {
+        // Ensure visible_to_all is always present as 1 or 0 (checkbox behavior)
+        $this->merge(['visible_to_all' => $this->has('visible_to_all') ? 1 : 0]);
+    }
+
     public function rules(): array
     {
         $rules = [
             'title' => ['required','string','max:255'],
             'description' => ['nullable','string'],
             'visible_to_all' => ['required','boolean'],
-            'assigned_users' => ['nullable','array'],
+            'assigned_users' => ['required_if:visible_to_all,0','array'],
             'assigned_users.*' => ['exists:users,id'],
         ];
 
