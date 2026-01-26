@@ -32,6 +32,7 @@
         .neon-btn:hover{filter:brightness(1.06); transform: translateY(-1px);}
         .neon-outline{border:1px solid rgba(0,229,255,0.12); box-shadow: 0 0 18px rgba(0,229,255,0.06);} 
         .neon-h1{color:var(--neon-cyan); text-shadow:0 2px 18px rgba(0,229,255,0.08); font-family: 'Orbitron', sans-serif;}
+        .neon-danger{background: linear-gradient(90deg,#ff416c,#ff4b2b); color:#fff; box-shadow: 0 8px 36px rgba(255,65,108,0.12);}
         .cyber-table thead th{color:var(--neon-pink); border-bottom:1px solid rgba(255,68,204,0.06);} 
         .cyber-table tr:nth-child(even){background: rgba(255,255,255,0.02);} 
         input, select, textarea{background:#071018;border:1px solid rgba(255,255,255,0.04); color:#e6f7ff; padding:8px; border-radius:6px;}
