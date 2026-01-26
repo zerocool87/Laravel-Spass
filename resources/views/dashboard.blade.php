@@ -15,8 +15,6 @@
 
             {{-- Library removed from dashboard to reduce clutter. Documents are still accessible via the Library page. --}}
 
-            {{-- Upcoming events section removed — calendar only on dashboard to save space. --}}
-
             {{-- Visual calendar (FullCalendar) --}}
             @include('dashboard.calendar')
         </div>
