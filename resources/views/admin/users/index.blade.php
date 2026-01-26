@@ -2,7 +2,6 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-2xl neon-h1 leading-tight tracking-tight">{{ __('Users') }}</h2>
-            <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 neon-btn">Create User</a>
         </div>
     </x-slot>
 
