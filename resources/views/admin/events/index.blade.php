@@ -6,7 +6,7 @@
     <div class="container">
         <div class="d-flex justify-content-between mb-4">
             <h1>Events</h1>
-            <a class="neon-btn" href="{{ route('admin.events.create') }}">Create Event</a>
+            <a class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md" href="{{ route('admin.events.create') }}">Create Event</a>
         </div>
 
         @if(session('success'))
@@ -31,8 +31,8 @@
                         <td>{{ $event->end_at }}</td>
                         <td>{{ $event->location }}</td>
                         <td>
-                            <a href="{{ route('admin.events.edit', $event) }}" class="neon-outline px-2 py-1">Edit</a>
-                            <form action="{{ route('admin.events.destroy', $event) }}" method="POST" style="display:inline-block">@csrf @method('DELETE')<button class="neon-danger px-2 py-1">Delete</button></form>
+                                <a href="{{ route('admin.events.edit', $event) }}" class="border border-gray-700 px-2 py-1 rounded-md">Edit</a>
+                            <form action="{{ route('admin.events.destroy', $event) }}" method="POST" style="display:inline-block">@csrf @method('DELETE')<button class="bg-red-600 text-white px-2 py-1 rounded-md">Delete</button></form>
                         </td>
                     </tr>
                 @endforeach

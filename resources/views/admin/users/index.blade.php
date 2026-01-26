@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-2xl neon-h1 leading-tight tracking-tight">{{ __('Users') }}</h2>
+            <h2 class="font-semibold text-2xl text-gray-100 leading-tight tracking-tight">{{ __('Users') }}</h2>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-4">
-                <a href="{{ route('admin.users.create') }}" class="px-4 py-2 neon-btn">{{ __('Create User') }}</a>
+                <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md">{{ __('Create User') }}</a>
 
             @if(session('success'))
             <div class="mb-4 p-3 bg-green-800 text-green-100 rounded">

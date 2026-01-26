@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl neon-h1">{{ __('Edit Document') }}</h2>
+        <h2 class="font-semibold text-xl text-gray-100">{{ __('Edit Document') }}</h2>
     </x-slot>
 
     <div class="py-6">

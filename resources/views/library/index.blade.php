@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl neon-h1">{{ __('Library') }}</h2>
+        <h2 class="font-semibold text-xl text-gray-100">{{ __('Library') }}</h2>
     </x-slot>
 
     <div class="py-6">
@@ -17,8 +17,8 @@
                                     <div class="text-sm text-cyan-300">{{ $doc->description }}</div>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <button type="button" onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})" class="inline-flex px-3 py-1 neon-btn">{{ __('View') }}</button>
-                                    <a href="{{ route('documents.download', $doc) }}" class="inline-flex px-3 py-1 neon-btn">{{ __('Download') }}</a>
+                                    <button type="button" onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})" class="inline-flex px-3 py-1 bg-gray-800 text-white rounded-md">{{ __('View') }}</button>
+                                    <a href="{{ route('documents.download', $doc) }}" class="inline-flex px-3 py-1 bg-gray-800 text-white rounded-md">{{ __('Download') }}</a>
                                 </div>
                             </li>
                         @endforeach

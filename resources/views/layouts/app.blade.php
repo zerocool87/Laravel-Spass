@@ -21,25 +21,20 @@
 
         <style>
         :root{
-            --neon-pink:#ff44cc;
-            --neon-cyan:#00e5ff;
-            --neon-green:#39ff14;
             --panel: rgba(255,255,255,0.02);
             --muted: rgba(255,255,255,0.06);
         }
-        body{font-family: 'Orbitron', 'Share Tech Mono', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#e6f7ff;}
-        /* Sober buttons: no gradients */
-        .neon-btn{background: rgba(255,255,255,0.03); color:#e6f7ff; font-weight:700; border:1px solid rgba(255,255,255,0.06); box-shadow: none; border-radius:10px; padding:8px 14px; display:inline-block;}
-        .neon-btn:hover{background: rgba(255,255,255,0.05); transform: translateY(-1px);}
-        .neon-outline{border:1px solid rgba(255,255,255,0.06); box-shadow: none; background: transparent;}
-        .neon-outline:hover{background: rgba(255,255,255,0.03);} 
-        .neon-h1{color:var(--neon-cyan); text-shadow:0 2px 18px rgba(0,229,255,0.08); font-family: 'Orbitron', sans-serif;}
-        .neon-danger{background: rgba(244,63,94,0.18); color:#fff; box-shadow: none; border:1px solid rgba(244,63,94,0.12);}        .cyber-table thead th{color:var(--neon-pink); border-bottom:1px solid rgba(255,68,204,0.06);} 
+        body{font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#e6f7ff;}
+        /* Sober buttons and headings */
+        .sober-h1{color:#e6f7ff; font-weight:700;}
+        .sober-btn{display:inline-flex; align-items:center; padding:8px 14px; background:#111827; color:#fff; font-weight:700; border-radius:8px; border:1px solid rgba(255,255,255,0.04);} 
+        .sober-outline{border:1px solid rgba(255,255,255,0.06); background: transparent;}
+        .danger-btn{background: #dc2626; color:#fff; border-radius:6px; padding:6px 10px;}
+        .cyber-table thead th{color:#ff44cc; border-bottom:1px solid rgba(255,68,204,0.06);} 
         .cyber-table tr:nth-child(even){background: rgba(255,255,255,0.02);} 
         input, select, textarea{background:#071018;border:1px solid rgba(255,255,255,0.04); color:#e6f7ff; padding:8px; border-radius:6px;}
-        input:focus, textarea:focus{outline:none; box-shadow:0 0 18px rgba(0,229,255,0.08); border-color:var(--neon-cyan);} 
+        input:focus, textarea:focus{outline:none; box-shadow:0 0 18px rgba(0,229,255,0.08);} 
         .glass{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); border-radius:8px; padding:14px;} 
-        .accent-gradient{background: linear-gradient(90deg, rgba(0,229,255,0.06), rgba(255,68,204,0.06));}
         </style>
     </head>
     <body class="font-sans antialiased bg-gradient-to-b from-slate-900 via-gray-900 to-black text-gray-100">

@@ -31,5 +31,5 @@
 </div>
 
 <div class="mb-4">
-    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 neon-btn focus:outline-none focus:ring-2 focus:ring-cyan-300">Save</button>
+    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">Save</button>
 </div>

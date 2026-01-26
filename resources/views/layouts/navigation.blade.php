@@ -6,8 +6,8 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                        <x-application-logo class="block h-9 w-auto fill-current" style="filter: drop-shadow(0 6px 18px rgba(255,68,204,0.18)); color: var(--neon-pink);" />
-                        <span class="text-cyan-300 font-extrabold tracking-tight" style="text-shadow:0 3px 18px rgba(0,229,255,0.06)">{{ config('app.name', 'Laravel') }}</span>
+                        <x-application-logo class="block h-9 w-auto fill-current" />
+                        <span class="text-gray-100 font-extrabold tracking-tight">{{ config('app.name', 'Laravel') }}</span>
                     </a>
                 </div>
 
@@ -26,7 +26,7 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-100 bg-transparent hover:bg-gray-800 neon-outline focus:outline-none focus:ring-2 focus:ring-cyan-400 transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-100 bg-transparent hover:bg-gray-800 border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ease-in-out duration-150">
                             <div class="font-medium text-cyan-200">{{ Auth::user()->name }}</div>
 
                             <div class="ms-1">

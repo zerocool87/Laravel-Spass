@@ -51,5 +51,5 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <div class="mb-4">
-    <button type="submit" class="neon-btn">Save</button>
+    <button type="submit" class="inline-flex items-center px-3 py-1 bg-gray-800 text-white rounded-md">Save</button>
 </div>

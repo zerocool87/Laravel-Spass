@@ -45,7 +45,7 @@
 /* Minimal FullCalendar look & feel (since FullCalendar package doesn't export CSS in this version) */
 .fc { color: #e6f7ff; font-family: 'Orbitron', 'Share Tech Mono', sans-serif; }
 .fc .fc-toolbar { margin-bottom: 12px; }
-.fc .fc-daygrid-day-number { color: var(--neon-cyan); font-weight: 700; }
+.fc .fc-daygrid-day-number { color: #7dd3fc; font-weight: 700; }
 .fc .fc-daygrid-day-top { padding: 8px 10px; }
 .fc .fc-scrollgrid { background: transparent; border: none; }
 

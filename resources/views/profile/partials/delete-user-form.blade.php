@@ -1,6 +1,6 @@
 <section class="space-y-6 glass">
     <header>
-        <h2 class="text-lg font-semibold neon-h1">
+        <h2 class="text-lg font-semibold text-gray-100">
             {{ __('Delete Account') }}
         </h2>
 
@@ -9,7 +9,7 @@
         </p>
     </header>
 
-    <x-danger-button class="neon-danger"
+    <x-danger-button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
     >{{ __('Delete Account') }}</x-danger-button>
@@ -19,7 +19,7 @@
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-semibold neon-h1">
+            <h2 class="text-lg font-semibold text-gray-100">
                 {{ __('Are you sure you want to delete your account?') }}
             </h2>
 
@@ -42,11 +42,11 @@
             </div>
 
             <div class="mt-6 flex justify-end gap-3">
-                <x-secondary-button x-on:click="$dispatch('close')" class="neon-outline border-gray-600 text-cyan-300">
+                <x-secondary-button x-on:click="$dispatch('close')" class="border-gray-600 text-cyan-300">
                     {{ __('Cancel') }}
                 </x-secondary-button>
 
-                <x-danger-button class="ms-3 neon-danger">
+                <x-danger-button class="ms-3">
                     {{ __('Delete Account') }}
                 </x-danger-button>
             </div>

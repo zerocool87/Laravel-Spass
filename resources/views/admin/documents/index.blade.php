@@ -1,12 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl neon-h1">{{ __('Documents') }}</h2>
+        <h2 class="font-semibold text-xl text-gray-100">{{ __('Documents') }}</h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-4">
-                <a href="{{ route('admin.documents.create') }}" class="neon-btn">{{ __('Upload Document') }}</a>
+                <a href="{{ route('admin.documents.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 transition ease-in-out duration-150">{{ __('Upload Document') }}</a>
 
             @if(session('success'))
             <div class="mb-4 p-3 bg-green-800 text-green-100 rounded">
