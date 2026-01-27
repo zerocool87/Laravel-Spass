@@ -79,6 +79,34 @@ document.addEventListener('DOMContentLoaded', function () {
                     // ignore styling errors
                 }
 
+                // Ensure only the time (HH:MM) is shown for event time displays
+                try {
+                    if (!info.event.allDay) {
+                        const startDate = info.event.start || (info.event.startStr && new Date(info.event.startStr));
+                        if (startDate) {
+                            const hhmm = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                            // FullCalendar uses .fc-time for time display in many views
+                            const timeEls = info.el.querySelectorAll('.fc-time, .fc-list-item-time');
+                            if (timeEls && timeEls.length) {
+                                timeEls.forEach(function(te){ te.textContent = hhmm; });
+                            } else {
+                                // Fallback: try to find any text node that looks like a time and replace it
+                                // (best-effort, avoid breaking structure)
+                                const possible = info.el.querySelectorAll('span, div');
+                                for (let i = 0; i < possible.length; i++) {
+                                    const el = possible[i];
+                                    if (/\d{1,2}:\d{2}/.test(el.textContent)) {
+                                        el.textContent = hhmm;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {
+                    // ignore formatting errors
+                }
+
                 // Add delete button for admins
                 if (canEdit && info.event && info.event.id) {
                     // ensure relative positioning
