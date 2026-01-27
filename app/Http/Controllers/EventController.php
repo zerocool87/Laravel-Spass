@@ -63,6 +63,7 @@ class EventController extends Controller
                 'start' => $e->start_at ? $e->start_at->toIso8601String() : null,
                 'end' => $e->end_at ? $e->end_at->toIso8601String() : null,
                 'allDay' => (bool) $e->is_all_day,
+                'type' => $e->type ?? 'autre',
                 'url' => route('events.show', $e),
             ];
         });

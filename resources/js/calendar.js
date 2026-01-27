@@ -62,16 +62,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 // base class for subtle styling
                 info.el.classList.add('fc-event-sober');
 
-                // color customization: all-day events use softer color
+                // color customization by event type
                 try {
-                    if (info.event.allDay) {
-                        info.el.style.backgroundColor = '#0ea5a6'; // teal-500
-                        info.el.style.borderColor = '#0891b2';
-                    } else {
-                        info.el.style.backgroundColor = '#0369a1'; // blue-700
-                        info.el.style.borderColor = '#075985';
-                    }
-                    info.el.style.color = 'white';
+                    const type = (info.event.extendedProps && info.event.extendedProps.type) || 'autre';
+                    const typeColors = {
+                        'assemblee': { bg: '#7c3aed', border: '#6d28d9' }, // violet
+                        'bureau': { bg: '#dc2626', border: '#b91c1c' },    // red
+                        'commissions': { bg: '#059669', border: '#047857' }, // green
+                        'autre': { bg: '#0369a1', border: '#075985' }      // blue
+                    };
+                    const col = typeColors[type] || typeColors['autre'];
+                    try { info.el.style.setProperty('background-color', col.bg, 'important'); } catch (e) { info.el.style.backgroundColor = col.bg; }
+                    try { info.el.style.setProperty('border-color', col.border, 'important'); } catch (e) { info.el.style.borderColor = col.border; }
+                    try { info.el.style.setProperty('color', 'white', 'important'); } catch (e) { info.el.style.color = 'white'; }
                 } catch (err) {
                     // ignore styling errors
                 }

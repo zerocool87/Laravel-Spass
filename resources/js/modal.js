@@ -15,6 +15,7 @@ window.openEventCreateModal = function(startDateIso) {
     } catch(e){}
     try { document.getElementById('ae-is_all_day').checked = false; } catch(e){}
     try { document.getElementById('ae-location').value = ''; } catch(e){}
+    try { document.getElementById('ae-type').value = 'autre'; } catch(e){}
     try {
         el.style.display = 'flex';
         el.setAttribute('data-open', '1');

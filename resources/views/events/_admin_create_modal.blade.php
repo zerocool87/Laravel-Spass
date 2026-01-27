@@ -40,6 +40,16 @@
                 <input id="ae-location" name="location" class="form-control w-full" />
             </div>
 
+            <div class="mb-3">
+                <label class="block text-sm">{{ __('Type') }}</label>
+                <select id="ae-type" name="type" class="form-control w-full">
+                    <option value="assemblee">Assemblée plénière</option>
+                    <option value="bureau">Réunion bureau</option>
+                    <option value="commissions">Commissions</option>
+                    <option value="autre" selected>Autre</option>
+                </select>
+            </div>
+
             <div class="flex items-center gap-3">
                 <x-primary-button type="submit">{{ __('Create') }}</x-primary-button>
                 <x-secondary-button type="button" data-modal-close>{{ __('Cancel') }}</x-secondary-button>

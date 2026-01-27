@@ -17,6 +17,7 @@ class Event extends Model
         'end_at',
         'location',
         'is_all_day',
+        'type',
         'created_by',
     ];
 
