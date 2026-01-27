@@ -3,18 +3,20 @@
 @tailwind utilities;
 
 :root{
-  --bg: #ffffff; /* deep slate */
-  --panel: rgba(255,255,255,0.03);
-  --muted: rgba(255,255,255,0.06);
+  --bg: #ffffff;
+  --panel: #f7fafc; /* very light panel */
+  --muted: #f1f5f9;
   --brand: #fda552; /* pastel orange */
   --brand-rgb: 255,173,96; /* for rgba() gradients */
-  --brand-soft: #fff3e6; /* very light */
+  --brand-soft: #fff8ef; /* very light */
   --brand-dark: #e08a00; /* softer dark */
   --primary: #ffad60; /* brand as primary */
   --accent: #285e61; /* muted teal */
-  --surface: #0b1220;
-  --text-default: #131313;
-} 
+  --surface: #ffffff;
+  --text-default: #111827;
+  --text-muted: #6b7280;
+  --card-shadow: 0 6px 18px rgba(16,24,40,0.06);
+}  
 
 body {
   background: var(--bg);
@@ -267,24 +269,24 @@ body {
 .fc .fc-scrollgrid { background: transparent; border: none; }
 
 /* Soft UI cards */
-.glass { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.03); border-radius: 12px; padding: 16px; box-shadow: 0 6px 20px rgba(2,6,23,0.6); }
+.glass { background: var(--panel); border: 1px solid rgba(16,24,40,0.04); border-radius: 12px; padding: 16px; box-shadow: var(--card-shadow); color: var(--text-default); }
 
 /* Tables */
-.cyber-table th { color: #cfeef9; border-bottom: 1px solid rgba(255,255,255,0.04); padding: 10px; text-align: left; }
-.cyber-table td { padding: 12px; border-top: 1px solid rgba(255,255,255,0.02); }
-.cyber-table tr:nth-child(even) { background: rgba(255,255,255,0.01); }
+.cyber-table th { color: var(--text-default); border-bottom: 1px solid rgba(0,0,0,0.06); padding: 10px; text-align: left; }
+.cyber-table td { padding: 12px; border-top: 1px solid rgba(0,0,0,0.04); color: var(--text-default); }
+.cyber-table tr:nth-child(even) { background: #fafbfd; }
 
 /* Forms */
-input[type="text"], textarea, select { background: #0b1220; border: 1px solid rgba(255,255,255,0.04); color: #e6eef8; border-radius: 8px; padding: 10px; font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+input[type="text"], textarea, select { background: #fff; border: 1px solid #e6e9ee; color: var(--text-default); border-radius: 8px; padding: 10px; font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
 
 /* Buttons (consistent with brand variables) */
 .btn-primary {
   background: var(--brand);
-  color: #0b1220; /* dark text for contrast */
+  color: var(--text-default);
   border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  box-shadow: 0 1px 4px rgba(16,24,40,0.06);
 }
-.btn-primary:hover { background: color-mix(in srgb, var(--brand) 85%, black 15%); }
+.btn-primary:hover { background: color-mix(in srgb, var(--brand) 92%, black 8%); }
 
 .btn-secondary {
   background: var(--panel);
@@ -319,8 +321,8 @@ input[type="text"], textarea, select { background: #0b1220; border: 1px solid rg
 header { background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-bottom: 1px solid rgba(255,255,255,0.03); }
 
 /* Subtle link hover */
-a { color: #bfeaf6; }
-a:hover { color: #dff3ff; text-decoration: underline; }
+a { color: var(--brand-dark); }
+a:hover { color: color-mix(in srgb, var(--brand-dark) 85%, black 15%); text-decoration: underline; }
 
 .ss-main {
     display: flex;
