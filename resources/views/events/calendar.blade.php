@@ -5,7 +5,7 @@
 
     <div class="container">
         <div class="flex items-center justify-between mb-4">
-            <h1 class="text-xl font-semibold text-gray-100">{{ __('Calendar') }}</h1>
+            <h1 class="text-xl font-semibold text-gray-900">{{ __('Calendar') }}</h1>
             @can('admin')
                 <x-primary-button href="{{ route('admin.events.create') }}">{{ __('Create Event') }}</x-primary-button>
             @endcan

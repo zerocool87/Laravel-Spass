@@ -13,12 +13,13 @@ return [
 
     // Per-category style tokens (tailwind classes) for easy customization in the UI
     'category_colors' => [
-        'Convocations' => 'bg-blue-600',
-        'Ordres du jour' => 'bg-yellow-600',
-        'Comptes rendus' => 'bg-green-600',
-        'Rapports' => 'bg-indigo-600',
-        'Délibérations' => 'bg-red-600',
-        'Guides' => 'bg-teal-600',
+        // Harmonized palette centered on orange accents for the app
+        'Convocations' => 'bg-amber-600',     // meetings / summons
+        'Ordres du jour' => 'bg-amber-500',   // agendas
+        'Comptes rendus' => 'bg-emerald-600', // minutes / reports
+        'Rapports' => 'bg-cyan-600',         // longer reports
+        'Délibérations' => 'bg-rose-600',     // decisions / important
+        'Guides' => 'bg-sky-600',            // help / guides
     ],
 
     // Per-category icons (SVG markup) which can be overridden in different environments

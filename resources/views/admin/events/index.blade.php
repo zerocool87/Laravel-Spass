@@ -1,68 +1,75 @@
 <x-app-layout>
     <x-slot name="header">
-        {{-- Title intentionally removed; calendar interactions replace the Create button --}}
+        <h2 class="font-semibold text-xl leading-tight">{{ __('Events Calendar') }}</h2>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="mb-4">
-            {{-- Header and create button removed; use calendar day-click to open create modal --}}
-        </div>
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-        {{-- Debug flag and embedded calendar for admin users --}}
-        <script>window.CALENDAR_DEBUG = {{ config('app.debug') ? 'true' : 'false' }};</script>
-        <div class="mt-2 mb-6 flex justify-center">
-            <div class="w-full max-w-4xl mb-2">
-                <h3 class="text-lg font-semibold text-cyan-200 mb-2">Admin Calendar <span class="text-sm text-gray-300">(Full management)</span></h3>
-            </div>
-            <div id="admin-events-calendar"
-                 data-feed-url="{{ route('events.json') }}"
-                 data-mode="full"
-                 data-can-edit="1"
-                 data-create-url="{{ route('admin.events.create') }}"
-                 data-edit-base="{{ route('admin.events.index') }}"
-                 class="w-full max-w-4xl"></div>
-        </div>
+            @if(session('success'))
+                <div class="mb-4 p-3 bg-green-100 text-green-800 rounded-lg">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-        @if(session('success'))
-            <div class="bg-green-600 text-white p-2 rounded mb-4">{{ session('success') }}</div>
-        @endif
+            <div class="glass p-4">
+                {{-- Debug flag and embedded calendar for admin users --}}
+                <script>window.CALENDAR_DEBUG = {{ config('app.debug') ? 'true' : 'false' }};</script>
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2">Admin Calendar <span class="text-sm font-normal">{{ __('(Full management)') }}</span></h3>
+                    <div id="admin-events-calendar"
+                         data-feed-url="{{ route('events.json') }}"
+                         data-mode="full"
+                         data-can-edit="1"
+                         data-create-url="{{ route('admin.events.create') }}"
+                         data-edit-base="{{ route('admin.events.index') }}"
+                         ></div>
+                </div>
 
-        <div class="flex justify-center">
-            <div class="w-full max-w-4xl">
                 <div class="overflow-x-auto">
-                    <table class="cyber-table w-full">
+                    <table class="w-full cyber-table">
                         <thead>
                             <tr>
-                                <th>Title</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Location</th>
-                                <th>Actions</th>
+                                <th>{{ __('Title') }}</th>
+                                <th>{{ __('Start') }}</th>
+                                <th>{{ __('End') }}</th>
+                                <th>{{ __('Location') }}</th>
+                                <th class="w-48">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($events as $event)
+                            @forelse($events as $event)
                                 <tr>
                                     <td>{{ $event->title }}</td>
-                                    <td>{{ $event->start_at }}</td>
-                                    <td>{{ $event->end_at }}</td>
+                                    <td>{{ $event->start_at->format('Y-m-d H:i') }}</td>
+                                    <td>{{ $event->end_at?->format('Y-m-d H:i') }}</td>
                                     <td>{{ $event->location }}</td>
-                                    <td>
-                                        <x-secondary-button href="{{ route('admin.events.edit', $event) }}">Edit</x-secondary-button>
-                                        <form action="{{ route('admin.events.destroy', $event) }}" method="POST" style="display:inline-block">@csrf @method('DELETE')<x-danger-button type="submit">Delete</x-danger-button></form>
+                                    <td class="flex items-center gap-2">
+                                        <x-secondary-button href="{{ route('admin.events.edit', $event) }}">{{ __('Edit') }}</x-secondary-button>
+                                        <form action="{{ route('admin.events.destroy', $event) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure?') }}')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
+                                        </form>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">{{ __('No events found.') }}</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                <div class="mt-4 flex justify-center">
-                    {{ $events->links() }}
-                </div>
+                @if ($events->hasPages())
+                    <div class="mt-4">
+                        {{ $events->links() }}
+                    </div>
+                @endif
             </div>
         </div>
-
-        @include('events._admin_create_modal')
     </div>
+
+    @include('events._admin_create_modal')
 </x-app-layout>

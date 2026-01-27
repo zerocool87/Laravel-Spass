@@ -1,11 +1,10 @@
 <section class="glass">
     <header>
-        <h2 class="text-lg font-semibold text-gray-100">
-            {{ __('Update Password') }}
+        <h2 class="text-lg font-semibold text-gray-900">
+            {{ __('Changer le mot de passe') }}
         </h2>
-
-        <p class="mt-1 text-sm text-cyan-300">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
+        <p class="mt-1 text-sm text-gray-500">
+            {{ __('Utilisez un mot de passe long et complexe pour sécuriser votre compte.') }}
         </p>
     </header>
 
@@ -40,8 +39,8 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-cyan-300"
-                >{{ __('Saved.') }}</p>
+                    class="text-sm text-gray-500"
+                >{{ __('Enregistré.') }}</p>
             @endif
         </div>
     </form>

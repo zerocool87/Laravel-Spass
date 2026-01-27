@@ -1,10 +1,10 @@
 <div class="py-6">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="glass p-4">
-            <h3 class="text-lg font-semibold text-gray-100 mb-4">{{ __('Library') }}</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ __('Library') }}</h3>
 
             @if($documents->isEmpty())
-                <p class="text-cyan-200">{{ __('No documents available.') }}</p>
+                <p class="text-gray-500">{{ __('No documents available.') }}</p>
             @else
                 <ul class="space-y-3">
                     @foreach($documents as $doc)

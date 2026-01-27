@@ -11,6 +11,7 @@
                 </div>
                 <script>
                 var resetUrl = '{{ route('library.index') }}';
+                var currentCategory = '{{ request('category') }}';
                 function toggleDocsTable(cat) {
                     var el = document.getElementById('docs-table-' + cat);
                     var icon = document.getElementById('toggle-icon-' + cat);
@@ -32,7 +33,7 @@
                         <span id="toggle-all-icon">👁️</span>
                     </button>
                     @foreach($categoryCounts ?? [] as $cat => $count)
-                        <a href="{{ route('library.index', ['category' => $cat]) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition {{ request('category') === $cat ? 'ring-2 ring-cyan-400' : 'hover:bg-cyan-50' }}" aria-label="{{ __($cat) }} ({{ $count }})" title="{{ __($cat) }} ({{ $count }})">
+                        <a href="{{ route('library.index', ['category' => $cat]) }}" onclick="if (currentCategory === '{{ $cat }}') { window.location.href = resetUrl; return false; }" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition {{ request('category') === $cat ? 'ring-2 ring-cyan-400' : 'hover:bg-cyan-50' }}" aria-label="{{ __($cat) }} ({{ $count }})" title="{{ __($cat) }} ({{ $count }})">
                             <x-category-badge :category="$cat === 'Uncategorized' ? null : $cat" />
                             <span class="sr-only">{{ __($cat) }}</span>
                             <span class="text-xs opacity-75">({{ $count }})</span>

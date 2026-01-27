@@ -1,50 +1,49 @@
 @csrf
 
 <div class="mb-4">
-    <label class="block text-gray-200 mb-2">Title</label>
-    <input type="text" name="title" value="{{ old('title', $document->title ?? '') }}" class="border border-gray-600 bg-gray-800 text-gray-100 p-2 w-full rounded" required>
-    @error('title')<div class="text-red-400">{{ $message }}</div>@enderror
+    <x-input-label for="title" :value="__('Title')" />
+    <x-text-input id="title" class="block mt-1 w-full" type="text" name="title" :value="old('title', $document->title ?? '')" required autofocus />
+    <x-input-error :messages="$errors->get('title')" class="mt-2" />
 </div>
 
 <div class="mb-4">
-    <label class="block text-gray-200 mb-2">Description</label>
-    <textarea name="description" class="border border-gray-600 bg-gray-800 text-gray-100 p-2 w-full rounded">{{ old('description', $document->description ?? '') }}</textarea>
-    @error('description')<div class="text-red-400">{{ $message }}</div>@enderror
+    <x-input-label for="description" :value="__('Description')" />
+    <textarea id="description" name="description" class="block w-full mt-1">{{ old('description', $document->description ?? '') }}</textarea>
+    <x-input-error :messages="$errors->get('description')" class="mt-2" />
 </div>
 
 <div class="mb-4">
-    <label class="block text-gray-200 mb-2">Category</label>
-    <select name="category" class="block w-full bg-gray-800 text-gray-100 p-2 rounded">
+    <x-input-label for="category" :value="__('Category')" />
+    <select name="category" id="category" class="block w-full mt-1">
         <option value="">-- {{ __('None') }} --</option>
         @foreach(config('documents.categories', []) as $cat)
             <option value="{{ $cat }}" {{ old('category', $document->category ?? '') === $cat ? 'selected' : '' }}>{{ __($cat) }}</option>
         @endforeach
     </select>
-    @error('category')<div class="text-red-400">{{ $message }}</div>@enderror
+    <x-input-error :messages="$errors->get('category')" class="mt-2" />
 </div>
 
 <div class="mb-4">
-    <label class="block text-gray-200 mb-2">File {{ isset($document) ? '(leave blank to keep current)' : '' }}</label>
-    <input type="file" name="file" class="block w-full text-sm text-gray-100">
-    @error('file')<div class="text-red-400">{{ $message }}</div>@enderror
+    <x-input-label for="file" :value="__('File')" />
+    <x-text-input id="file" class="block mt-1 w-full" type="file" name="file" />
+    <x-input-error :messages="$errors->get('file')" class="mt-2" />
 </div>
 
 <div class="mb-4">
-    <label class="inline-flex items-center text-gray-200">
-        <input type="checkbox" name="visible_to_all" value="1" class="mr-2" {{ old('visible_to_all', $document->visible_to_all ?? true) ? 'checked' : '' }}>
+    <label class="inline-flex items-center">
+        <input type="checkbox" name="visible_to_all" value="1" class="rounded" {{ old('visible_to_all', $document->visible_to_all ?? true) ? 'checked' : '' }}>
         <span class="ms-2">Visible to all users</span>
     </label>
-    @error('visible_to_all')<div class="text-red-400">{{ $message }}</div>@enderror
 </div>
 
 <div class="mb-4" id="assigned-users-wrapper">
-    <label class="block text-gray-200 mb-2">Assign to specific users (required if not visible to all)</label>
-    <select name="assigned_users[]" multiple class="block w-full bg-gray-800 text-gray-100 p-2 rounded">
+    <x-input-label for="assigned_users" :value="__('Assign to specific users (required if not visible to all)')" />
+    <select name="assigned_users[]" multiple id="assigned_users" class="block w-full mt-1">
         @foreach($users as $u)
             <option value="{{ $u->id }}" {{ in_array($u->id, $assigned ?? []) ? 'selected' : '' }}>{{ $u->name }} ({{ $u->email }})</option>
         @endforeach
     </select>
-    @error('assigned_users')<div class="text-red-400">{{ $message }}</div>@enderror
+    <x-input-error :messages="$errors->get('assigned_users')" class="mt-2" />
 </div>
 
 <script>
@@ -61,6 +60,8 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 
-<div class="mb-4">
-    <button type="submit" class="inline-flex items-center px-3 py-1 bg-gray-800 text-white rounded-md">Save</button>
+<div class="flex items-center justify-end mt-4">
+    <x-primary-button>
+        {{ __('Save') }}
+    </x-primary-button>
 </div>

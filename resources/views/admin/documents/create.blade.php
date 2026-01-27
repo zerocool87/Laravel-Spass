@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-100">{{ __('Upload Document') }}</h2>
+        <h2 class="font-semibold text-xl text-gray-900">{{ __('Upload Document') }}</h2>
     </x-slot>
 
     <div class="py-6">
