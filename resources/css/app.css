@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Alpine.js: hide elements with x-cloak until Alpine is initialized */
+[x-cloak] { display: none !important; }
+
 /* FullCalendar subtle / sober theme */
 .fc { color: #e6f7ff; font-family: 'Orbitron', 'Share Tech Mono', sans-serif; }
 

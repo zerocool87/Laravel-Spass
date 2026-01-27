@@ -2,6 +2,7 @@ import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
 import frLocale from '@fullcalendar/core/locales/fr';
 
 
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const editBase = el.dataset.editBase || '';
 
         const defaultOptions = {
-            plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
+            plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
             // Use French locale when the page language starts with 'fr'
             locale: (document.documentElement.lang && document.documentElement.lang.startsWith('fr')) ? frLocale : undefined,
             initialView: mode === 'mini' ? 'listWeek' : 'dayGridMonth',
@@ -44,37 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'GET'
             },
             selectable: canEdit,
-            dateClick: function(info) {
-                if (!canEdit) return;
-                const start = info.dateStr; // ISO date string
-                const calendarId = el.id || null;
 
-                if (window.CALENDAR_DEBUG) console.info('[calendar] dateClick', calendarId, start, info);
-
-                // brief visual flash on the clicked cell to show clickability
-                const cell = info.dayEl || (info.jsEvent && info.jsEvent.target && info.jsEvent.target.closest && info.jsEvent.target.closest('.fc-daygrid-day')) || null;
-                if (cell) {
-                    try {
-                        cell.classList.add('fc-day-clicked');
-                        setTimeout(function(){ if (cell && cell.classList) cell.classList.remove('fc-day-clicked'); }, 250);
-                    } catch (err) { /* ignore */ }
-                }
-
-                // Notify listeners that an admin requested to open create modal for this calendar
-                window.dispatchEvent(new CustomEvent('admin:event-open', { detail: { start: start, calendarId } }));
-
-                if (window.openEventCreateModal) {
-                    if (window.CALENDAR_DEBUG) console.info('[calendar] calling openEventCreateModal', start);
-                    // Open the modal (prefill handled by the modal helper)
-                    window.openEventCreateModal(start);
-                    if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') {
-                        info.jsEvent.preventDefault();
-                    }
-                } else if (createUrl) {
-                    // Fallback: redirect to create page
-                    window.location = createUrl + '?start=' + encodeURIComponent(start);
-                }
-            },
             eventClick: function(info) {
                 // If admin, go to admin edit page; otherwise follow event url
                 if (canEdit && editBase && info.event && info.event.id) {
@@ -171,57 +142,106 @@ document.addEventListener('DOMContentLoaded', function () {
         spinner.style.marginBottom = '8px';
         el.appendChild(spinner);
 
+        // Define dateClick handler as a closed-over function (set after render to avoid Unknown option error)
+        function handleDateClick(info) {
+            if (!canEdit) return;
+            const start = info.dateStr; // ISO date string
+            const calendarId = el.id || null;
+
+            if (window.CALENDAR_DEBUG) console.info('[calendar] dateClick', calendarId, start, info);
+
+            // brief visual flash on the clicked cell to show clickability
+            const cell = info.dayEl || (info.jsEvent && info.jsEvent.target && info.jsEvent.target.closest && info.jsEvent.target.closest('.fc-daygrid-day')) || null;
+            if (cell) {
+                try {
+                    cell.classList.add('fc-day-clicked');
+                    setTimeout(function(){ if (cell && cell.classList) cell.classList.remove('fc-day-clicked'); }, 250);
+                } catch (err) { /* ignore */ }
+            }
+
+            // Notify listeners that an admin requested to open create modal for this calendar
+            window.dispatchEvent(new CustomEvent('admin:event-open', { detail: { start: start, calendarId } }));
+
+            if (window.CALENDAR_DEBUG) console.info('[calendar] trying to open modal for', start);
+
+            // Try helper function first
+            if (typeof window.openEventCreateModal === 'function') {
+                if (window.CALENDAR_DEBUG) console.info('[calendar] calling openEventCreateModal', start);
+                window.openEventCreateModal(start);
+                if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') {
+                    info.jsEvent.preventDefault();
+                }
+            } else {
+                // Fallback: manually open modal via Alpine or style
+                if (window.CALENDAR_DEBUG) console.warn('[calendar] openEventCreateModal not found, using fallback');
+                const modal = document.getElementById('admin-event-modal');
+                if (modal) {
+                    // Pre-fill form
+                    let dt = start;
+                    if (/^\d{4}-\d{2}-\d{2}$/.test(dt)) dt = dt + 'T09:00';
+                    try { document.getElementById('ae-title').value = ''; } catch(e){}
+                    try { document.getElementById('ae-start_at').value = dt; } catch(e){}
+                    try {
+                        let endTime = new Date(dt);
+                        endTime.setHours(endTime.getHours() + 1);
+                        document.getElementById('ae-end_at').value = endTime.toISOString().slice(0, 16);
+                    } catch(e){}
+                    
+                    // Open modal
+                    if (modal.__x && modal.__x.$data) {
+                        modal.__x.$data.open = true;
+                        if (window.CALENDAR_DEBUG) console.info('[calendar] opened via Alpine');
+                    } else {
+                        modal.style.display = 'flex';
+                        if (window.CALENDAR_DEBUG) console.info('[calendar] opened via style');
+                    }
+                } else if (createUrl) {
+                    // Last resort: redirect
+                    window.location = createUrl + '?start=' + encodeURIComponent(start);
+                }
+                
+                if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') {
+                    info.jsEvent.preventDefault();
+                }
+            }
+        }
+
+        // Initialize calendar WITHOUT dateClick to avoid "Unknown option" error
         const calendar = new Calendar(el, defaultOptions);
+        
         try {
             calendar.render();
+            
             // expose instance for UI toggles
             el._fcCalendar = calendar;
             el._fcMode = mode;
             el.dataset.initialized = '1';
             if (window.CALENDAR_DEBUG) console.info('[calendar] initialized', el.id || el);
+
+            // Attach dateClick using FullCalendar's native option (set after render to avoid unknown option errors)
+            if (canEdit) {
+                try {
+                    calendar.setOption('dateClick', handleDateClick);
+                    if (window.CALENDAR_DEBUG) console.info('[calendar] dateClick set via calendar.setOption');
+                } catch (err) {
+                    if (window.CALENDAR_DEBUG) console.warn('[calendar] failed to set dateClick via setOption, falling back to delegated click', err);
+                    // Fallback: delegated listener
+                    el.addEventListener('click', function(e){
+                        const cell = e.target.closest('.fc-daygrid-day, .fc-daygrid-day-frame, .fc-day');
+                        if (!cell) return;
+                        const dateIso = cell.getAttribute('data-date') || (cell.dataset && cell.dataset.date) || null;
+                        if (!dateIso) return;
+                        handleDateClick({ dateStr: dateIso, dayEl: cell, jsEvent: e });
+                    });
+                    if (window.CALENDAR_DEBUG) console.info('[calendar] dateClick delegated listener attached (fallback)');
+                }
+            }
+
             // remove spinner
             try { spinner.remove(); } catch (err) {}
         } catch (err) {
             console.error('[calendar] failed to render', err, el);
-            // remove spinner and show inline hint for users (non-invasive)
             try { spinner.remove(); } catch (err) {}
-
-            // Fallback for FullCalendar builds that reject unknown options (e.g. 'dateClick')
-            try {
-                if (err && /Unknown option\s+'?dateClick'?/i.test(err.message || '')) {
-                    if (window.CALENDAR_DEBUG) console.warn('[calendar] unknown option dateClick detected, retrying without it');
-                    const opts = Object.assign({}, defaultOptions);
-                    delete opts.dateClick;
-                    const fallback = new Calendar(el, opts);
-                    // Attach delegated click handler to day cells to emulate dateClick
-                    el.addEventListener('click', function(e){
-                        const cell = e.target.closest('.fc-daygrid-day, .fc-daygrid-day-frame, .fc-day');
-                        if (!cell) return;
-                        const dateIso = cell.getAttribute('data-date') || cell.dataset.date || null;
-                        if (!dateIso) return;
-                        if (window.CALENDAR_DEBUG) console.info('[calendar] delegated dateClick', dateIso);
-                        // emulate the original info object
-                        const info = { dateStr: dateIso, dayEl: cell, jsEvent: e };
-                        try { if (typeof defaultOptions.dateClick === 'function') defaultOptions.dateClick(info); } catch (err) { /* ignore */ }
-                    });
-
-                    fallback.render();
-                    el._fcCalendar = fallback;
-                    el._fcMode = mode;
-                    el.dataset.initialized = '1';
-                    if (!el.querySelector('.calendar-init-hint')) {
-                        const hint = document.createElement('div');
-                        hint.className = 'calendar-init-hint text-sm text-yellow-300 mt-2';
-                        hint.textContent = 'Calendar initialized with fallback mode; day clicks are proxied.';
-                        el.appendChild(hint);
-                    }
-                    if (window.CALENDAR_DEBUG) console.info('[calendar] fallback initialized', el.id || el);
-                    // nothing more to do
-                    return;
-                }
-            } catch (err2) {
-                console.error('[calendar] fallback init failed', err2, el);
-            }
 
             if (!el.querySelector('.calendar-init-hint')) {
                 const hint = document.createElement('div');

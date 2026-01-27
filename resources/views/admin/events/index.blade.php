@@ -8,6 +8,18 @@
             {{-- Header and create button removed; use calendar day-click to open create modal --}}
         </div>
 
+        {{-- Debug flag and embedded calendar for admin users --}}
+        <script>window.CALENDAR_DEBUG = {{ config('app.debug') ? 'true' : 'false' }};</script>
+        <div class="mt-2 mb-6 flex justify-center">
+            <div id="admin-events-calendar"
+                 data-feed-url="{{ route('events.json') }}"
+                 data-mode="full"
+                 data-can-edit="1"
+                 data-create-url="{{ route('admin.events.create') }}"
+                 data-edit-base="{{ route('admin.events.index') }}"
+                 class="w-full max-w-4xl"></div>
+        </div>
+
         @if(session('success'))
             <div class="bg-green-600 text-white p-2 rounded mb-4">{{ session('success') }}</div>
         @endif
@@ -46,18 +58,6 @@
                     {{ $events->links() }}
                 </div>
             </div>
-        </div>
-
-        {{-- Debug flag and embedded calendar for admin users --}}
-        <script>window.CALENDAR_DEBUG = {{ config('app.debug') ? 'true' : 'false' }};</script>
-        <div class="mt-8 mb-6 flex justify-center">
-            <div id="admin-events-calendar"
-                 data-feed-url="{{ route('events.json') }}"
-                 data-mode="full"
-                 data-can-edit="1"
-                 data-create-url="{{ route('admin.events.create') }}"
-                 data-edit-base="{{ route('admin.events.index') }}"
-                 class="w-full max-w-4xl"></div>
         </div>
 
         @include('events._admin_create_modal')

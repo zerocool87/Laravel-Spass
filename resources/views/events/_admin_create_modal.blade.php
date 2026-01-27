@@ -1,6 +1,7 @@
-@can('admin')
-<div x-data="{ open: false }" @admin:event-open.window="open = true" x-show="open" x-cloak id="admin-event-modal" class="fixed inset-0 z-50 flex items-center justify-center">
-    <div class="absolute inset-0 bg-black/50" @click="open = false"></div>
+<div id="admin-event-modal" 
+    class="fixed inset-0 flex items-center justify-center"
+    style="display: none; z-index: 9999;">
+    <div class="absolute inset-0 bg-black/60" data-modal-close></div>
     <div class="bg-gray-900 rounded p-6 z-10 w-full max-w-xl">
         <h3 class="text-lg font-semibold mb-4">{{ __('Create Event') }}</h3>
 
@@ -41,127 +42,10 @@
 
             <div class="flex items-center gap-3">
                 <x-primary-button type="submit">{{ __('Create') }}</x-primary-button>
-                <x-secondary-button type="button" @click="open = false">{{ __('Cancel') }}</x-secondary-button>
+                <x-secondary-button type="button" data-modal-close>{{ __('Cancel') }}</x-secondary-button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-// Expose a helper to open modal and prefill values
-window.openEventCreateModal = function(startDateIso) {
-    if (window.CALENDAR_DEBUG) console.info('[modal] openEventCreateModal called', startDateIso);
-    let el = document.getElementById('admin-event-modal');
-    if (!el) return;
-
-    // compute datetime-local value
-    let dt = startDateIso;
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dt)) {
-        dt = dt + 'T09:00'; // default 9am
-    }
-
-    // Pre-fill form
-    try { document.getElementById('ae-title').value = ''; } catch(e){}
-    try { document.getElementById('ae-description').value = ''; } catch(e){}
-    try { document.getElementById('ae-start_at').value = dt; } catch(e){}
-    // Set end to 1 hour later
-    try {
-        let endTime = new Date(dt);
-        endTime.setHours(endTime.getHours() + 1);
-        document.getElementById('ae-end_at').value = endTime.toISOString().slice(0, 16);
-    } catch(e){}
-    try { document.getElementById('ae-is_all_day').checked = false; } catch(e){}
-    try { document.getElementById('ae-location').value = ''; } catch(e){}
-
-    // Dispatch event to open Alpine modal
-    window.dispatchEvent(new CustomEvent('admin:event-open'));
-
-    // Ensure modal opens even if Alpine isn't initialized yet (fallback)
-    try {
-        if (el && el.__x && el.__x.$data) {
-            el.__x.$data.open = true;
-            if (window.CALENDAR_DEBUG) console.info('[modal] opened via Alpine __x reference');
-        } else {
-            // fallback: make element visible
-            el.style.display = 'flex';
-            if (window.CALENDAR_DEBUG) console.info('[modal] opened via style fallback');
-        }
-    } catch (err) {
-        console.warn('[modal] fallback open failed', err);
-    }
-};
-
-// Global listener fallback: ensure any admin:event-open triggers modal visibility
-window.addEventListener('admin:event-open', function(e){
-    if (window.CALENDAR_DEBUG) console.info('[modal] global listener received admin:event-open', e && e.detail);
-    const modal = document.getElementById('admin-event-modal');
-    if (!modal) return;
-    try {
-        if (modal.__x && modal.__x.$data) {
-            modal.__x.$data.open = true;
-            if (window.CALENDAR_DEBUG) console.info('[modal] global listener opened Alpine modal');
-        } else {
-            modal.style.display = 'flex';
-            if (window.CALENDAR_DEBUG) console.info('[modal] global listener applied style fallback');
-        }
-    } catch (err) {
-        console.warn('[modal] global listener error', err);
-    }
-});
-
-// handle form submit via AJAX
-document.addEventListener('DOMContentLoaded', function(){
-    const form = document.getElementById('admin-event-create-form');
-    if (!form) return;
-
-    form.addEventListener('submit', async function(e){
-        e.preventDefault();
-        const action = form.action;
-        const data = new FormData(form);
-        // normalize is_all_day
-        if (!data.get('is_all_day')) data.delete('is_all_day');
-
-        const payload = {};
-        data.forEach((v, k) => { payload[k] = v; });
-        // fetch with JSON
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        try {
-            const res = await fetch(action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': token
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.status === 201 || res.ok) {
-                const json = await res.json();
-                // Dispatch a custom event so any calendar on the page can react (decoupled)
-                window.dispatchEvent(new CustomEvent('admin:event-created', { detail: json }));
-                // hide modal
-                const modal = document.getElementById('admin-event-modal');
-                if (modal && modal.__x && modal.__x.$data) {
-                    modal.__x.$data.open = false;
-                }
-            } else if (res.status === 422) {
-                const json = await res.json();
-                const errs = json.errors || {};
-                const el = document.getElementById('admin-event-errors');
-                if (el) {
-                    el.style.display = 'block';
-                    el.innerHTML = Object.values(errs).flat().map(s => '<div>'+s+'</div>').join('');
-                }
-            } else {
-                const el = document.getElementById('admin-event-errors');
-                if (el) { el.style.display = 'block'; el.textContent = 'Error creating event'; }
-            }
-        } catch (err) {
-            const el = document.getElementById('admin-event-errors');
-            if (el) { el.style.display = 'block'; el.textContent = 'Network error'; }
-        }
-    });
-});
-</script>
-@endcan
+{{-- Modal logic moved to resources/js/modal.js — do not add inline JS here. --}}
