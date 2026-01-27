@@ -48,10 +48,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!canEdit) return;
                 const start = info.dateStr; // ISO date string
                 const calendarId = el.id || null;
+
+                if (window.CALENDAR_DEBUG) console.info('[calendar] dateClick', calendarId, start, info);
+
+                // brief visual flash on the clicked cell to show clickability
+                const cell = info.dayEl || (info.jsEvent && info.jsEvent.target && info.jsEvent.target.closest && info.jsEvent.target.closest('.fc-daygrid-day')) || null;
+                if (cell) {
+                    try {
+                        cell.classList.add('fc-day-clicked');
+                        setTimeout(function(){ if (cell && cell.classList) cell.classList.remove('fc-day-clicked'); }, 250);
+                    } catch (err) { /* ignore */ }
+                }
+
                 // Notify listeners that an admin requested to open create modal for this calendar
                 window.dispatchEvent(new CustomEvent('admin:event-open', { detail: { start: start, calendarId } }));
 
                 if (window.openEventCreateModal) {
+                    if (window.CALENDAR_DEBUG) console.info('[calendar] calling openEventCreateModal', start);
                     // Open the modal (prefill handled by the modal helper)
                     window.openEventCreateModal(start);
                     if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') {
@@ -172,6 +185,44 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('[calendar] failed to render', err, el);
             // remove spinner and show inline hint for users (non-invasive)
             try { spinner.remove(); } catch (err) {}
+
+            // Fallback for FullCalendar builds that reject unknown options (e.g. 'dateClick')
+            try {
+                if (err && /Unknown option\s+'?dateClick'?/i.test(err.message || '')) {
+                    if (window.CALENDAR_DEBUG) console.warn('[calendar] unknown option dateClick detected, retrying without it');
+                    const opts = Object.assign({}, defaultOptions);
+                    delete opts.dateClick;
+                    const fallback = new Calendar(el, opts);
+                    // Attach delegated click handler to day cells to emulate dateClick
+                    el.addEventListener('click', function(e){
+                        const cell = e.target.closest('.fc-daygrid-day, .fc-daygrid-day-frame, .fc-day');
+                        if (!cell) return;
+                        const dateIso = cell.getAttribute('data-date') || cell.dataset.date || null;
+                        if (!dateIso) return;
+                        if (window.CALENDAR_DEBUG) console.info('[calendar] delegated dateClick', dateIso);
+                        // emulate the original info object
+                        const info = { dateStr: dateIso, dayEl: cell, jsEvent: e };
+                        try { if (typeof defaultOptions.dateClick === 'function') defaultOptions.dateClick(info); } catch (err) { /* ignore */ }
+                    });
+
+                    fallback.render();
+                    el._fcCalendar = fallback;
+                    el._fcMode = mode;
+                    el.dataset.initialized = '1';
+                    if (!el.querySelector('.calendar-init-hint')) {
+                        const hint = document.createElement('div');
+                        hint.className = 'calendar-init-hint text-sm text-yellow-300 mt-2';
+                        hint.textContent = 'Calendar initialized with fallback mode; day clicks are proxied.';
+                        el.appendChild(hint);
+                    }
+                    if (window.CALENDAR_DEBUG) console.info('[calendar] fallback initialized', el.id || el);
+                    // nothing more to do
+                    return;
+                }
+            } catch (err2) {
+                console.error('[calendar] fallback init failed', err2, el);
+            }
+
             if (!el.querySelector('.calendar-init-hint')) {
                 const hint = document.createElement('div');
                 hint.className = 'calendar-init-hint text-sm text-red-400 mt-2';

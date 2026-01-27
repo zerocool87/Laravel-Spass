@@ -49,7 +49,7 @@
         </div>
 
         {{-- Debug flag and embedded calendar for admin users --}}
-        <script>window.CALENDAR_DEBUG = true;</script>
+        <script>window.CALENDAR_DEBUG = {{ config('app.debug') ? 'true' : 'false' }};</script>
         <div class="mt-8 mb-6 flex justify-center">
             <div id="admin-events-calendar"
                  data-feed-url="{{ route('events.json') }}"

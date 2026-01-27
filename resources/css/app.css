@@ -58,6 +58,10 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* Make day cells appear clickable and provide a brief click feedback */
+.fc .fc-daygrid-day-frame, .fc .fc-daygrid-day-top { cursor: pointer; }
+.fc-day-clicked { outline: 2px solid rgba(99,102,241,0.9); box-shadow: 0 0 0 6px rgba(99,102,241,0.06); transition: box-shadow .2s ease; }
+
 /* Style for the delete icon added to events */
 .fc-event-delete {
   display: inline-flex;

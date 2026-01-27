@@ -50,6 +50,7 @@
 <script>
 // Expose a helper to open modal and prefill values
 window.openEventCreateModal = function(startDateIso) {
+    if (window.CALENDAR_DEBUG) console.info('[modal] openEventCreateModal called', startDateIso);
     let el = document.getElementById('admin-event-modal');
     if (!el) return;
 
@@ -60,19 +61,53 @@ window.openEventCreateModal = function(startDateIso) {
     }
 
     // Pre-fill form
-    document.getElementById('ae-title').value = '';
-    document.getElementById('ae-description').value = '';
-    document.getElementById('ae-start_at').value = dt;
+    try { document.getElementById('ae-title').value = ''; } catch(e){}
+    try { document.getElementById('ae-description').value = ''; } catch(e){}
+    try { document.getElementById('ae-start_at').value = dt; } catch(e){}
     // Set end to 1 hour later
-    let endTime = new Date(dt);
-    endTime.setHours(endTime.getHours() + 1);
-    document.getElementById('ae-end_at').value = endTime.toISOString().slice(0, 16);
-    document.getElementById('ae-is_all_day').checked = false;
-    document.getElementById('ae-location').value = '';
+    try {
+        let endTime = new Date(dt);
+        endTime.setHours(endTime.getHours() + 1);
+        document.getElementById('ae-end_at').value = endTime.toISOString().slice(0, 16);
+    } catch(e){}
+    try { document.getElementById('ae-is_all_day').checked = false; } catch(e){}
+    try { document.getElementById('ae-location').value = ''; } catch(e){}
 
     // Dispatch event to open Alpine modal
     window.dispatchEvent(new CustomEvent('admin:event-open'));
+
+    // Ensure modal opens even if Alpine isn't initialized yet (fallback)
+    try {
+        if (el && el.__x && el.__x.$data) {
+            el.__x.$data.open = true;
+            if (window.CALENDAR_DEBUG) console.info('[modal] opened via Alpine __x reference');
+        } else {
+            // fallback: make element visible
+            el.style.display = 'flex';
+            if (window.CALENDAR_DEBUG) console.info('[modal] opened via style fallback');
+        }
+    } catch (err) {
+        console.warn('[modal] fallback open failed', err);
+    }
 };
+
+// Global listener fallback: ensure any admin:event-open triggers modal visibility
+window.addEventListener('admin:event-open', function(e){
+    if (window.CALENDAR_DEBUG) console.info('[modal] global listener received admin:event-open', e && e.detail);
+    const modal = document.getElementById('admin-event-modal');
+    if (!modal) return;
+    try {
+        if (modal.__x && modal.__x.$data) {
+            modal.__x.$data.open = true;
+            if (window.CALENDAR_DEBUG) console.info('[modal] global listener opened Alpine modal');
+        } else {
+            modal.style.display = 'flex';
+            if (window.CALENDAR_DEBUG) console.info('[modal] global listener applied style fallback');
+        }
+    } catch (err) {
+        console.warn('[modal] global listener error', err);
+    }
+});
 
 // handle form submit via AJAX
 document.addEventListener('DOMContentLoaded', function(){
