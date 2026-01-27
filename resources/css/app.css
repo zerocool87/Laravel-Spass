@@ -16,6 +16,13 @@
   --text-default: #131313;
 } 
 
+body {
+  background: var(--bg);
+  color: var(--text-default);
+  font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+
 @layer base {
     html {
         font-size: 14px;
@@ -177,15 +184,15 @@
 [x-cloak] { display: none !important; }
 
 /* FullCalendar subtle / sober theme */
-.fc { color: #e6eef8; font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+.fc { color: var(--text-default); font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
 
 /* Toolbar buttons: muted background and subtle borders */
 .fc .fc-toolbar-chunk .fc-button {
   background: rgba(255,255,255,0.02);
-  color: #cbd5e1; /* muted gray-blue */
+  color: var(--text-default); /* muted gray-blue -> dark for contrast */
   border-radius: 8px;
   font-weight: 600;
-  border: 1px solid rgba(255,255,255,0.04);
+  border: 1px solid rgba(0,0,0,0.06);
   box-shadow: none;
 }
 .fc .fc-toolbar-chunk .fc-button:hover {
@@ -198,16 +205,16 @@
 }
 
 .fc .fc-daygrid-event {
-  border: 1px solid rgba(255,255,255,0.04);
-  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--panel);
   box-shadow: none;
 }
 
 /* Sober event class applied by JS */
 .fc-event-sober {
-  background: rgba(255,255,255,0.02) !important;
-  border: 1px solid rgba(255,255,255,0.04) !important;
-  color: #e6f7ff !important;
+  background: var(--panel) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  color: var(--text-default) !important;
   border-radius: 6px !important;
   box-shadow: none !important;
   padding: 2px 6px !important;
@@ -224,8 +231,8 @@
   display: inline-block;
   width: 36px;
   height: 36px;
-  border: 4px solid rgba(219, 12, 12, 0.08);
-  border-top-color: rgba(255,255,255,0.5);
+  border: 4px solid rgba(0,0,0,0.08);
+  border-top-color: rgba(0,0,0,0.25);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 12px auto;
@@ -253,7 +260,7 @@
 }
 
 /* Minimal FullCalendar look & feel (since FullCalendar package doesn't export CSS in this version) */
-.fc { color: #e6f7ff; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+.fc { color: var(--text-default); font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
 .fc .fc-toolbar { margin-bottom: 12px; }
 .fc .fc-daygrid-day-number { color: var(--primary); font-weight: 700; }
 .fc .fc-daygrid-day-top { padding: 8px 10px; }
