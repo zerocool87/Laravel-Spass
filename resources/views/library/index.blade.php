@@ -8,20 +8,31 @@
             <div class="glass p-4">
                 {{-- Category Filter --}}
                 <div class="mb-6 flex flex-wrap gap-2">
-                    <a href="{{ route('library.index') }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition {{ (!request('category') || request('category') === 'all') ? 'ring-2 ring-cyan-400' : 'hover:bg-cyan-50' }}"
-                       aria-label="{{ __('All') }} ({{ isset($categoryCounts) ? array_sum($categoryCounts) : 0 }})"
-                       title="{{ __('All') }} ({{ isset($categoryCounts) ? array_sum($categoryCounts) : 0 }})">
-                        <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                        @if(isset($categoryCounts))
-                            <span class="text-xs opacity-75">({{ array_sum($categoryCounts) }})</span>
-                        @endif
-                    </a>
+                </div>
+                <script>
+                var resetUrl = '{{ route('library.index') }}';
+                function toggleDocsTable(cat) {
+                    var el = document.getElementById('docs-table-' + cat);
+                    var icon = document.getElementById('toggle-icon-' + cat);
+                    if (!el) return;
+                    if (el.style.display === '' || el.style.display === 'block') {
+                        el.style.display = 'none';
+                        if (icon) icon.textContent = '🙈';
+                    } else {
+                        el.style.display = '';
+                        if (icon) icon.textContent = '👁️';
+                    }
+                }
+                function toggleAllCategories() {
+                    // Reset filters by redirecting to base URL
+                    window.location.href = resetUrl;
+                }
+                </script>
+                    <button type="button" id="toggle-all-btn" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition hover:bg-cyan-50" onclick="toggleAllCategories()">
+                        <span id="toggle-all-icon">👁️</span>
+                    </button>
                     @foreach($categoryCounts ?? [] as $cat => $count)
-                        <a href="{{ route('library.index', ['category' => $cat]) }}"
-                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition {{ request('category') === $cat ? 'ring-2 ring-cyan-400' : 'hover:bg-cyan-50' }}"
-                           aria-label="{{ __($cat) }} ({{ $count }})"
-                           title="{{ __($cat) }} ({{ $count }})">
+                        <a href="{{ route('library.index', ['category' => $cat]) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition {{ request('category') === $cat ? 'ring-2 ring-cyan-400' : 'hover:bg-cyan-50' }}" aria-label="{{ __($cat) }} ({{ $count }})" title="{{ __($cat) }} ({{ $count }})">
                             <x-category-badge :category="$cat === 'Uncategorized' ? null : $cat" />
                             <span class="sr-only">{{ __($cat) }}</span>
                             <span class="text-xs opacity-75">({{ $count }})</span>
@@ -58,14 +69,17 @@
                                 </thead>
                             </table>
                         </div>
-                        <div class="space-y-8">
+                        <div class="space-y-8" id="categories-container">
                             @foreach($documentsByCategory as $cat => $docs)
                                 <div>
                                     <div class="flex items-center gap-3 mb-3 mt-4">
                                         <x-category-badge :category="$cat === 'Uncategorized' ? null : $cat" />
+                                        <button type="button" class="ml-2 px-2 py-1 text-xs rounded bg-gray-100 border border-gray-300 hover:bg-gray-200 transition" onclick="toggleDocsTable('{{ Str::slug($cat) }}')">
+                                            <span id="toggle-icon-{{ Str::slug($cat) }}">🙈</span> {{ __('Masquer/Voir') }}
+                                        </button>
                                     </div>
                                     <div class="overflow-x-auto">
-                                        <div id="docs-table-{{ Str::slug($cat) }}">
+                                        <div id="docs-table-{{ Str::slug($cat) }}" style="display: none;">
                                             <table class="cyber-table w-full">
                                                 <colgroup>
                                                     <col style="width:28%">
@@ -114,15 +128,6 @@
                                             </table>
                                         </div>
                                     </div>
-                                @push('scripts')
-                                <script>
-                                function toggleDocsTable(type) {
-                                    var el = document.getElementById('docs-table-' + type);
-                                    if (!el) return;
-                                    el.style.display = (el.style.display === 'none') ? '' : 'none';
-                                }
-                                </script>
-                                @endpush
                                 </div>
                             @endforeach
                         </div>
@@ -162,13 +167,13 @@
                                         @endif
                                         @if($doc->category && (request('category') && request('category') !== 'all'))
                                             <div class="mt-2">
-                                                <x-category-badge :category="$doc->category" />
+                                                <x-category-badge :category="$doc->category === 'Uncategorized' ? null : $doc->category" />
                                             </div>
                                         @endif
                                     </div>
                                     <div class="flex items-center gap-2 ml-4">
-                                        <x-secondary-button 
-                                            type="button" 
+                                        <x-secondary-button
+                                            type="button"
                                             onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})">
                                             {{ __('Voir') }}
                                         </x-secondary-button>
