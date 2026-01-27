@@ -25,7 +25,7 @@
                 @foreach($events as $event)
                 <div class="glass mb-3 p-3">
                         @php $color = $typeColors[$event->type ?? 'autre'] ?? $typeColors['autre']; @endphp
-                        <h5 class="text-2xl font-semibold" style="color: {{ $color }};">
+                        <h5 class="text-2xl font-semibold inline-block" style="background: {{ $color }}; color: #fff; padding: 0.25rem 0.5rem; border-radius: 0.375rem;">
                             <a href="{{ route('events.show', $event) }}" style="color: inherit;">{{ $event->title }}</a>
                         </h5>
                     <p>{{ $event->start_at->format('Y-m-d H:i') }} @if($event->end_at) - {{ $event->end_at->format('Y-m-d H:i') }} @endif</p>
