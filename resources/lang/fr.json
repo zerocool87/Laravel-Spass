@@ -2,7 +2,6 @@
     "Library": "Bibliothèque",
     "No documents available.": "Aucun document disponible.",
     "Dashboard": "Tableau de bord",
-    "You're logged in!": "Vous êtes connecté !",
     "Profile Information": "Informations du profil",
     "Update your account's profile information and email address.": "Mettez à jour les informations de votre compte et votre adresse e-mail.",
     "Name": "Nom",
@@ -57,5 +56,15 @@
     "Uploaded by": "Téléversé par",
     "Visible to all": "Visible par tous",
     "Restricted": "Restreint",
-    "Delete document?": "Supprimer le document ?"
+    "Delete document?": "Supprimer le document ?",
+    "Public": "Public",
+    "Private": "Privé",
+    "All": "Tous",
+    "Uncategorized": "Non catégorisé",
+    "Convocations": "Convocations",
+    "Ordres du jour": "Ordres du jour",
+    "Comptes rendus": "Comptes rendus",
+    "Rapports": "Rapports",
+    "Délibérations": "Délibérations",
+    "Guides": "Guides"
 }

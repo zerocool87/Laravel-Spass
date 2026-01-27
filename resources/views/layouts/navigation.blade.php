@@ -45,6 +45,9 @@
                         <x-dropdown-link :href="route('admin.documents.index')">
                             {{ __('Admin - Documents') }}
                         </x-dropdown-link>
+                        <x-dropdown-link :href="route('admin.events.index')">
+                            {{ __('Admin - Events') }}
+                        </x-dropdown-link>
                         @endif
 
                         <x-dropdown-link :href="route('profile.edit')">
@@ -93,6 +96,12 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                @if(Auth::user()->isAdmin())
+                    <x-responsive-nav-link :href="route('admin.users.index')" class="text-gray-200 hover:text-white">{{ __('Admin - Users') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.documents.index')" class="text-gray-200 hover:text-white">{{ __('Admin - Documents') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.events.index')" class="text-gray-200 hover:text-white">{{ __('Admin - Events') }}</x-responsive-nav-link>
+                @endif
+
                 <x-responsive-nav-link :href="route('profile.edit')" class="text-gray-200 hover:text-white">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>

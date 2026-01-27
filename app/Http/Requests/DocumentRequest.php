@@ -21,17 +21,18 @@ class DocumentRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'title' => ['required','string','max:255'],
-            'description' => ['nullable','string'],
-            'visible_to_all' => ['required','boolean'],
-            'assigned_users' => ['required_if:visible_to_all,0','array'],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'visible_to_all' => ['required', 'boolean'],
+            'assigned_users' => ['required_if:visible_to_all,0', 'array'],
             'assigned_users.*' => ['exists:users,id'],
+            'category' => ['nullable', 'string', Rule::in(config('documents.categories', []))],
         ];
 
         if ($this->isMethod('post')) {
-            $rules['file'] = ['required','file','mimes:pdf,doc,docx,xlsx,xls,txt,jpg,jpeg,png','max:10240'];
+            $rules['file'] = ['required', 'file', 'mimes:pdf,doc,docx,xlsx,xls,txt,jpg,jpeg,png', 'max:10240'];
         } else {
-            $rules['file'] = ['nullable','file','mimes:pdf,doc,docx,xlsx,xls,txt,jpg,jpeg,png','max:10240'];
+            $rules['file'] = ['nullable', 'file', 'mimes:pdf,doc,docx,xlsx,xls,txt,jpg,jpeg,png', 'max:10240'];
         }
 
         return $rules;

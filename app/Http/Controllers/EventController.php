@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class EventController extends Controller
 {
     public function index(): View
     {
-        $events = Event::where('start_at', '>=', now())->orderBy('start_at','asc')->paginate(20);
+        $events = Event::where('start_at', '>=', now())->orderBy('start_at', 'asc')->paginate(20);
+
         return view('events.index', compact('events'));
     }
 
@@ -37,13 +38,13 @@ class EventController extends Controller
 
                 $query->where(function ($q) use ($start, $end) {
                     $q->whereBetween('start_at', [$start, $end])
-                      ->orWhereBetween('end_at', [$start, $end])
-                      ->orWhere(function ($q2) use ($start, $end) {
-                          $q2->where('start_at', '<=', $start)
-                             ->where(function ($q3) use ($end) {
-                                 $q3->whereNull('end_at')->orWhere('end_at', '>=', $end);
-                             });
-                      });
+                        ->orWhereBetween('end_at', [$start, $end])
+                        ->orWhere(function ($q2) use ($start, $end) {
+                            $q2->where('start_at', '<=', $start)
+                                ->where(function ($q3) use ($end) {
+                                    $q3->whereNull('end_at')->orWhere('end_at', '>=', $end);
+                                });
+                        });
                 });
             } catch (\Exception $e) {
                 // ignore parse errors and fall back to upcoming

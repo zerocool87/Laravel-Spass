@@ -54,4 +54,35 @@ class DocumentPreviewTest extends TestCase
         $this->assertEquals($content, $response->getContent());
         $this->assertEquals('bytes', $response->headers->get('Accept-Ranges'));
     }
+
+    public function test_preview_modal_shows_not_previewable_message_in_markup()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('library.index'))
+            ->assertStatus(200)
+            ->assertSee(__('Preview not available for this file type.'));
+    }
+
+    public function test_info_returns_previewable_false_for_non_previewable_file()
+    {
+        Storage::fake('local');
+        $path = 'documents/test.bin';
+        Storage::disk('local')->put($path, "\x00\x01\x02\x03");
+
+        $user = User::factory()->create();
+        $doc = Document::create([
+            'title' => 'Binary Test',
+            'path' => $path,
+            'original_name' => 'test.bin',
+            'created_by' => $user->id,
+            'visible_to_all' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('documents.info', $doc))
+            ->assertStatus(200)
+            ->assertJsonFragment(['previewable' => false]);
+    }
 }

@@ -27,7 +27,7 @@ class EventCalendarTest extends TestCase
         $response = $this->actingAs($user)->getJson(route('events.json', ['start' => $start, 'end' => $end]));
 
         $response->assertStatus(200);
-        $response->assertJsonStructure([['id','title','start','end','allDay','url']]);
+        $response->assertJsonStructure([['id', 'title', 'start', 'end', 'allDay', 'url']]);
         $this->assertStringContainsString('Cal Event', $response->getContent());
     }
 
@@ -39,5 +39,10 @@ class EventCalendarTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Calendar');
         $response->assertSee('calendar'); // the div id
+
+        // events index should also include an embedded calendar
+        $response = $this->actingAs($user)->get(route('events.index'));
+        $response->assertStatus(200);
+        $response->assertSee('<div id="events-calendar"', false);
     }
 }

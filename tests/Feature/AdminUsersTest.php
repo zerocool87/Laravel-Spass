@@ -13,7 +13,7 @@ class AdminUsersTest extends TestCase
     public function test_admin_sees_create_button()
     {
         // Create an admin user
-        $admin = User::factory()->create(["email" => "admin2@example.com", "is_admin" => true]);
+        $admin = User::factory()->create(['email' => 'admin2@example.com', 'is_admin' => true]);
 
         $response = $this->actingAs($admin)->get('/admin/users');
 

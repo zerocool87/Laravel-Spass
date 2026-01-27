@@ -14,12 +14,12 @@ class EventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required','string','max:255'],
-            'description' => ['nullable','string'],
-            'start_at' => ['required','date'],
-            'end_at' => ['nullable','date','after_or_equal:start_at'],
-            'location' => ['nullable','string','max:255'],
-            'is_all_day' => ['sometimes','boolean'],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'start_at' => ['required', 'date'],
+            'end_at' => ['nullable', 'date', 'after_or_equal:start_at'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'is_all_day' => ['sometimes', 'boolean'],
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +17,7 @@ class Document extends Model
         'original_name',
         'created_by',
         'visible_to_all',
+        'category',
     ];
 
     protected $casts = [
@@ -40,16 +42,33 @@ class Document extends Model
         if ($this->visible_to_all) {
             return true;
         }
-        if (!$user) {
+        if (! $user) {
             return false;
         }
         if ($this->created_by === $user->id) {
             return true;
         }
-        if ($user->isAdmin()) {
+        if (method_exists($user, 'isAdmin') && $user->isAdmin()) {
             return true;
         }
+
         return $this->users()->where('user_id', $user->id)->exists();
+    }
+
+    /**
+     * Scope to get documents visible to a given user (public or assigned to them)
+     */
+    public function scopeVisibleToUser(Builder $query, ?int $userId)
+    {
+        return $query->where(function ($q) use ($userId) {
+            $q->where('visible_to_all', true);
+
+            if ($userId) {
+                $q->orWhereHas('users', function ($q2) use ($userId) {
+                    $q2->where('users.id', $userId);
+                });
+            }
+        });
     }
 
     /**
@@ -60,7 +79,8 @@ class Document extends Model
         if (\Illuminate\Support\Facades\Storage::exists($this->path)) {
             return \Illuminate\Support\Facades\Storage::path($this->path);
         }
-        $fallback = storage_path('app/' . $this->path);
+        $fallback = storage_path('app/'.$this->path);
+
         return file_exists($fallback) ? $fallback : null;
     }
 
@@ -72,10 +92,11 @@ class Document extends Model
         if (\Illuminate\Support\Facades\Storage::exists($this->path)) {
             return \Illuminate\Support\Facades\Storage::mimeType($this->path) ?: null;
         }
-        $fallback = storage_path('app/' . $this->path);
+        $fallback = storage_path('app/'.$this->path);
         if (file_exists($fallback)) {
             return mime_content_type($fallback) ?: null;
         }
+
         return null;
     }
 
@@ -87,26 +108,31 @@ class Document extends Model
         if (\Illuminate\Support\Facades\Storage::exists($this->path)) {
             return \Illuminate\Support\Facades\Storage::get($this->path);
         }
-        $fallback = storage_path('app/' . $this->path);
+        $fallback = storage_path('app/'.$this->path);
         if (file_exists($fallback)) {
             return file_get_contents($fallback);
         }
+
         return null;
     }
 
     public function isPreviewable(): bool
     {
         $mime = $this->getMimeType();
-        if (!$mime) return false;
+        if (! $mime) {
+            return false;
+        }
         $patterns = config('documents.preview_mime_patterns', ['image/', 'text/', 'application/pdf']);
         foreach ($patterns as $pattern) {
             if (str_ends_with($pattern, '/')) {
-                if (str_starts_with($mime, $pattern)) return true;
+                if (str_starts_with($mime, $pattern)) {
+                    return true;
+                }
             } elseif ($mime === $pattern) {
                 return true;
             }
         }
+
         return false;
     }
 }
-

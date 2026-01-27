@@ -47,7 +47,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
 });
 
 // Public/Authenticated routes for documents (download, embed, info & library)
-Route::middleware('auth')->group(function(){
+Route::middleware('auth')->group(function () {
     Route::get('/documents/{document}/download', [\App\Http\Controllers\Admin\DocumentController::class, 'download'])->name('documents.download');
     Route::get('/documents/{document}/embed', [\App\Http\Controllers\Admin\DocumentController::class, 'embed'])->name('documents.embed');
     Route::get('/documents/{document}/info', [\App\Http\Controllers\Admin\DocumentController::class, 'info'])->name('documents.info');
@@ -61,12 +61,7 @@ Route::middleware('auth')->group(function(){
 
     Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
 
-    Route::get('/library', function(){
-        $documents = App\Models\Document::where('visible_to_all', true)
-            ->orWhereHas('users', function($q){ $q->where('users.id', auth()->id()); })
-            ->latest()->paginate(20);
-        return view('library.index', compact('documents'));
-    })->name('library.index');
+    Route::get('/library', [\App\Http\Controllers\LibraryController::class, 'index'])->name('library.index');
 });
 
 require __DIR__.'/auth.php';

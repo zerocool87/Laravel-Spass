@@ -17,7 +17,7 @@ class DashboardCalendarCompactTest extends TestCase
         $response = $this->actingAs($user)->get('/dashboard');
 
         $response->assertStatus(200);
-        $response->assertSee('Compact');
-        $response->assertSee('Full');
+        $response->assertDontSee('Compact');
+        $response->assertDontSee('Full');
     }
 }

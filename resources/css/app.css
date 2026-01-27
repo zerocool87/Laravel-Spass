@@ -42,6 +42,38 @@
 /* Make the calendar background subtle and neutral */
 #calendar { background: rgba(255,255,255,0.01); padding: 12px; border-radius: 10px; }
 
+/* Ensure dashboard/events calendar has sensible minimum height so it is visible while loading */
+#dashboard-calendar, #events-calendar, #calendar { min-height: 480px; width: 100%; }
+
+/* Simple centered spinner shown while the calendar initializes */
+.calendar-spinner {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  border: 4px solid rgba(255,255,255,0.08);
+  border-top-color: rgba(255,255,255,0.5);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 12px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Style for the delete icon added to events */
+.fc-event-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  font-weight: 700;
+  line-height: 20px;
+  cursor: pointer;
+  border: none;
+}
+
 /* Minimal FullCalendar look & feel (since FullCalendar package doesn't export CSS in this version) */
 .fc { color: #e6f7ff; font-family: 'Orbitron', 'Share Tech Mono', sans-serif; }
 .fc .fc-toolbar { margin-bottom: 12px; }

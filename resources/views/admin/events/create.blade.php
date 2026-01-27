@@ -31,7 +31,19 @@
 
             <div class="mb-3">
                 <label>Start</label>
-                <input name="start_at" type="datetime-local" class="form-control" value="{{ old('start_at') }}">
+                @php
+                    $startPrefill = old('start_at');
+                    if (!$startPrefill && request('start')) {
+                        // if date only (YYYY-MM-DD), convert to datetime-local format
+                        $r = request('start');
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $r)) {
+                            $startPrefill = $r . 'T00:00';
+                        } else {
+                            $startPrefill = $r;
+                        }
+                    }
+                @endphp
+                <input name="start_at" type="datetime-local" class="form-control" value="{{ $startPrefill }}">
             </div>
 
             <div class="mb-3">
@@ -49,7 +61,7 @@
                 <input name="location" class="form-control" value="{{ old('location') }}">
             </div>
 
-            <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Create</button>
+            <x-primary-button>Create</x-primary-button>
         </form>
     </div>
 </x-app-layout>

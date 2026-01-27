@@ -13,6 +13,17 @@
 </div>
 
 <div class="mb-4">
+    <label class="block text-gray-200 mb-2">Category</label>
+    <select name="category" class="block w-full bg-gray-800 text-gray-100 p-2 rounded">
+        <option value="">-- {{ __('None') }} --</option>
+        @foreach(config('documents.categories', []) as $cat)
+            <option value="{{ $cat }}" {{ old('category', $document->category ?? '') === $cat ? 'selected' : '' }}>{{ __($cat) }}</option>
+        @endforeach
+    </select>
+    @error('category')<div class="text-red-400">{{ $message }}</div>@enderror
+</div>
+
+<div class="mb-4">
     <label class="block text-gray-200 mb-2">File {{ isset($document) ? '(leave blank to keep current)' : '' }}</label>
     <input type="file" name="file" class="block w-full text-sm text-gray-100">
     @error('file')<div class="text-red-400">{{ $message }}</div>@enderror

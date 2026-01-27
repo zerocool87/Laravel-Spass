@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-4">
-                <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md">{{ __('Create User') }}</a>
+                <x-primary-button href="{{ route('admin.users.create') }}">{{ __('Create User') }}</x-primary-button>
 
             @if(session('success'))
             <div class="mb-4 p-3 bg-green-800 text-green-100 rounded">

@@ -2,21 +2,21 @@
 
 namespace Database\Seeders;
 
+use App\Models\Document;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
-use App\Models\User;
-use App\Models\Document;
 
 class DocumentDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::where('email','admin@example.com')->first();
-        $test = User::where('email','test@example.com')->first();
+        $admin = User::where('email', 'admin@example.com')->first();
+        $test = User::where('email', 'test@example.com')->first();
 
         // ensure files exist
-        Storage::disk('local')->put('documents/demo_public.txt', "Demo public document content");
-        Storage::disk('local')->put('documents/demo_restricted.txt', "Demo restricted document content");
+        Storage::disk('local')->put('documents/demo_public.txt', 'Demo public document content');
+        Storage::disk('local')->put('documents/demo_restricted.txt', 'Demo restricted document content');
 
         $doc1 = Document::create([
             'title' => 'Demo Public Document',

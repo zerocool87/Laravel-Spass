@@ -6,9 +6,9 @@
                 <div class="p-2 flex justify-between items-center bg-gray-800">
                     <h3 x-text="title" class="text-white"></h3>
                     <div class="flex items-center gap-2">
-                        <button @click="close()" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('Close') }}</button>
-                        <a :href="downloadUrl" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" target="_blank" rel="noopener" x-show="showNotPreviewable">{{ __('Download') }}</a>
-                        <a :href="embed" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" target="_blank" rel="noopener" x-show="!showNotPreviewable">{{ __('Open in new tab') }}</a>
+                        <x-secondary-button @click="close()">{{ __('Close') }}</x-secondary-button>
+                        <x-primary-button x-bind:href="downloadUrl" target="_blank" rel="noopener" x-show="showNotPreviewable">{{ __('Download') }}</x-primary-button>
+                        <x-primary-button x-bind:href="embed" target="_blank" rel="noopener" x-show="!showNotPreviewable">{{ __('Open in new tab') }}</x-primary-button>
                     </div>
                 </div>
 
@@ -35,18 +35,18 @@
                         <template x-if="isPdf() && !forceIframe">
                             <div class="h-full w-full min-w-0 flex flex-col">
                                 <div class="p-2 bg-gray-800 flex items-center gap-2">
-                                    <button @click.prevent="prevPage()" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" :disabled="currentPage<=1">{{ __('Prev') }}</button>
+                                    <x-secondary-button @click.prevent="prevPage()" x-bind:disabled="currentPage<=1">{{ __('Prev') }}</x-secondary-button>
                                     <div class="px-2 text-cyan-200">{{ __('Page') }} <span x-text="currentPage"></span> / <span x-text="totalPages"></span></div>
-                                    <button @click.prevent="nextPage()" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" :disabled="currentPage>=totalPages">{{ __('Next') }}</button>
+                                    <x-secondary-button @click.prevent="nextPage()" x-bind:disabled="currentPage>=totalPages">{{ __('Next') }}</x-secondary-button>
 
                                     <div class="border-l border-gray-700 h-6 mx-2"></div>
 
-                                    <button @click.prevent="setPdfZoom('page-width')" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('Fit width') }}</button>
-                                    <button @click.prevent="setPdfZoom('page-fit')" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('Fit page') }}</button>
-                                    <button @click.prevent="setPdfZoom('100')" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('100%') }}</button>
-                                    <button @click.prevent="rotatePdf()" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Rotate</button>
-                                    <a :href="downloadUrl" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" target="_blank" rel="noopener">{{ __('Download') }}</a>
-                                    <a :href="embed" class="inline-flex items-center px-3 py-1 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" target="_blank" rel="noopener">Open in new tab</a>
+                                    <x-secondary-button @click.prevent="setPdfZoom('page-width')">{{ __('Fit width') }}</x-secondary-button>
+                                    <x-secondary-button @click.prevent="setPdfZoom('page-fit')">{{ __('Fit page') }}</x-secondary-button>
+                                    <x-secondary-button @click.prevent="setPdfZoom('100')">{{ __('100%') }}</x-secondary-button>
+                                    <x-secondary-button @click.prevent="rotatePdf()">Rotate</x-secondary-button>
+                                    <x-primary-button x-bind:href="downloadUrl" target="_blank" rel="noopener">{{ __('Download') }}</x-primary-button>
+                                    <x-primary-button x-bind:href="embed" target="_blank" rel="noopener">Open in new tab</x-primary-button>
                                     <div class="ml-4 text-sm text-cyan-200">{{ __('Zoom') }}: <span x-text="pdfZoom"></span></div> 
                                     <div class="ml-4 text-sm text-cyan-200" x-show="_progress">Loading: <span x-text="_progress+'%'"></span></div>
                                 </div>
@@ -58,12 +58,12 @@
 
                         <template x-if="isPdf() && forceIframe">
                             <div class="h-full w-full min-w-0">
-                                    <iframe x-show="!showNotPreviewable" :src="embed" class="w-full h-full block min-w-0" style="border:0;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals" allowfullscreen @load="loading=false" ref="pdfIframe"></iframe>
+                                    <iframe x-show="!showNotPreviewable" x-bind:src="embed" class="w-full h-full block min-w-0" style="border:0;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals" allowfullscreen @load="loading=false" ref="pdfIframe"></iframe>
                             </div>
                         </template>
 
                         <template x-if="!isPdf()">
-                            <iframe x-show="!showNotPreviewable" :src="embed" class="w-full h-full block min-w-0" style="border:0;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals" allowfullscreen @load="loading=false"></iframe>
+                            <iframe x-show="!showNotPreviewable" x-bind:src="embed" class="w-full h-full block min-w-0" style="border:0;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals" allowfullscreen @load="loading=false"></iframe>
                         </template>
                     </div>
                 </div>

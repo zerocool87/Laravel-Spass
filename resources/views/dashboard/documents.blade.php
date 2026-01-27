@@ -14,8 +14,8 @@
                                 <div class="text-sm text-cyan-300">{{ $doc->description }}</div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <button type="button" onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})" class="inline-flex px-3 py-1 bg-gray-800 text-white rounded-md">{{ __('View') }}</button>
-                                <a href="{{ route('documents.download', $doc) }}" class="inline-flex px-3 py-1 bg-gray-800 text-white rounded-md">{{ __('Download') }}</a>
+                                <x-secondary-button type="button" onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})">{{ __('View') }}</x-secondary-button>
+                                <x-primary-button href="{{ route('documents.download', $doc) }}" target="_blank" rel="noopener">{{ __('Download') }}</x-primary-button>
                             </div>
                         </li>
                     @endforeach

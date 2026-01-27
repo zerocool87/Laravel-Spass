@@ -5,8 +5,6 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="mb-4">
-                <a href="{{ route('admin.documents.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 transition ease-in-out duration-150">{{ __('Upload Document') }}</a>
 
             @if(session('success'))
             <div class="mb-4 p-3 bg-green-800 text-green-100 rounded">
@@ -15,10 +13,31 @@
             @endif
 
             <div class="glass p-4">
+                <div class="mb-4 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <x-primary-button href="{{ route('admin.documents.create') }}">{{ __('Upload Document') }}</x-primary-button>
+
+                        <form method="GET" action="{{ route('admin.documents.index') }}" class="flex items-center gap-2">
+                            <select name="category" class="block bg-gray-800 text-gray-100 p-2 rounded">
+                                <option value="">-- {{ __('All categories') }} --</option>
+                                @foreach(config('documents.categories', []) as $cat)
+                                    <option value="{{ $cat }}" {{ isset($category) && $category === $cat ? 'selected' : '' }}>{{ __($cat) }}</option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="inline-flex items-center px-3 py-1 bg-gray-700 text-white rounded">{{ __('Filter') }}</button>
+                            @if(!empty($category))
+                                <a href="{{ route('admin.documents.index') }}" class="inline-flex items-center px-3 py-1 bg-gray-600 text-white rounded">{{ __('Clear') }}</a>
+                            @endif
+                        </form>
+                    </div>
+                    <div class="text-sm text-gray-300">{{ $documents->total() }} {{ __('documents') }}</div>
+                </div>
+
                 <table class="w-full cyber-table">
                     <thead>
                         <tr>
                             <th class="py-2 text-left">{{ __('Title') }}</th>
+                            <th class="py-2 text-left">{{ __('Category') }}</th>
                             <th class="py-2 text-left">{{ __('Uploaded by') }}</th>
                             <th class="py-2 text-left">{{ __('Visible to all') }}</th>
                             <th class="py-2 text-left">{{ __('Actions') }}</th>
@@ -28,6 +47,7 @@
                         @foreach($documents as $doc)
                         <tr class="border-t border-gray-700">
                             <td class="py-2">{{ $doc->title }}</td>
+                            <td class="py-2"><x-category-badge :category="$doc->category" /></td>
                             <td class="py-2">{{ $doc->creator?->name }}</td>
                             <td class="py-2">{{ $doc->visible_to_all ? __('Yes') : __('Restricted') }}</td>
                             <td class="py-2">

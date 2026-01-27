@@ -3,19 +3,38 @@
         <h2 class="font-semibold text-xl">Upcoming Events</h2>
     </x-slot>
 
+    {{-- Enable calendar debug to surface initialization issues on this page --}}
+    <script>window.CALENDAR_DEBUG = true;</script>
+
     <div class="container">
-        <div class="mb-4">
-            <a class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150" href="{{ route('events.calendar') }}">Open Calendar</a>
+        @can('admin')
+            <div class="mb-4 flex justify-center">
+                <button type="button" onclick="window.openEventCreateModal(new Date().toISOString().slice(0,10))" class="bg-cyan-600 hover:bg-cyan-500 text-white rounded px-4 py-2">{{ __('Create Event') }}</button>
+            </div>
+        @endcan
+
+        <div class="mt-6">
+            @foreach($events as $event)
+                <div class="glass mb-3 p-3">
+                    <h5 class="text-2xl font-semibold text-gray-100"><a href="{{ route('events.show', $event) }}">{{ $event->title }}</a></h5>
+                    <p>{{ $event->start_at->format('Y-m-d H:i') }} @if($event->end_at) - {{ $event->end_at->format('Y-m-d H:i') }} @endif</p>
+                    <p class="text-sm">{{ $event->location }}</p>
+                </div>
+            @endforeach
+
+            {{ $events->links() }}
         </div>
 
-        @foreach($events as $event)
-            <div class="glass mb-3 p-3">
-                <h5 class="text-2xl font-semibold text-gray-100"><a href="{{ route('events.show', $event) }}">{{ $event->title }}</a></h5>
-                <p>{{ $event->start_at->format('Y-m-d H:i') }} @if($event->end_at) - {{ $event->end_at->format('Y-m-d H:i') }} @endif</p>
-                <p class="text-sm">{{ $event->location }}</p>
-            </div>
-        @endforeach
-
-        {{ $events->links() }}
+        <div class="mt-8 mb-6 flex justify-center">
+            <div id="events-calendar"
+                 data-feed-url="{{ route('events.json') }}"
+                 data-mode="full"
+                 data-can-edit="{{ auth()->check() && auth()->user()->can('admin') ? '1' : '0' }}"
+                 data-create-url="{{ auth()->check() && auth()->user()->can('admin') ? route('admin.events.create') : '' }}"
+                 data-edit-base="{{ auth()->check() && auth()->user()->can('admin') ? route('admin.events.index') : '' }}"
+                 class="w-full max-w-4xl"></div>
+        </div>
     </div>
+
+    @include('events._admin_create_modal')
 </x-app-layout>
