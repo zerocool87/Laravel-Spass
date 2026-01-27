@@ -25,7 +25,8 @@ class DocumentController extends Controller
     {
         $category = $request->query('category');
 
-        $documents = Document::with('creator')
+        // Admin doit voir tous les documents, publics et privés
+        $documents = Document::with(['creator', 'users'])
             ->when($category, function ($q, $cat) {
                 $q->where('category', $cat);
             })
