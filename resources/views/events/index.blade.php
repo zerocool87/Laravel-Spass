@@ -14,9 +14,20 @@
         @endcan
 
         <div class="mt-6">
-            @foreach($events as $event)
+                @php
+                    $typeColors = [
+                        'assemblee' => '#7c3aed',
+                        'bureau' => '#dc2626',
+                        'commissions' => '#059669',
+                        'autre' => '#0369a1',
+                    ];
+                @endphp
+                @foreach($events as $event)
                 <div class="glass mb-3 p-3">
-                    <h5 class="text-2xl font-semibold text-gray-100"><a href="{{ route('events.show', $event) }}">{{ $event->title }}</a></h5>
+                        @php $color = $typeColors[$event->type ?? 'autre'] ?? $typeColors['autre']; @endphp
+                        <h5 class="text-2xl font-semibold" style="color: {{ $color }};">
+                            <a href="{{ route('events.show', $event) }}" style="color: inherit;">{{ $event->title }}</a>
+                        </h5>
                     <p>{{ $event->start_at->format('Y-m-d H:i') }} @if($event->end_at) - {{ $event->end_at->format('Y-m-d H:i') }} @endif</p>
                     <p class="text-sm">{{ $event->location }}</p>
                 </div>
