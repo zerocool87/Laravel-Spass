@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('events', function (Blueprint $table) {
-            $table->string('type')->nullable()->default('autre')->after('location');
-        });
+        // Be defensive: only add the column if it doesn't already exist (prevents duplicate column errors)
+        if (! Schema::hasColumn('events', 'type')) {
+            Schema::table('events', function (Blueprint $table) {
+                $table->string('type')->nullable()->default('autre')->after('location');
+            });
+        }
     }
 
     /**
@@ -21,8 +24,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('events', function (Blueprint $table) {
-            $table->dropColumn('type');
-        });
+        if (Schema::hasColumn('events', 'type')) {
+            Schema::table('events', function (Blueprint $table) {
+                $table->dropColumn('type');
+            });
+        }
     }
 };

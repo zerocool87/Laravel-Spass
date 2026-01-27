@@ -31,18 +31,90 @@ document.addEventListener('DOMContentLoaded', function () {
         const createUrl = el.dataset.createUrl || '';
         const editBase = el.dataset.editBase || '';
 
+        // Helper: apply event colors and list styling
+        function applyEventColors(info) {
+            const type = (info.event.extendedProps && info.event.extendedProps.type) || 'autre';
+            const typeColors = {
+                'assemblee': { bg: '#7c3aed', border: '#6d28d9' },
+                'bureau': { bg: '#dc2626', border: '#b91c1c' },
+                'commissions': { bg: '#059669', border: '#047857' },
+                'autre': { bg: '#0369a1', border: '#075985' }
+            };
+            const col = typeColors[type] || typeColors['autre'];
+            try { info.el.style.setProperty('background-color', col.bg, 'important'); } catch (e) { info.el.style.backgroundColor = col.bg; }
+            try { info.el.style.setProperty('border-color', col.border, 'important'); } catch (e) { info.el.style.borderColor = col.border; }
+            try { info.el.style.setProperty('color', 'white', 'important'); } catch (e) { info.el.style.color = 'white'; }
+            try {
+                const main = info.el.querySelector('.fc-list-event-main');
+                if (main) {
+                    main.style.backgroundColor = col.bg;
+                    main.style.borderColor = col.border;
+                    main.style.color = 'white';
+                    main.style.padding = '0.35rem 0.6rem';
+                    main.style.borderRadius = '0.375rem';
+                    main.style.display = 'flex';
+                    main.style.alignItems = 'center';
+                    main.style.gap = '0.75rem';
+                }
+            } catch (e) { }
+        }
+
+        // Helper: format time in event display
+        function setEventTimeDisplay(info) {
+            try {
+                if (info.event.allDay) return;
+                const startDate = info.event.start || (info.event.startStr && new Date(info.event.startStr));
+                if (!startDate) return;
+                const hhmm = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                const timeEls = info.el.querySelectorAll('.fc-time, .fc-list-item-time');
+                if (timeEls && timeEls.length) {
+                    timeEls.forEach(function(te){ te.textContent = hhmm; });
+                } else {
+                    const possible = info.el.querySelectorAll('span, div');
+                    for (let i = 0; i < possible.length; i++) {
+                        const el2 = possible[i];
+                        if (/\d{1,2}:\d{2}/.test(el2.textContent)) { el2.textContent = hhmm; break; }
+                    }
+                }
+            } catch (err) { }
+        }
+
+        function showAuthMessage(containerEl) {
+            if (!containerEl || containerEl.querySelector('.calendar-auth-message')) return;
+            const box = document.createElement('div');
+            box.className = 'calendar-auth-message text-sm text-gray-300 p-4 rounded border border-gray-700 mt-3';
+            box.textContent = 'Connexion requise pour afficher le calendrier.';
+            containerEl.appendChild(box);
+        }
+
         const defaultOptions = {
             plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
             // Use French locale when the page language starts with 'fr'
             locale: (document.documentElement.lang && document.documentElement.lang.startsWith('fr')) ? frLocale : undefined,
-            initialView: mode === 'mini' ? 'listWeek' : 'dayGridMonth',
-            headerToolbar: mode === 'mini' ? { left: '', center: 'title', right: '' } : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' },
+            // Map mode to a sensible initial view: 'mini' -> listWeek, 'week' -> timeGridWeek, otherwise month
+            initialView: mode === 'mini' ? 'listWeek' : (mode === 'week' ? 'timeGridWeek' : 'dayGridMonth'),
+            headerToolbar: mode === 'mini' ? { left: '', center: 'title', right: '' } : (mode === 'week' ? { left: 'prev,next today', center: 'title', right: 'timeGridWeek,dayGridMonth' } : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' }),
             aspectRatio: 1.6,
             dayMaxEventRows: 3,
             eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
-            events: {
-                url: feedUrl,
-                method: 'GET'
+            events: function(fetchInfo, successCallback, failureCallback){
+                // Use fetch with same-origin credentials so authenticated dashboards can load events
+                fetch(feedUrl, { method: 'GET', credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+                    .then(function(res){
+                        if (!res.ok) throw new Error('Network response was not ok');
+                        const ct = res.headers.get('content-type') || '';
+                        if (!ct.includes('application/json') && !ct.includes('json')) {
+                            // likely redirected to login (HTML)
+                            showAuthMessage(el);
+                            throw new Error('Expected JSON response (got '+ct+')');
+                        }
+                        return res.json();
+                    })
+                    .then(function(data){ successCallback(data); })
+                    .catch(function(err){
+                        console.warn('[calendar] failed to load events', err);
+                        if (typeof failureCallback === 'function') failureCallback(err);
+                    });
             },
             selectable: canEdit,
 
@@ -62,50 +134,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // base class for subtle styling
                 info.el.classList.add('fc-event-sober');
 
-                // color customization by event type
-                try {
-                    const type = (info.event.extendedProps && info.event.extendedProps.type) || 'autre';
-                    const typeColors = {
-                        'assemblee': { bg: '#7c3aed', border: '#6d28d9' }, // violet
-                        'bureau': { bg: '#dc2626', border: '#b91c1c' },    // red
-                        'commissions': { bg: '#059669', border: '#047857' }, // green
-                        'autre': { bg: '#0369a1', border: '#075985' }      // blue
-                    };
-                    const col = typeColors[type] || typeColors['autre'];
-                    try { info.el.style.setProperty('background-color', col.bg, 'important'); } catch (e) { info.el.style.backgroundColor = col.bg; }
-                    try { info.el.style.setProperty('border-color', col.border, 'important'); } catch (e) { info.el.style.borderColor = col.border; }
-                    try { info.el.style.setProperty('color', 'white', 'important'); } catch (e) { info.el.style.color = 'white'; }
-                } catch (err) {
-                    // ignore styling errors
-                }
+                // Apply colors and format time in a smaller, testable way
+                try { applyEventColors(info); } catch (e) { /* ignore */ }
+                try { setEventTimeDisplay(info); } catch (e) { /* ignore */ }
 
-                // Ensure only the time (HH:MM) is shown for event time displays
-                try {
-                    if (!info.event.allDay) {
-                        const startDate = info.event.start || (info.event.startStr && new Date(info.event.startStr));
-                        if (startDate) {
-                            const hhmm = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-                            // FullCalendar uses .fc-time for time display in many views
-                            const timeEls = info.el.querySelectorAll('.fc-time, .fc-list-item-time');
-                            if (timeEls && timeEls.length) {
-                                timeEls.forEach(function(te){ te.textContent = hhmm; });
-                            } else {
-                                // Fallback: try to find any text node that looks like a time and replace it
-                                // (best-effort, avoid breaking structure)
-                                const possible = info.el.querySelectorAll('span, div');
-                                for (let i = 0; i < possible.length; i++) {
-                                    const el = possible[i];
-                                    if (/\d{1,2}:\d{2}/.test(el.textContent)) {
-                                        el.textContent = hhmm;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (err) {
-                    // ignore formatting errors
-                }
+                // if event data couldn't be loaded (auth), we don't attempt further DOM tweaks
+                // (auth message is handled during the fetch step)
+
 
                 // Add delete button for admins
                 if (canEdit && info.event && info.event.id) {
@@ -163,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     info.el.appendChild(del);
                 }
             },
-            height: mode === 'mini' ? 240 : 'auto'
+            height: mode === 'mini' ? 240 : (mode === 'week' ? 480 : 'auto')
         };
 
         // Insert a small loading spinner while the calendar initializes

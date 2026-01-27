@@ -7,6 +7,7 @@ use App\Http\Requests\EventRequest;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -67,6 +68,9 @@ class EventController extends Controller
     {
         $data = $request->validated();
         $data['is_all_day'] = boolval($data['is_all_day'] ?? false);
+
+        // Temporary: log payload to help debug unexpected deletes
+        Log::info('Admin Event update payload', ['event_id' => $event->id, 'payload' => $request->all()]);
 
         $event->update($data);
 

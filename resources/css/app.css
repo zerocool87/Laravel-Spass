@@ -88,3 +88,30 @@
 .fc .fc-daygrid-day-top { padding: 8px 10px; }
 .fc .fc-scrollgrid { background: transparent; border: none; }
 
+/* Admin-specific calendar compact styles */
+#calendar[data-can-edit="1"],
+#events-calendar[data-can-edit="1"] {
+  font-size: 0.9rem;
+}
+#calendar[data-can-edit="1"] .fc,
+#events-calendar[data-can-edit="1"] .fc {
+  font-size: 0.9rem;
+}
+#calendar[data-can-edit="1"] .fc .fc-toolbar-title,
+#events-calendar[data-can-edit="1"] .fc .fc-toolbar-title {
+  font-size: 1.15rem; /* slightly smaller toolbar title for admins */
+}
+#calendar[data-can-edit="1"] .fc .fc-list-item-title,
+#events-calendar[data-can-edit="1"] .fc .fc-list-item-title {
+  font-size: 0.9rem;
+}
+#calendar[data-can-edit="1"] .fc .fc-list-item-time,
+#events-calendar[data-can-edit="1"] .fc .fc-list-item-time {
+  font-size: 0.8rem;
+  min-width: 64px;
+}
+#calendar[data-can-edit="1"] .fc .fc-daygrid-event,
+#events-calendar[data-can-edit="1"] .fc .fc-daygrid-event {
+  font-size: 0.9rem;
+}
+

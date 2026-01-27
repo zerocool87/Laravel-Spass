@@ -24,10 +24,22 @@
                 @endphp
                 @foreach($events as $event)
                 <div class="glass mb-3 p-3">
-                        @php $color = $typeColors[$event->type ?? 'autre'] ?? $typeColors['autre']; @endphp
-                        <h5 class="text-2xl font-semibold inline-block" style="background: {{ $color }}; color: #fff; padding: 0.25rem 0.5rem; border-radius: 0.375rem;">
+                        @php
+                            $color = $typeColors[$event->type ?? 'autre'] ?? $typeColors['autre'];
+                            $typeLabels = [
+                                'assemblee' => 'Assemblée plénière',
+                                'bureau' => 'Réunion bureau',
+                                'commissions' => 'Commissions',
+                                'autre' => 'Autre',
+                            ];
+                            $label = $typeLabels[$event->type ?? 'autre'] ?? $typeLabels['autre'];
+                        @endphp
+                        <h5 class="text-2xl font-semibold inline-block" style="background: {{ $color }}; color: #fff; padding: 0.25rem 0.5rem; border-radius: 0.375rem; border: 1px solid rgba(0,0,0,0.25); box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
                             <a href="{{ route('events.show', $event) }}" style="color: inherit;">{{ $event->title }}</a>
                         </h5>
+                        <div class="mt-2">
+                            <span class="text-sm font-medium" style="color: {{ $color }};">{{ $label }}</span>
+                        </div>
                     <p>{{ $event->start_at->format('Y-m-d H:i') }} @if($event->end_at) - {{ $event->end_at->format('Y-m-d H:i') }} @endif</p>
                     <p class="text-sm">{{ $event->location }}</p>
                 </div>
@@ -47,5 +59,7 @@
         </div>
     </div>
 
-    @include('events._admin_create_modal')
+    @can('admin')
+        @include('events._admin_create_modal')
+    @endcan
 </x-app-layout>

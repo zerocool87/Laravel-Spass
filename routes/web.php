@@ -11,6 +11,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Public JSON feed for events (read-only) — intentionally public so dashboard calendars can load without auth
+Route::get('/events/json', [\App\Http\Controllers\EventController::class, 'json'])->name('events.json');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -57,7 +60,6 @@ Route::middleware('auth')->group(function () {
 
     // Calendar UI + JSON feed for FullCalendar (declare before the catch-all show route)
     Route::get('/events/calendar', [\App\Http\Controllers\EventController::class, 'calendar'])->name('events.calendar');
-    Route::get('/events/json', [\App\Http\Controllers\EventController::class, 'json'])->name('events.json');
 
     Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
 
