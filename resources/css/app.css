@@ -2,11 +2,182 @@
 @tailwind components;
 @tailwind utilities;
 
+:root{
+  --bg: #ffffff; /* deep slate */
+  --panel: rgba(255,255,255,0.03);
+  --muted: rgba(255,255,255,0.06);
+  --brand: #fda552; /* pastel orange */
+  --brand-rgb: 255,173,96; /* for rgba() gradients */
+  --brand-soft: #fff3e6; /* very light */
+  --brand-dark: #e08a00; /* softer dark */
+  --primary: #ffad60; /* brand as primary */
+  --accent: #285e61; /* muted teal */
+  --surface: #0b1220;
+  --text-default: #131313;
+} 
+
+@layer base {
+    html {
+        font-size: 14px;
+    }
+
+    /* Poppins (local) */
+    @font-face {
+        font-family: 'Poppins';
+        src: url('/fonts/Poppins-Regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'Poppins';
+        src: url('/fonts/Poppins-Medium.woff2') format('woff2');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'Poppins';
+        src: url('/fonts/Poppins-SemiBold.woff2') format('woff2');
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'Poppins';
+        src: url('/fonts/Poppins-Bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    /* fallback Century Gothic declarations retained below */
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-SemiBold.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-SemiBold.woff') format('woff');
+        font-weight: 600;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-ThinItalic.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-ThinItalic.woff') format('woff');
+        font-weight: 100;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-SemiBoldIt.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-SemiBoldIt.woff') format('woff');
+        font-weight: 600;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-Thin.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-Thin.woff') format('woff');
+        font-weight: 100;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-Bold.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-Bold.woff') format('woff');
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-BlackIt.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-BlackIt.woff') format('woff');
+        font-weight: 900;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-ExtraBold.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-ExtraBold.woff') format('woff');
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-XtraBoldIt.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-XtraBoldIt.woff') format('woff');
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-Italic.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-Italic.woff') format('woff');
+        font-weight: normal;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-Black.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-Black.woff') format('woff');
+        font-weight: 900;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-BoldItalic.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-BoldItalic.woff') format('woff');
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-LightIt.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-LightIt.woff') format('woff');
+        font-weight: 300;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: 'Century Gothic';
+        src: url('/fonts/CenturyGothicPaneuropean-Light.woff2') format('woff2'),
+            url('/fonts/CenturyGothicPaneuropean-Light.woff') format('woff');
+        font-weight: 300;
+        font-style: normal;
+    }
+
+    /* correction d'un bug d'affichage des listes déroulante dans datatables */
+    #power-grid-table-container .pointer-events-none {
+        display: none;
+    }
+}
+
 /* Alpine.js: hide elements with x-cloak until Alpine is initialized */
 [x-cloak] { display: none !important; }
 
 /* FullCalendar subtle / sober theme */
-.fc { color: #e6f7ff; font-family: 'Orbitron', 'Share Tech Mono', sans-serif; }
+.fc { color: #e6eef8; font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
 
 /* Toolbar buttons: muted background and subtle borders */
 .fc .fc-toolbar-chunk .fc-button {
@@ -53,7 +224,7 @@
   display: inline-block;
   width: 36px;
   height: 36px;
-  border: 4px solid rgba(255,255,255,0.08);
+  border: 4px solid rgba(219, 12, 12, 0.08);
   border-top-color: rgba(255,255,255,0.5);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -82,11 +253,158 @@
 }
 
 /* Minimal FullCalendar look & feel (since FullCalendar package doesn't export CSS in this version) */
-.fc { color: #e6f7ff; font-family: 'Orbitron', 'Share Tech Mono', sans-serif; }
+.fc { color: #e6f7ff; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
 .fc .fc-toolbar { margin-bottom: 12px; }
-.fc .fc-daygrid-day-number { color: #7dd3fc; font-weight: 700; }
+.fc .fc-daygrid-day-number { color: var(--primary); font-weight: 700; }
 .fc .fc-daygrid-day-top { padding: 8px 10px; }
 .fc .fc-scrollgrid { background: transparent; border: none; }
+
+/* Soft UI cards */
+.glass { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.03); border-radius: 12px; padding: 16px; box-shadow: 0 6px 20px rgba(2,6,23,0.6); }
+
+/* Tables */
+.cyber-table th { color: #cfeef9; border-bottom: 1px solid rgba(255,255,255,0.04); padding: 10px; text-align: left; }
+.cyber-table td { padding: 12px; border-top: 1px solid rgba(255,255,255,0.02); }
+.cyber-table tr:nth-child(even) { background: rgba(255,255,255,0.01); }
+
+/* Forms */
+input[type="text"], textarea, select { background: #0b1220; border: 1px solid rgba(255,255,255,0.04); color: #e6eef8; border-radius: 8px; padding: 10px; font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+
+/* Buttons (consistent with brand variables) */
+.btn-primary {
+  background: var(--brand);
+  color: #0b1220; /* dark text for contrast */
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.btn-primary:hover { background: color-mix(in srgb, var(--brand) 85%, black 15%); }
+
+.btn-secondary {
+  background: var(--panel);
+  color: var(--text-default);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.02); }
+
+.btn-danger {
+  background: #d9534f;
+  color: white;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.btn-danger:hover { background: #c93f3b; }
+
+/* Input utility class */
+.input-text {
+  background: #0b1220;
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #e6eef8;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: 'Poppins', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+.input-text:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(var(--brand-rgb), 0.08);
+  border-color: var(--brand);
+}
+
+/* Header */
+header { background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+/* Subtle link hover */
+a { color: #bfeaf6; }
+a:hover { color: #dff3ff; text-decoration: underline; }
+
+.ss-main {
+    display: flex;
+    padding: 6px;
+    color: var(--text-default);
+}
+
+.ss-main.ss-open-below {
+    border: solid 2px var(--brand);
+    box-shadow: none;
+}
+
+.ss-content .ss-search input:hover,
+.ss-content .ss-search input:focus {
+    border: solid 2px var(--brand-soft);
+    box-shadow: none;
+}
+
+.ss-content .ss-list .ss-option.ss-highlighted,
+.ss-content .ss-list .ss-option:not(.ss-disabled).ss-selected,
+.ss-content .ss-list .ss-option:hover {
+    color: white;
+    background-color: var(--brand) !important;
+}
+
+.ss-main .ss-values .ss-value {
+    padding: 4px;
+    background-color: var(--brand) !important;
+}
+
+.ss-main:focus {
+    border: solid 2px var(--brand);
+    box-shadow: none;
+}
+
+.ss-content {
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+.ss-content .ss-list {
+    flex: 1 1 auto;
+    min-width: 25px;
+}
+
+/* flatpickr selections */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.selected.inRange,
+.flatpickr-day.startRange.inRange,
+.flatpickr-day.endRange.inRange,
+.flatpickr-day.selected:focus,
+.flatpickr-day.startRange:focus,
+.flatpickr-day.endRange:focus,
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover,
+.flatpickr-day.selected.prevMonthDay,
+.flatpickr-day.startRange.prevMonthDay,
+.flatpickr-day.endRange.prevMonthDay,
+.flatpickr-day.selected.nextMonthDay,
+.flatpickr-day.startRange.nextMonthDay,
+.flatpickr-day.endRange.nextMonthDay {
+    background: var(--brand);
+    box-shadow: none;
+    color: #fff;
+    border-color: var(--brand);
+}
+
+.flatpickr-day.today {
+    border-color: var(--brand);
+}
+
+/* Customisation des barre de chargement */
+progress[value],
+progress:not([value]) {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: 100%;
+    height: 10px;
+    border-radius: 10px;
+    background: #e4e4e4;
+}
+
+progress[value]::-webkit-progress-bar,
+progress:not([value])::-webkit-progress-bar,
+progress[value]::-moz-progress-bar,
+progress:not([value])::-moz-progress-bar {
+    background: var(--brand-dark);
+}
 
 /* Admin-specific calendar compact styles */
 #calendar[data-can-edit="1"],
@@ -113,5 +431,29 @@
 #calendar[data-can-edit="1"] .fc .fc-daygrid-event,
 #events-calendar[data-can-edit="1"] .fc .fc-daygrid-event {
   font-size: 0.9rem;
+}
+
+/* Admin calendar visual distinction */
+#admin-events-calendar {
+  border-left: 4px solid var(--brand); /* brand */
+  padding-left: 12px;
+  background: linear-gradient(180deg, rgba(255,173,96,0.03), rgba(255,173,96,0.01));
+  border-radius: 8px;
+}
+#admin-events-calendar .fc .fc-toolbar .fc-toolbar-title {
+  color: var(--brand); /* brand */
+}
+#admin-events-calendar .fc .fc-daygrid-event {
+  background: rgba(255,173,96,0.06);
+  border-color: rgba(255,173,96,0.12);
+}
+
+/* Dashboard calendar is neutral and compact by design */
+#dashboard-calendar {
+  border-left: 4px solid rgba(255,255,255,0.03);
+  padding-left: 8px;
+}
+#dashboard-calendar .fc .fc-toolbar .fc-toolbar-title {
+  color: #dff3ff;
 }
 

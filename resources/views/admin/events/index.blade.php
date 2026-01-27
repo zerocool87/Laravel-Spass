@@ -11,6 +11,9 @@
         {{-- Debug flag and embedded calendar for admin users --}}
         <script>window.CALENDAR_DEBUG = {{ config('app.debug') ? 'true' : 'false' }};</script>
         <div class="mt-2 mb-6 flex justify-center">
+            <div class="w-full max-w-4xl mb-2">
+                <h3 class="text-lg font-semibold text-cyan-200 mb-2">Admin Calendar <span class="text-sm text-gray-300">(Full management)</span></h3>
+            </div>
             <div id="admin-events-calendar"
                  data-feed-url="{{ route('events.json') }}"
                  data-mode="full"

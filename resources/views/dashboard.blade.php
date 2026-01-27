@@ -17,7 +17,7 @@
 
             {{-- Read-only calendar for all users on the dashboard --}}
             <div class="bg-slate-800 mt-6 p-4 rounded-lg shadow">
-                <h3 class="text-lg font-semibold text-gray-100 mb-3">Calendrier</h3>
+                <h3 class="text-lg font-semibold text-gray-100 mb-3">Calendrier <span class="text-sm text-gray-300">(Dashboard)</span></h3>
                 <div id="dashboard-calendar" data-feed-url="/events/json" data-mode="month" data-can-edit="false" class="w-full bg-transparent" aria-label="Calendrier des événements"></div>
 
                 @can('admin')

@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     els.forEach(function (el) {
         const feedUrl = el.dataset.feedUrl || '/events/json';
+
+        // Mark admin calendar elements so CSS can target them more easily
+        if (el.id && el.id === 'admin-events-calendar') {
+            el.classList.add('admin-calendar');
+        }
         const mode = el.dataset.mode || 'full'; // 'full' or 'mini'
 
         const canEdit = parseBool(el.dataset.canEdit);
