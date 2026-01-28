@@ -21,6 +21,7 @@ class EventFactory extends Factory
             'end_at' => $end,
             'location' => $this->faker->city(),
             'is_all_day' => false,
+            'type' => $this->faker->randomElement(config('events.types', ['Autre'])),
             'created_by' => null,
         ];
     }

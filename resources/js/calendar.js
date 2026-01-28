@@ -38,14 +38,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Helper: apply event colors and list styling
         function applyEventColors(info) {
-            const type = (info.event.extendedProps && info.event.extendedProps.type) || 'autre';
+            const type = (info.event.extendedProps && info.event.extendedProps.type) || 'Autre';
             const typeColors = {
-                'assemblee': { bg: '#7c3aed', border: '#6d28d9' },
-                'bureau': { bg: '#dc2626', border: '#b91c1c' },
-                'commissions': { bg: '#059669', border: '#047857' },
-                'autre': { bg: '#0369a1', border: '#075985' }
+                'Reunion': { bg: '#2563eb', border: '#1d4ed8' }, // blue
+                'Bureau': { bg: '#dc2626', border: '#b91c1c' }, // red
+                'Commissions': { bg: '#059669', border: '#047857' }, // green
+                'Assemblée pleniere': { bg: '#f59e42', border: '#b45309' }, // orange
+                'Autre': { bg: '#a21caf', border: '#701a75' } // purple
             };
-            const col = typeColors[type] || typeColors['autre'];
+            const col = typeColors[type] || typeColors['Autre'];
             try { info.el.style.setProperty('background-color', col.bg, 'important'); } catch (e) { info.el.style.backgroundColor = col.bg; }
             try { info.el.style.setProperty('border-color', col.border, 'important'); } catch (e) { info.el.style.borderColor = col.border; }
             try { info.el.style.setProperty('color', 'white', 'important'); } catch (e) { info.el.style.color = 'white'; }

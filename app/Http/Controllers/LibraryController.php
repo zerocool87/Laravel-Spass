@@ -5,67 +5,61 @@ namespace App\Http\Controllers;
 use App\Models\Document;
 use Illuminate\Http\Request;
 
-class LibraryController
+class LibraryController extends Controller
 {
     public function index(Request $request)
     {
         $category = $request->query('category');
         $user = auth()->user();
+        $isAdmin = $user && method_exists($user, 'isAdmin') && $user->isAdmin();
 
-        // Si admin, accès à tous les documents
-        if ($user && method_exists($user, 'isAdmin') && $user->isAdmin()) {
-            $query = Document::query();
-        } else {
-            $query = Document::visibleToUser($user?->id);
+        // Base query: apply visibility rules
+        $base = Document::query();
+        if (! $isAdmin) {
+            $base = $base->visibleToUser($user?->id);
         }
 
-        // Filter by category if specified
+        // Filtered query (used for paginated list)
+        $filtered = clone $base;
         if ($category && $category !== 'all') {
             if ($category === 'Uncategorized') {
-                $query->where(function ($q) {
+                $filtered->where(function ($q) {
                     $q->whereNull('category')->orWhere('category', '');
                 });
             } else {
-                $query->where('category', $category);
+                $filtered->where('category', $category);
             }
         }
 
-        // On récupère tous les documents (non paginés) pour grouper par catégorie
-        $allDocuments = $query->latest()->get();
-        $documentsByCategory = $allDocuments->groupBy(function($doc) {
-            return $doc->category ?: 'Uncategorized';
-        });
+        // Paginated documents (for the flat list when filters are active)
+        $documents = (clone $filtered)->latest()->paginate(15);
 
-        // Pour compatibilité, on garde la pagination sur la liste plate
-        $documents = $query->latest()->paginate(15);
+        // When showing all categories, we need grouped documents. Load once.
+        $showAll = ! $category || $category === 'all';
+        $documentsByCategory = collect();
+        if ($showAll) {
+            $allDocuments = (clone $base)->latest()->get();
+            $documentsByCategory = $allDocuments->groupBy(function ($doc) {
+                return $doc->category ?: 'Uncategorized';
+            });
+        }
 
-        // Get all categories with document counts
+        // Compute category counts in a single query to avoid N+1
+        $counts = (clone $base)
+            ->selectRaw("COALESCE(NULLIF(category, ''), 'Uncategorized') as category, count(*) as cnt")
+            ->groupByRaw("COALESCE(NULLIF(category, ''), 'Uncategorized')")
+            ->pluck('cnt', 'category')
+            ->toArray();
+
         $allCategories = config('documents.categories', []);
         $categoryCounts = [];
-
         foreach ($allCategories as $cat) {
-            if ($user && method_exists($user, 'isAdmin') && $user->isAdmin()) {
-                $count = Document::where('category', $cat)->count();
-            } else {
-                $count = Document::visibleToUser($user?->id)->where('category', $cat)->count();
-            }
-            if ($count > 0) {
-                $categoryCounts[$cat] = $count;
+            if (isset($counts[$cat]) && $counts[$cat] > 0) {
+                $categoryCounts[$cat] = $counts[$cat];
             }
         }
-
-        if ($user && method_exists($user, 'isAdmin') && $user->isAdmin()) {
-            $uncatCount = Document::where(function ($q) {
-                $q->whereNull('category')->orWhere('category', '');
-            })->count();
-        } else {
-            $uncatCount = Document::visibleToUser($user?->id)->where(function ($q) {
-                $q->whereNull('category')->orWhere('category', '');
-            })->count();
-        }
-
-        if ($uncatCount > 0) {
-            $categoryCounts['Uncategorized'] = $uncatCount;
+        if (isset($counts['Uncategorized']) && $counts['Uncategorized'] > 0) {
+            $categoryCounts['Uncategorized'] = $counts['Uncategorized'];
         }
 
         return view('library.index', compact('documents', 'category', 'categoryCounts', 'documentsByCategory'));
