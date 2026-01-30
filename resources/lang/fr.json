@@ -41,8 +41,6 @@
     "Users": "Utilisateurs",
     "Create User": "Créer un utilisateur",
     "ID": "ID",
-    "Name": "Nom",
-    "Email": "E-mail",
     "Admin": "Admin",
     "Actions": "Actions",
     "Yes": "Oui",
@@ -66,5 +64,30 @@
     "Comptes rendus": "Comptes rendus",
     "Rapports": "Rapports",
     "Délibérations": "Délibérations",
-    "Guides": "Guides"
+    "Guides": "Guides",
+
+    "Calendar": "Calendrier",
+    "Create Event": "Créer un événement",
+    "Upcoming Events": "Événements à venir",
+    "Events Calendar": "Calendrier des événements",
+    "Admin Calendar": "Calendrier administrateur",
+    "(Full management)": "(Gestion complète)",
+    "Delete event?": "Supprimer l'événement ?",
+
+    "Prev": "Précédent",
+    "Next": "Suivant",
+
+    "View": "Voir",
+
+    "custom": {},
+
+    "attributes": {
+        "name": "nom",
+        "email": "adresse e-mail",
+        "password": "mot de passe",
+        "password_confirmation": "confirmation du mot de passe",
+        "title": "titre",
+        "description": "description",
+        "file": "fichier"
+    }
 }

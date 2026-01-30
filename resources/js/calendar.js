@@ -23,6 +23,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // messages for i18n (French fallback)
+    const isFr = (document.documentElement.lang && document.documentElement.lang.startsWith('fr'));
+    const msgs = isFr ? {
+        authMessage: 'Connexion requise pour afficher le calendrier.',
+        deleteTitle: 'Supprimer',
+        deleteAria: "Supprimer l'événement",
+        deleteConfirm: "Supprimer l'événement ?",
+        couldNotDelete: "Impossible de supprimer l'événement.",
+        networkError: "Erreur réseau lors de la suppression.",
+        initFailed: "Échec de l'initialisation du calendrier. Voir la console pour les détails.",
+        notInitializedHint: "Le calendrier n'est pas encore initialisé. Assurez-vous que le bundle JS est chargé et vérifiez la console pour les erreurs."
+    } : {
+        authMessage: 'Login required to view the calendar.',
+        deleteTitle: 'Delete',
+        deleteAria: 'Delete event',
+        deleteConfirm: 'Delete event?',
+        couldNotDelete: 'Could not delete event.',
+        networkError: 'Network error while deleting.',
+        initFailed: 'Calendar failed to initialize. See console for details.',
+        notInitializedHint: 'Calendar not initialized yet. Ensure JS bundle loaded and check console for errors.'
+    };
+
     els.forEach(function (el) {
         const feedUrl = el.dataset.feedUrl || '/events/json';
 
@@ -89,14 +111,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!containerEl || containerEl.querySelector('.calendar-auth-message')) return;
             const box = document.createElement('div');
             box.className = 'calendar-auth-message text-sm text-gray-300 p-4 rounded border border-gray-700 mt-3';
-            box.textContent = 'Connexion requise pour afficher le calendrier.';
+            box.textContent = msgs.authMessage;
             containerEl.appendChild(box);
         }
 
         const defaultOptions = {
             plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
             // Use French locale when the page language starts with 'fr'
-            locale: (document.documentElement.lang && document.documentElement.lang.startsWith('fr')) ? frLocale : undefined,
+            // Force French locale
+            locale: frLocale,
             // Map mode to a sensible initial view: 'mini' -> listWeek, 'week' -> timeGridWeek, otherwise month
             initialView: mode === 'mini' ? 'listWeek' : (mode === 'week' ? 'timeGridWeek' : 'dayGridMonth'),
             headerToolbar: mode === 'mini' ? { left: '', center: 'title', right: '' } : (mode === 'week' ? { left: 'prev,next today', center: 'title', right: 'timeGridWeek,dayGridMonth' } : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' }),
@@ -155,8 +178,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const del = document.createElement('button');
                     del.setAttribute('type', 'button');
-                    del.setAttribute('title', 'Delete');
-                    del.setAttribute('aria-label', 'Delete event');
+                    del.setAttribute('title', msgs.deleteTitle);
+                    del.setAttribute('aria-label', msgs.deleteAria);
                     del.className = 'fc-event-delete';
                     del.style.position = 'absolute';
                     del.style.top = '4px';
@@ -175,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     del.addEventListener('click', async function(e){
                         e.stopPropagation();
 
-                        if (!confirm('Delete event?')) return;
+                        if (!confirm(msgs.deleteConfirm)) return;
 
                         const tokenEl = document.querySelector('meta[name="csrf-token"]');
                         const token = tokenEl ? tokenEl.getAttribute('content') : '';
@@ -194,10 +217,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 try { info.event.remove(); } catch (err) {}
                                 window.dispatchEvent(new CustomEvent('admin:event-deleted', { detail: { id: info.event.id } }));
                             } else {
-                                alert('Could not delete event.');
+                                alert(msgs.couldNotDelete);
                             }
                         } catch (err) {
-                            alert('Network error while deleting.');
+                            alert(msgs.networkError);
                         }
                     });
 
@@ -258,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         endTime.setHours(endTime.getHours() + 1);
                         document.getElementById('ae-end_at').value = endTime.toISOString().slice(0, 16);
                     } catch(e){}
-                    
+
                     // Open modal
                     if (modal.__x && modal.__x.$data) {
                         modal.__x.$data.open = true;
@@ -271,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Last resort: redirect
                     window.location = createUrl + '?start=' + encodeURIComponent(start);
                 }
-                
+
                 if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') {
                     info.jsEvent.preventDefault();
                 }
@@ -280,10 +303,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Initialize calendar WITHOUT dateClick to avoid "Unknown option" error
         const calendar = new Calendar(el, defaultOptions);
-        
+
         try {
             calendar.render();
-            
+
             // expose instance for UI toggles
             el._fcCalendar = calendar;
             el._fcMode = mode;
@@ -318,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!el.querySelector('.calendar-init-hint')) {
                 const hint = document.createElement('div');
                 hint.className = 'calendar-init-hint text-sm text-red-400 mt-2';
-                hint.textContent = 'Calendar failed to initialize. See console for details.';
+                hint.textContent = msgs.initFailed;
                 el.appendChild(hint);
             }
         }
@@ -381,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!el.querySelector('.calendar-init-hint')) {
                         const hint = document.createElement('div');
                         hint.className = 'calendar-init-hint text-sm text-gray-300 p-4';
-                        hint.textContent = 'Calendar not initialized yet. Ensure JS bundle loaded and check console for errors.';
+                        hint.textContent = msgs.notInitializedHint;
                         el.appendChild(hint);
                     }
                     console.warn('[calendar] not initialized element found', el);

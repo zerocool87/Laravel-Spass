@@ -2,8 +2,23 @@
     <template x-if="showModal">
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/60" @click="close()"></div>
-            <div class="relative bg-gray-900 w-full max-w-5xl h-[90vh] rounded overflow-hidden flex flex-col">
-                <div class="p-2 flex justify-between items-center bg-gray-800">
+            <div class="relative bg-white dark:bg-neutral-900 w-full max-w-5xl h-[90vh] rounded-2xl shadow-2xl border border-gray-200/60 overflow-hidden flex flex-col">
+                <template x-if="title && info">
+    <div class="w-full flex items-center">
+        <template x-if="info && info.category">
+            <div class="w-full h-2" :class="{
+                'bg-amber-600': info.category === 'Convocations',
+                'bg-amber-500': info.category === 'Ordres du jour',
+                'bg-emerald-600': info.category === 'Comptes rendus',
+                'bg-cyan-600': info.category === 'Rapports',
+                'bg-rose-600': info.category === 'Délibérations',
+                'bg-sky-600': info.category === 'Guides',
+                'bg-gray-400': !info.category
+            }"></div>
+        </template>
+    </div>
+</template>
+<div class="p-2 flex justify-between items-center bg-gray-800">
                     <h3 x-text="title" class="text-white"></h3>
                     <div class="flex items-center gap-2">
                         <x-secondary-button @click="close()">{{ __('Close') }}</x-secondary-button>
@@ -47,7 +62,7 @@
                                     <x-secondary-button @click.prevent="rotatePdf()">Rotate</x-secondary-button>
                                     <x-primary-button x-bind:href="downloadUrl" target="_blank" rel="noopener">{{ __('Download') }}</x-primary-button>
                                     <x-primary-button x-bind:href="embed" target="_blank" rel="noopener">Open in new tab</x-primary-button>
-                                    <div class="ml-4 text-sm text-cyan-200">{{ __('Zoom') }}: <span x-text="pdfZoom"></span></div> 
+                                    <div class="ml-4 text-sm text-cyan-200">{{ __('Zoom') }}: <span x-text="pdfZoom"></span></div>
                                     <div class="ml-4 text-sm text-cyan-200" x-show="_progress">Loading: <span x-text="_progress+'%'"></span></div>
                                 </div>
                                 <div class="flex-1 min-h-0 min-w-0 modal-pdf-canvas-container overflow-auto flex items-center justify-center">
@@ -144,7 +159,7 @@
                         this.loading = true;
                         // clear any previous error for internal only; do not expose to UI
                         // error details are logged to console for diagnostics
-                        
+
                         if (!window.pdfjsLib) throw new Error('pdfjs not loaded');
                         // withCredentials to allow cookies for same-origin sessions
                         const loadingTask = window.pdfjsLib.getDocument({ url: url, withCredentials: true });
@@ -249,7 +264,7 @@
                     if (e.key === 'Escape') { this.close(); }
                 },
                 open(detail){
-    
+
                     this.showModal = true;
                     this.loading = true;
                     this.showNotPreviewable = false;
