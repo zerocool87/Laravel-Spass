@@ -13,8 +13,41 @@
                 @endphp
 
                 <div class="mb-6 flex flex-wrap gap-2">
-                    @foreach($allCategories as $cat)
-                        <button type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition hover:bg-cyan-50" onclick="document.getElementById('category-{{ Str::slug($cat) }}').scrollIntoView({ behavior: 'smooth' })">
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            document.querySelectorAll('.category-filter-btn').forEach(function(btn) {
+                                btn.addEventListener('click', function() {
+                                    var slug = this.getAttribute('data-slug');
+                                    document.querySelectorAll('[id^="category-"]').forEach(function(el) {
+                                        el.style.display = (el.id === 'category-' + slug) ? '' : 'none';
+                                    });
+                                    document.querySelectorAll('.category-filter-btn').forEach(function(b) {
+                                        b.classList.add('opacity-50');
+                                    });
+                                    this.classList.remove('opacity-50');
+                                });
+                            });
+                            var allBtn = document.getElementById('show-all-categories');
+                            if (allBtn) {
+                                allBtn.addEventListener('click', function() {
+                                    document.querySelectorAll('[id^="category-"]').forEach(function(el) {
+                                        el.style.display = '';
+                                    });
+                                    document.querySelectorAll('.category-filter-btn').forEach(function(b) {
+                                        b.classList.remove('opacity-50');
+                                    });
+                                });
+                            }
+                        });
+                    </script>
+
+                    <button id="show-all-categories" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition hover:bg-cyan-50">
+                        <span>🔁</span>
+                        <span class="text-sm">{{ __('Tous') }}</span>
+                    </button>
+
+                        @foreach($allCategories as $cat)
+                        <button type="button" data-slug="{{ Str::slug($cat) }}" class="category-filter-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition hover:bg-cyan-50">
                             <x-category-badge :category="$cat === 'Uncategorized' ? null : $cat" />
                             <span class="sr-only">{{ $cat }}</span>
                             <span class="text-xs opacity-75">({{ $documentsByCategory[$cat]->count() }})</span>
