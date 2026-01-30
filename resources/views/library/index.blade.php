@@ -64,9 +64,21 @@
                         @foreach($documentsByCategory as $cat => $docs)
                             <div id="category-{{ Str::slug($cat) }}">
                                 <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center gap-3">
-                                        <x-category-badge :category="$cat === 'Uncategorized' ? null : $cat" />
-                                        <h3 class="text-lg font-semibold">{{ $cat }} <span class="text-sm text-gray-500">({{ $docs->count() }})</span></h3>
+                                    <div class="w-full flex flex-col">
+                                        @php
+                                            $categoryColors = [
+                                                'Convocations' => '#d97706',
+                                                'Ordres du jour' => '#f59e42',
+                                                'Comptes rendus' => '#059669',
+                                                'Rapports' => '#0891b2',
+                                                'Délibérations' => '#e11d48',
+                                                'Guides' => '#0284c7',
+                                            ];
+                                            $barColor = $categoryColors[$cat] ?? '#9CA3AF';
+                                        @endphp
+                                        <div class="w-full h-8 mb-1 flex items-center justify-center" style="background: {{ $barColor }};">
+                                            <div class="text-sm font-semibold text-white uppercase">{{ $cat }} <span class="text-xs text-white/80">({{ $docs->count() }})</span></div>
+                                        </div>
                                     </div>
                                 </div>
 
