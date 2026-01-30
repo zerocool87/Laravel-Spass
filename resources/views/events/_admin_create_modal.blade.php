@@ -1,4 +1,4 @@
-<div id="admin-event-modal" 
+<div id="admin-event-modal"
     class="fixed inset-0 flex items-center justify-center"
     style="display: none; z-index: 9999;">
     <div class="absolute inset-0 bg-black/60" data-modal-close></div>
@@ -43,10 +43,10 @@
             <div class="mb-3">
                 <label class="block text-sm">{{ __('Type') }}</label>
                 <select id="ae-type" name="type" class="form-control w-full">
-                    <option value="assemblee">Assemblée plénière</option>
-                    <option value="bureau">Réunion bureau</option>
-                    <option value="commissions">Commissions</option>
-                    <option value="autre" selected>Autre</option>
+                    <option value="">-- {{ __('Choose a type') }} --</option>
+                    @foreach(config('events.types', []) as $type)
+                        <option value="{{ $type }}" {{ $type === 'Autre' ? 'selected' : '' }}>{{ __($type) }}</option>
+                    @endforeach
                 </select>
             </div>
 
