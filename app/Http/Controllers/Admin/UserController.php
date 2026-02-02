@@ -18,6 +18,14 @@ class UserController extends Controller
         $this->middleware(['auth', 'can:admin']);
     }
 
+    private function communes(): array
+    {
+        $list = config('options.communes_haute_vienne', []);
+        sort($list, SORT_STRING | SORT_FLAG_CASE);
+
+        return $list;
+    }
+
     public function index(Request $request): View
     {
         $users = User::orderBy('id', 'desc')->paginate(20);
@@ -27,23 +35,30 @@ class UserController extends Controller
 
     public function create(): View
     {
-        return view('admin.users.create');
+        return view('admin.users.create', ['communes' => $this->communes()]);
     }
 
     public function store(AdminUserRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $data['password'] = Hash::make($data['password']);
+
+        // generate a secure temporary password when creating from admin
+        $temp = bin2hex(random_bytes(5)); // 10 chars
+
+        $data['password'] = Hash::make($temp);
         $data['is_admin'] = $request->boolean('is_admin');
+        $data['fonction'] = $request->input('fonction');
+        $data['commune'] = $request->input('commune');
 
-        User::create($data);
+        $user = User::create($data);
 
-        return Redirect::route('admin.users.index')->with('success', 'User created.');
+        // flash the temporary password for admin to copy (only on creation)
+        return Redirect::route('admin.users.index')->with('success', "User created. Temporary password: {$temp}");
     }
 
     public function edit(User $user): View
     {
-        return view('admin.users.edit', compact('user'));
+        return view('admin.users.edit', ['user' => $user, 'communes' => $this->communes()]);
     }
 
     public function update(AdminUserRequest $request, User $user): RedirectResponse
@@ -57,6 +72,8 @@ class UserController extends Controller
         }
 
         $data['is_admin'] = $request->boolean('is_admin');
+        $data['fonction'] = $request->input('fonction');
+        $data['commune'] = $request->input('commune');
 
         $user->update($data);
 

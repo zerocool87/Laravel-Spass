@@ -12,6 +12,23 @@
     <x-input-error :messages="$errors->get('email')" class="mt-2" />
 </div>
 
+<div class="mb-4">
+    <x-input-label for="fonction" :value="__('Fonction')" />
+    <x-text-input id="fonction" class="block mt-1 w-full" type="text" name="fonction" :value="old('fonction', $user->fonction ?? '')" />
+    <x-input-error :messages="$errors->get('fonction')" class="mt-2" />
+</div>
+
+<div class="mb-4">
+    <x-input-label for="commune" :value="__('Commune')" />
+    <select id="commune" name="commune" class="block mt-1 w-full rounded">
+        <option value="">— {{ __('Select a commune') }} —</option>
+        @foreach($communes as $c)
+            <option value="{{ $c }}" {{ old('commune', $user->commune ?? '') === $c ? 'selected' : '' }}>{{ $c }}</option>
+        @endforeach
+    </select>
+    <x-input-error :messages="$errors->get('commune')" class="mt-2" />
+</div>
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="mb-4">
         <x-input-label for="password" :value="__('Password')" />

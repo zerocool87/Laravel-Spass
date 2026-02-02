@@ -23,6 +23,8 @@
                                 <th>{{ __('Name') }}</th>
                                 <th>{{ __('Email') }}</th>
                                 <th>{{ __('Admin') }}</th>
+                                <th>{{ __('Fonction') }}</th>
+                                <th>{{ __('Commune') }}</th>
                                 <th>{{ __('Actions') }}</th>
                             </tr>
                         </thead>
@@ -33,6 +35,8 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->is_admin ? __('Yes') : __('No') }}</td>
+                                <td>{{ $user->fonction }}</td>
+                                <td>{{ $user->commune }}</td>
                                 <td class="flex items-center gap-2">
                                     <x-secondary-button href="{{ route('admin.users.edit', $user) }}">{{ __('Edit') }}</x-secondary-button>
                                     <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('{{ __('Delete user?') }}');">

@@ -17,6 +17,8 @@ class AdminUserRequest extends FormRequest
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
+            'fonction' => ['nullable', 'string', 'max:255'],
+            'commune' => ['nullable', 'string', 'max:255'],
         ];
 
         if ($this->isMethod('post')) {
