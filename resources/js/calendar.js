@@ -148,14 +148,26 @@ document.addEventListener('DOMContentLoaded', function () {
             selectable: canEdit,
 
             eventClick: function(info) {
-                // If admin, go to admin edit page; otherwise follow event url
+                // If admin, go to admin edit page
                 if (canEdit && editBase && info.event && info.event.id) {
                     window.location = editBase + '/' + info.event.id + '/edit';
                     if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') info.jsEvent.preventDefault();
                     return;
                 }
+
+                // If event has a URL, prevent full navigation and open modal instead (progressive enhancement: href remains for non-JS)
                 if (info.event && info.event.url) {
-                    // default behavior
+                    try {
+                        if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') info.jsEvent.preventDefault();
+                    } catch (err) { }
+
+                    // open modal via a global helper that will fetch event details via JSON
+                    if (typeof window.openEventDetailModal === 'function') {
+                        window.openEventDetailModal(info.event.id, info.event.url, info.jsEvent && info.jsEvent.currentTarget ? info.jsEvent.currentTarget : null);
+                    } else {
+                        // fallback: navigate normally if helper missing
+                        window.location = info.event.url;
+                    }
                     return;
                 }
             },

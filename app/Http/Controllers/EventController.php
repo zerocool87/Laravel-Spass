@@ -16,8 +16,31 @@ class EventController extends Controller
         return view('events.index', compact('events'));
     }
 
-    public function show(Event $event): View
+    public function show(Request $request, Event $event)
     {
+        // If client explicitly accepts JSON, return structured JSON for safe mapping
+        if ($request->wantsJson() || $request->acceptsJson()) {
+            return response()->json([
+                'id' => $event->id,
+                'title' => $event->title,
+                'description' => $event->description,
+                'start_at' => $event->start_at ? $event->start_at->toIso8601String() : null,
+                'end_at' => $event->end_at ? $event->end_at->toIso8601String() : null,
+                'is_all_day' => (bool) $event->is_all_day,
+                'location' => $event->location,
+                'type' => $event->type,
+                'organizer' => $event->creator ? ['id' => $event->creator->id, 'name' => $event->creator->name] : null,
+                'attachments' => [],
+            ]);
+        }
+
+        // Progressive enhancement: if the request is an XHR or explicitly asked for a partial, return the server-rendered partial HTML
+        if ($request->ajax() || $request->has('partial') || $request->accepts('text/html')) {
+            // Render the partial that the client can inject directly. The partial uses Blade escaping for safety.
+            return response()->view('events._detail', compact('event'));
+        }
+
+        // Default full page render
         return view('events.show', compact('event'));
     }
 
