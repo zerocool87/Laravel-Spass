@@ -20,27 +20,22 @@
             $isAllDay = $event->is_all_day;
 
             $offsetHours = $start->getOffset() / 3600;
-            $timezoneForDisplay = 'UTC';
-            if ($offsetHours != 0) {
-                $timezoneForDisplay .= ($offsetHours > 0 ? '+' : '') . $offsetHours;
-            }
-
-            $dateStr = '';
-            $timeStr = '';
-            $ariaLabel = '';
+            $showTimezone = $offsetHours != 0;
+            $timezoneForDisplay = $showTimezone ? 'UTC' . ($offsetHours > 0 ? '+' : '') . $offsetHours : '';
 
             if ($isAllDay) {
                 $timeStr = 'Toute la journée';
                 if ($end && !$start->isSameDay($end)) {
                     // Multi-day all-day. End date is exclusive.
                     $endInclusive = $end->copy()->subSecond();
-                    if ($start->isSameMonth($endInclusive) && $start->isSameYear($endInclusive)) {
-                        $dateStr = $start->format('j') . '–' . $endInclusive->translatedFormat('j F Y');
-                    } elseif ($start->isSameYear($endInclusive)) {
-                        $dateStr = $start->translatedFormat('j F') . '–' . $endInclusive->translatedFormat('j F Y');
-                    } else {
-                        $dateStr = $start->translatedFormat('j F Y') . '–' . $endInclusive->translatedFormat('j F Y');
-                    }
+                    $dateStr = match (true) {
+                        $start->isSameMonth($endInclusive) && $start->isSameYear($endInclusive) 
+                            => $start->format('j') . '–' . $endInclusive->translatedFormat('j F Y'),
+                        $start->isSameYear($endInclusive) 
+                            => $start->translatedFormat('j F') . '–' . $endInclusive->translatedFormat('j F Y'),
+                        default 
+                            => $start->translatedFormat('j F Y') . '–' . $endInclusive->translatedFormat('j F Y'),
+                    };
                     $ariaLabel = 'Du ' . $start->translatedFormat('l j F Y') . ' au ' . $endInclusive->translatedFormat('l j F Y') . ', toute la journée';
                 } else {
                     // Single all-day
@@ -50,19 +45,13 @@
             } else {
                 if ($end && !$start->isSameDay($end)) {
                     // Multi-day timed
-                    $dateStr = 'Du ' . $start->translatedFormat('j M Y à H:i');
-                    $dateStr .= ' au ' . $end->translatedFormat('j M Y à H:i');
+                    $dateStr = 'Du ' . $start->translatedFormat('j M Y à H:i') . ' au ' . $end->translatedFormat('j M Y à H:i');
                     $ariaLabel = $dateStr;
                 } else {
                     // Single-day timed
                     $dateStr = $start->translatedFormat('l j F Y');
-                    if ($end) {
-                        $timeStr = $start->format('H:i') . '–' . $end->format('H:i');
-                        $ariaLabel = $dateStr . ' de ' . $timeStr;
-                    } else {
-                        $timeStr = $start->format('H:i');
-                        $ariaLabel = $dateStr . ' à ' . $timeStr;
-                    }
+                    $timeStr = $end ? $start->format('H:i') . '–' . $end->format('H:i') : $start->format('H:i');
+                    $ariaLabel = $dateStr . ($end ? ' de ' : ' à ') . $timeStr;
                 }
             }
         @endphp
@@ -82,7 +71,7 @@
                         <span class="font-mono text-base text-gray-800">{{ $timeStr }}</span>
                     @endif
 
-                    @if(!$isAllDay && $offsetHours != 0)
+                    @if($showTimezone)
                         <span class="text-xs text-gray-400 ml-1">({{ $timezoneForDisplay }})</span>
                     @endif
                 </div>

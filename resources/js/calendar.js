@@ -278,35 +278,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') {
                     info.jsEvent.preventDefault();
                 }
-            } else {
-                // Fallback: manually open modal via Alpine or style
-                if (window.CALENDAR_DEBUG) console.warn('[calendar] openEventCreateModal not found, using fallback');
-                const modal = document.getElementById('admin-event-modal');
-                if (modal) {
-                    // Pre-fill form
-                    let dt = start;
-                    if (/^\d{4}-\d{2}-\d{2}$/.test(dt)) dt = dt + 'T09:00';
-                    try { document.getElementById('ae-title').value = ''; } catch(e){}
-                    try { document.getElementById('ae-start_at').value = dt; } catch(e){}
-                    try {
-                        let endTime = new Date(dt);
-                        endTime.setHours(endTime.getHours() + 1);
-                        document.getElementById('ae-end_at').value = endTime.toISOString().slice(0, 16);
-                    } catch(e){}
-
-                    // Open modal
-                    if (modal.__x && modal.__x.$data) {
-                        modal.__x.$data.open = true;
-                        if (window.CALENDAR_DEBUG) console.info('[calendar] opened via Alpine');
-                    } else {
-                        modal.style.display = 'flex';
-                        if (window.CALENDAR_DEBUG) console.info('[calendar] opened via style');
-                    }
-                } else if (createUrl) {
-                    // Last resort: redirect
-                    window.location = createUrl + '?start=' + encodeURIComponent(start);
-                }
-
+            } else if (createUrl) {
+                // Fallback: redirect to create URL if modal helper not available
+                if (window.CALENDAR_DEBUG) console.warn('[calendar] openEventCreateModal not found, redirecting');
+                window.location = createUrl + '?start=' + encodeURIComponent(start);
                 if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') {
                     info.jsEvent.preventDefault();
                 }

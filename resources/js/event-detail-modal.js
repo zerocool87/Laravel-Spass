@@ -2,6 +2,17 @@
 window.openEventDetailModal = async function(id, url, triggerEl) {
     if (window.CALENDAR_DEBUG) console.info('[event-detail] open', id, url, triggerEl);
 
+    // Define close function at module level
+    function closeModal() {
+        try {
+            const modal = document.getElementById('event-detail-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.setAttribute('data-open', '0');
+            }
+        } catch (e) {}
+    }
+
     // ensure modal container exists
     let modal = document.getElementById('event-detail-modal');
     if (!modal) {
@@ -18,7 +29,19 @@ window.openEventDetailModal = async function(id, url, triggerEl) {
                 closeModal();
             }
         });
-        document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+
+        // Attach escape key listener only once
+        if (!modal.dataset.escapeAttached) {
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('event-detail-modal');
+                    if (modal && modal.getAttribute('data-open') === '1') {
+                        closeModal();
+                    }
+                }
+            });
+            modal.dataset.escapeAttached = 'true';
+        }
     }
 
     const panel = modal.querySelector('.event-detail-modal-panel');
@@ -107,11 +130,9 @@ window.openEventDetailModal = async function(id, url, triggerEl) {
     }
 
     // attach close handlers
-    Array.from(panel.querySelectorAll('[data-event-detail-close]')).forEach(function(btn){ btn.addEventListener('click', closeModal); });
-
-    function closeModal() {
-        try { modal.classList.add('hidden'); modal.setAttribute('data-open', '0'); } catch (e) {}
-    }
+    Array.from(panel.querySelectorAll('[data-event-detail-close]')).forEach(function(btn){
+        btn.addEventListener('click', closeModal);
+    });
 
     function escapeHtml(s) {
         if (!s) return '';
