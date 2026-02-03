@@ -14,6 +14,58 @@
     {{-- Informations clés --}}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {{-- Date et Heure --}}
+        @php
+            $start = $event->start_at;
+            $end = $event->end_at;
+            $isAllDay = $event->is_all_day;
+
+            $offsetHours = $start->getOffset() / 3600;
+            $timezoneForDisplay = 'UTC';
+            if ($offsetHours != 0) {
+                $timezoneForDisplay .= ($offsetHours > 0 ? '+' : '') . $offsetHours;
+            }
+
+            $dateStr = '';
+            $timeStr = '';
+            $ariaLabel = '';
+
+            if ($isAllDay) {
+                $timeStr = 'Toute la journée';
+                if ($end && !$start->isSameDay($end)) {
+                    // Multi-day all-day. End date is exclusive.
+                    $endInclusive = $end->copy()->subSecond();
+                    if ($start->isSameMonth($endInclusive) && $start->isSameYear($endInclusive)) {
+                        $dateStr = $start->format('j') . '–' . $endInclusive->translatedFormat('j F Y');
+                    } elseif ($start->isSameYear($endInclusive)) {
+                        $dateStr = $start->translatedFormat('j F') . '–' . $endInclusive->translatedFormat('j F Y');
+                    } else {
+                        $dateStr = $start->translatedFormat('j F Y') . '–' . $endInclusive->translatedFormat('j F Y');
+                    }
+                    $ariaLabel = 'Du ' . $start->translatedFormat('l j F Y') . ' au ' . $endInclusive->translatedFormat('l j F Y') . ', toute la journée';
+                } else {
+                    // Single all-day
+                    $dateStr = $start->translatedFormat('l j F Y');
+                    $ariaLabel = $dateStr . ', toute la journée';
+                }
+            } else {
+                if ($end && !$start->isSameDay($end)) {
+                    // Multi-day timed
+                    $dateStr = 'Du ' . $start->translatedFormat('j M Y à H:i');
+                    $dateStr .= ' au ' . $end->translatedFormat('j M Y à H:i');
+                    $ariaLabel = $dateStr;
+                } else {
+                    // Single-day timed
+                    $dateStr = $start->translatedFormat('l j F Y');
+                    if ($end) {
+                        $timeStr = $start->format('H:i') . '–' . $end->format('H:i');
+                        $ariaLabel = $dateStr . ' de ' . $timeStr;
+                    } else {
+                        $timeStr = $start->format('H:i');
+                        $ariaLabel = $dateStr . ' à ' . $timeStr;
+                    }
+                }
+            }
+        @endphp
         <div class="flex items-center p-3 rounded-xl bg-gray-50 border border-gray-100 transition-colors hover:bg-white hover:shadow-sm group">
             <div class="p-2.5 rounded-lg bg-cyan-100 text-cyan-600 mr-4 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -22,12 +74,18 @@
             </div>
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Date et Heure</p>
-                <p class="text-gray-900 font-medium">
-                    {{ $event->start_at->translatedFormat('d F Y') }} <span class="text-gray-400 mx-1">•</span> {{ $event->start_at->format('H:i') }}
-                    @if($event->end_at)
-                        <span class="text-gray-400 mx-1">→</span> {{ $event->end_at->format('H:i') }}
+                <div class="flex flex-wrap items-center gap-x-2 text-gray-900 font-medium" aria-label="{{ $ariaLabel }}">
+                    <span class="font-semibold text-amber-700">{{ $dateStr }}</span>
+
+                    @if($timeStr)
+                        <span class="text-gray-500 font-sans px-1">·</span>
+                        <span class="font-mono text-base text-gray-800">{{ $timeStr }}</span>
                     @endif
-                </p>
+
+                    @if(!$isAllDay && $offsetHours != 0)
+                        <span class="text-xs text-gray-400 ml-1">({{ $timezoneForDisplay }})</span>
+                    @endif
+                </div>
             </div>
         </div>
 

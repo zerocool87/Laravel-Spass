@@ -18,8 +18,14 @@ class EventController extends Controller
 
     public function show(Request $request, Event $event)
     {
+        // Progressive enhancement: if the request is an X-HR or explicitly asked for a partial, return the server-rendered partial HTML
+        // This is checked first to prioritize HTML for modals over JSON.
+        if (($request->ajax() || $request->has('partial')) && $request->accepts('text/html')) {
+            return response()->view('events._detail', compact('event'));
+        }
+
         // If client explicitly accepts JSON, return structured JSON for safe mapping
-        if ($request->wantsJson() || $request->acceptsJson()) {
+        if ($request->wantsJson()) {
             return response()->json([
                 'id' => $event->id,
                 'title' => $event->title,
@@ -32,12 +38,6 @@ class EventController extends Controller
                 'organizer' => $event->creator ? ['id' => $event->creator->id, 'name' => $event->creator->name] : null,
                 'attachments' => [],
             ]);
-        }
-
-        // Progressive enhancement: if the request is an XHR or explicitly asked for a partial, return the server-rendered partial HTML
-        if ($request->ajax() || $request->has('partial') || $request->accepts('text/html')) {
-            // Render the partial that the client can inject directly. The partial uses Blade escaping for safety.
-            return response()->view('events._detail', compact('event'));
         }
 
         // Default full page render
