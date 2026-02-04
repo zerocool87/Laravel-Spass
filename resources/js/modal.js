@@ -24,33 +24,34 @@ window.openEventCreateModal = function(startDateIso) {
     }
     window.dispatchEvent(new CustomEvent('admin:event-open'));
 };
-window.addEventListener('admin:event-open', function(e){
-    if (window.CALENDAR_DEBUG) console.info('[modal] global listener received admin:event-open', e && e.detail);
-    const modal = document.getElementById('admin-event-modal');
-    if (!modal) return;
-    modal.style.display = 'flex';
-    modal.setAttribute('data-open', '1');
-});
-document.addEventListener('click', function(ev){
-    const target = ev.target;
-    if (!target) return;
-    if (target.matches('[data-modal-close]')) {
-        const modal = document.getElementById('admin-event-modal');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.setAttribute('data-open', '0');
+
+// Attach event listeners only once
+if (!window.__adminModalListenersAttached) {
+    document.addEventListener('click', function(ev){
+        const target = ev.target;
+        if (!target) return;
+        if (target.matches('[data-modal-close]')) {
+            const modal = document.getElementById('admin-event-modal');
+            if (modal && modal.getAttribute('data-open') === '1') {
+                modal.style.display = 'none';
+                modal.setAttribute('data-open', '0');
+            }
         }
-    }
-});
-document.addEventListener('keydown', function(ev){
-    if (ev.key === 'Escape') {
-        const modal = document.getElementById('admin-event-modal');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.setAttribute('data-open', '0');
+    });
+
+    document.addEventListener('keydown', function(ev){
+        if (ev.key === 'Escape') {
+            const modal = document.getElementById('admin-event-modal');
+            if (modal && modal.getAttribute('data-open') === '1') {
+                modal.style.display = 'none';
+                modal.setAttribute('data-open', '0');
+            }
         }
-    }
-});
+    });
+
+    window.__adminModalListenersAttached = true;
+}
+
 document.addEventListener('DOMContentLoaded', function(){
     const form = document.getElementById('admin-event-create-form');
     if (!form) return;
