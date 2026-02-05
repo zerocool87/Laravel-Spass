@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-elus-header 
+        <x-elus-header
             :title="$project->title"
             icon="📋"
             :backRoute="route('elus.projects.index')"
@@ -55,8 +55,8 @@
                     @endif
 
                     {{-- Google Maps Placeholder --}}
-                    <x-google-map-placeholder 
-                        title="{{ __('Localisation du projet') }}" 
+                    <x-google-map-placeholder
+                        title="{{ __('Localisation du projet') }}"
                         location="{{ $project->territories && count($project->territories) > 0 ? $project->territories[0] : 'Paris, France' }}"
                         height="350px"
                     />

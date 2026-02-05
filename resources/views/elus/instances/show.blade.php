@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-elus-header 
+        <x-elus-header
             :title="$instance->name"
             icon="🏛️"
             :backRoute="route('elus.instances.index')"

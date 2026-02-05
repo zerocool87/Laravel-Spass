@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-elus-header 
+        <x-elus-header
             :title="__('Espace Élus')"
             :subtitle="__('Gouvernance et projets territoriaux')"
             icon="🏛️"
