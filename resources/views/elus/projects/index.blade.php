@@ -1,23 +1,32 @@
 <x-app-layout>
     <x-slot name="header">
-          <div class="bg-[#FFA500] -mx-8 -my-6 px-8 py-6 shadow-lg">
-              <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-4">
-                      <a href="{{ route('elus.dashboard') }}" class="text-white/80 hover:text-white transition">
-                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                          </svg>
-                      </a>
-                      <h2 class="font-semibold text-xl text-white leading-tight">{{ __('Projets') }}</h2>
-                  </div>
-                  @can('admin')
-                  <a href="{{ route('elus.projects.create') }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
-                      + {{ __('Nouveau projet') }}
-                  </a>
-                  @endcan
-              </div>
-          </div>
-      </x-slot>
+        <div class="bg-[#FFA500] -mx-8 -my-6 px-8 py-6 shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="{{ route('elus.dashboard') }}" class="text-white/80 hover:text-white transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                    <div>
+                        <h2 class="font-bold text-2xl text-white mb-1">📋 {{ __('Projets') }}</h2>
+                        <p class="text-white/90 text-sm">{{ __('Gestion des projets territoriaux') }}</p>
+                    </div>
+                </div>
+                <nav class="flex space-x-2 items-center">
+                    <a href="{{ route('elus.instances.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Instances') }}</a>
+                    <a href="{{ route('elus.projects.index') }}" class="px-4 py-2 text-sm bg-white text-[#FFA500] hover:bg-white/90 rounded-lg transition font-bold">{{ __('Projets') }}</a>
+                    <a href="{{ route('elus.reunions.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Réunions') }}</a>
+                    <a href="{{ route('elus.documents.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Documents') }}</a>
+                    @can('admin')
+                    <a href="{{ route('elus.projects.create') }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
+                        + {{ __('Nouveau projet') }}
+                    </a>
+                    @endcan
+                </nav>
+            </div>
+        </div>
+    </x-slot>
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
