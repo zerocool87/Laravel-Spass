@@ -48,13 +48,13 @@ class DashboardUpcomingReunionsTest extends TestCase
         $response->assertDontSee($termineeReunion->title);
     }
 
-    public function test_dashboard_shows_max_2_upcoming_reunions()
+    public function test_dashboard_shows_max_5_upcoming_reunions()
     {
         $user = User::factory()->create(['is_elu' => true]);
         $instance = Instance::factory()->create();
 
-        // Create 3 upcoming reunions
-        for ($i = 1; $i <= 3; $i++) {
+        // Create 6 upcoming reunions
+        for ($i = 1; $i <= 6; $i++) {
             Reunion::factory()->create([
                 'instance_id' => $instance->id,
                 'title' => 'Réunion ' . $i,
@@ -68,12 +68,12 @@ class DashboardUpcomingReunionsTest extends TestCase
 
         $response->assertStatus(200);
         
-        // Should see the first 2 reunions
-        for ($i = 1; $i <= 2; $i++) {
+        // Should see the first 5 reunions
+        for ($i = 1; $i <= 5; $i++) {
             $response->assertSee('Réunion ' . $i);
         }
         
-        // Should not see the 3rd reunion
-        $response->assertDontSee('Réunion 3');
+        // Should not see the 6th reunion
+        $response->assertDontSee('Réunion 6');
     }
 }
