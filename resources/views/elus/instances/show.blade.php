@@ -1,28 +1,30 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('elus.instances.index') }}" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </a>
-                <div>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {{ $instance->type_label }}
-                    </span>
-                    <h2 class="font-semibold text-xl leading-tight">{{ $instance->name }}</h2>
+        <div class="bg-[#FFA500] -mx-8 -my-6 px-8 py-6 shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="{{ route('elus.instances.index') }}" class="text-white/80 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                    <div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {{ $instance->type_label }}
+                        </span>
+                        <h2 class="font-semibold text-xl text-white leading-tight">{{ $instance->name }}</h2>
+                    </div>
                 </div>
-            </div>
-            <div class="flex space-x-2">
-                @can('admin')
-                <a href="{{ route('elus.reunions.create', ['instance_id' => $instance->id]) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 transition">
-                    + {{ __('Planifier une réunion') }}
-                </a>
-                <a href="{{ route('elus.instances.edit', $instance) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 transition">
-                    {{ __('Modifier') }}
-                </a>
-                @endcan
+                <div class="flex space-x-2">
+                    @can('admin')
+                    <a href="{{ route('elus.reunions.create', ['instance_id' => $instance->id]) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 transition">
+                        + {{ __('Planifier une réunion') }}
+                    </a>
+                    <a href="{{ route('elus.instances.edit', $instance) }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
+                        {{ __('Modifier') }}
+                    </a>
+                    @endcan
+                </div>
             </div>
         </div>
     </x-slot>
