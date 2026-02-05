@@ -1,29 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-[#FFA500] -mx-8 -my-6 px-8 py-6 shadow-lg">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('elus.projects.index') }}" class="text-white/80 hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </a>
-                    <div>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $project->status_color }}">
-                            {{ $project->status_label }}
-                        </span>
-                        <h2 class="font-semibold text-xl text-white leading-tight">{{ $project->title }}</h2>
-                    </div>
-                </div>
+        <x-elus-header 
+            :title="$project->title"
+            icon="📋"
+            :backRoute="route('elus.projects.index')"
+            :backLabel="__('Retour aux projets')"
+            activeSection="projects"
+            :badge="$project->status_label"
+            :badgeColor="$project->status_color"
+        >
+            <x-slot name="actions">
                 @can('admin')
-                <div class="flex space-x-2">
-                    <a href="{{ route('elus.projects.edit', $project) }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
-                        {{ __('Modifier') }}
-                    </a>
-                </div>
+                <a href="{{ route('elus.projects.edit', $project) }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
+                    {{ __('Modifier') }}
+                </a>
                 @endcan
-            </div>
-        </div>
+            </x-slot>
+        </x-elus-header>
     </x-slot>
 
     <div class="py-8">

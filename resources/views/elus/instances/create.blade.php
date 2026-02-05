@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-[#FFA500] -mx-8 -my-6 px-8 py-6 shadow-lg">
+        <div class="bg-[#faa21b] -mx-8 -my-6 px-8 py-6 shadow-lg">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <a href="{{ route('elus.dashboard') }}" class="text-white/80 hover:text-white transition" aria-label="{{ __('Retour au tableau de bord') }}">
@@ -14,11 +14,11 @@
                     </div>
                 </div>
                 <nav class="flex space-x-2 items-center">
-                    <a href="{{ route('elus.dashboard') }}" class="px-4 py-2 text-sm bg-white text-[#faa21b] hover:bg-white/90 rounded-lg transition font-bold">{{ __('Tableau de bord') }}</a>
                     <a href="{{ route('elus.instances.index') }}" class="px-4 py-2 text-sm bg-white text-[#FFA500] hover:bg-white/90 rounded-lg transition font-bold">{{ __('Instances') }}</a>
                     <a href="{{ route('elus.projects.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Projets') }}</a>
                     <a href="{{ route('elus.reunions.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Réunions') }}</a>
                     <a href="{{ route('elus.documents.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Documents') }}</a>
+                    <a href="{{ route('elus.dashboard') }}" class="px-4 py-2 text-sm bg-white text-[#faa21b] hover:bg-white/90 rounded-lg transition font-bold">{{ __('Tableau de bord') }}</a>
                 </nav>
             </div>
         </div>
@@ -33,7 +33,7 @@
                     <div class="space-y-6">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700">{{ __('Nom') }} *</label>
-                            <input type="text" name="name" id="name" value="{{ old('name') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <input type="text" name="name" id="name" value="{{ old('name') }}" required class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             @error('name')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -41,7 +41,7 @@
 
                         <div>
                             <label for="type" class="block text-sm font-medium text-gray-700">{{ __('Type') }} *</label>
-                            <select name="type" id="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <select name="type" id="type" required class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                                 <option value="">{{ __('Sélectionner un type') }}</option>
                                 @foreach($types as $key => $label)
                                     <option value="{{ $key }}" {{ old('type') == $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -54,7 +54,7 @@
 
                         <div>
                             <label for="territory" class="block text-sm font-medium text-gray-700">{{ __('Territoire') }}</label>
-                            <input type="text" name="territory" id="territory" value="{{ old('territory') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <input type="text" name="territory" id="territory" value="{{ old('territory') }}" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             @error('territory')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -62,7 +62,7 @@
 
                         <div>
                             <label for="description" class="block text-sm font-medium text-gray-700">{{ __('Description') }}</label>
-                            <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description') }}</textarea>
+                            <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">{{ old('description') }}</textarea>
                             @error('description')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror

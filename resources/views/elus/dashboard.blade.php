@@ -1,31 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-[#faa21b] -mx-8 -my-6 px-8 py-6 shadow-lg">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="font-bold text-2xl text-white mb-1">
-                        🏛️ {{ __('Espace Élus') }}
-                    </h2>
-                    <p class="text-white/90 text-sm">{{ __('Gouvernance et projets territoriaux') }}</p>
-                </div>
-                <nav class="flex space-x-2 items-center">
-                    <a href="{{ route('elus.instances.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Instances') }}</a>
-                    <a href="{{ route('elus.projects.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Projets') }}</a>
-                    <a href="{{ route('elus.reunions.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Réunions') }}</a>
-                    <a href="{{ route('elus.documents.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Documents') }}</a>
-                    @can('admin')
-                    <a href="{{ route('elus.admin.index') }}" class="px-4 py-2 text-sm bg-white text-[#faa21b] hover:bg-white/90 rounded-lg transition font-bold">{{ __('Administration') }}</a>
-                    @endcan
-
-                    <!-- User Menu - Using reusable component -->
-                    <div class="ml-4">
-                        <x-elus-user-menu />
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </x-slot>
-
+        <x-elus-header 
+            :title="__('Espace Élus')"
+            :subtitle="__('Gouvernance et projets territoriaux')"
+            icon="🏛️"
+            activeSection="dashboard"
+        />
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Statistics Cards --}}

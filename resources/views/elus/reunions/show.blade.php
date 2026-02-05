@@ -1,27 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-[#FFA500] -mx-8 -my-6 px-8 py-6 shadow-lg">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('elus.reunions.index') }}" class="text-white/80 hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </a>
-                    <div>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $reunion->status_color }}">
-                            {{ $reunion->status_label }}
-                        </span>
-                        <h2 class="font-semibold text-xl text-white leading-tight">{{ $reunion->title }}</h2>
-                    </div>
-                </div>
+        <x-elus-header 
+            :title="$reunion->title"
+            icon="📅"
+            :backRoute="route('elus.reunions.index')"
+            :backLabel="__('Retour aux réunions')"
+            activeSection="reunions"
+            :badge="$reunion->status_label"
+            :badgeColor="$reunion->status_color"
+        >
+            <x-slot name="actions">
                 @can('admin')
                 <a href="{{ route('elus.reunions.edit', $reunion) }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
                     {{ __('Modifier') }}
                 </a>
                 @endcan
-            </div>
-        </div>
+            </x-slot>
+        </x-elus-header>
     </x-slot>
 
     <div class="py-8">
