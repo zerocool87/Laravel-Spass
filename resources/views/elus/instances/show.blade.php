@@ -120,15 +120,15 @@
                     {{-- Members --}}
                     <div class="bg-white rounded-lg shadow p-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Membres') }}</h3>
-                        @if($instance->members && count($instance->members) > 0)
-                            <ul class="space-y-2">
-                                @foreach($instance->members as $member)
-                                    <li class="text-sm text-gray-600">{{ $member }}</li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <p class="text-gray-400 italic text-sm">{{ __('Aucun membre défini') }}</p>
-                        @endif
+                         @if($instance->members && is_array($instance->members) && count($instance->members) > 0)
+                             <ul class="space-y-2">
+                                 @foreach($instance->members as $member)
+                                     <li class="text-sm text-gray-600">{{ $member }}</li>
+                                 @endforeach
+                             </ul>
+                         @else
+                             <p class="text-gray-400 italic text-sm">{{ __('Aucun membre défini') }}</p>
+                         @endif
                     </div>
 
                     {{-- Actions --}}

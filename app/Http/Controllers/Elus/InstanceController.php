@@ -86,7 +86,7 @@ class InstanceController extends Controller
         }]);
 
         $upcomingReunions = $instance->upcomingReunions()->take(5)->get();
-        $pastReunions = $instance->reunions()->past()->take(10)->get();
+        $pastReunions = $instance->reunions()->where('date', '<', now())->orderBy('date', 'desc')->take(10)->get();
 
         return view('elus.instances.show', compact('instance', 'upcomingReunions', 'pastReunions'));
     }
