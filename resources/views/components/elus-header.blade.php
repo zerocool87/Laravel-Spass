@@ -11,7 +11,7 @@
     'actions' => null
 ])
 
-<div class="bg-[#faa21b] -mx-8 -my-6 px-8 py-6 shadow-lg">
+<div class="bg-[#faa21b] mx-auto px-8 py-6 shadow-lg max-w-7xl">
     <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
             @if($backRoute)

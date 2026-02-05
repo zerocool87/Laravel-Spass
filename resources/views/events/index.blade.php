@@ -1,6 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl">Upcoming Events</h2>
+        <x-public-header
+            title="{{ __('Upcoming Events') }}"
+            icon="📅"
+        />
     </x-slot>
 
     {{-- Enable calendar debug to surface initialization issues on this page --}}

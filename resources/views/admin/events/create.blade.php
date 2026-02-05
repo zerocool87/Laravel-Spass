@@ -1,6 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-900">{{ __('Create Event') }}</h2>
+        <x-admin-header
+            title="{{ __('Create Event') }}"
+            icon="➕"
+            :backRoute="route('admin.events.index')"
+            :backLabel="__('Retour aux événements')"
+        />
     </x-slot>
 
     <div class="py-6">

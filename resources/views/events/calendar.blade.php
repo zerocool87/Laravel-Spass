@@ -1,6 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl">Calendar</h2>
+        <x-public-header
+            title="{{ __('Calendar') }}"
+            icon="📅"
+        />
     </x-slot>
 
     <div class="container">

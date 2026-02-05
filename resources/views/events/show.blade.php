@@ -1,6 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl leading-tight">{{ __('Event Details') }}</h2>
+        <x-public-header
+            title="{{ __('Event Details') }}"
+            icon="📌"
+            :backRoute="route('events.index')"
+            :backLabel="__('Retour aux événements')"
+        />
     </x-slot>
 
     <div class="py-8">

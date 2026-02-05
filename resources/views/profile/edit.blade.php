@@ -1,8 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-900 leading-tight">
-            {{ __('Profile') }}
-        </h2>
+        <x-public-header
+            title="{{ __('Profile') }}"
+            icon="👤"
+        />
     </x-slot>
 
     <div class="py-12">

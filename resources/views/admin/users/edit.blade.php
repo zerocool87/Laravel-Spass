@@ -1,6 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl leading-tight">{{ __('Edit User') }}</h2>
+        <x-admin-header
+            title="{{ __('Edit User') }}"
+            icon="✏️"
+            :backRoute="route('admin.users.index')"
+            :backLabel="__('Retour aux utilisateurs')"
+        />
     </x-slot>
 
     <div class="py-6">

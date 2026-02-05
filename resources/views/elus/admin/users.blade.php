@@ -1,26 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-[#faa21b] -mx-8 -my-6 px-8 py-6 shadow-lg">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('elus.admin.index') }}" class="text-white/80 hover:text-white transition">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </a>
-                    <div>
-                        <h2 class="font-bold text-2xl text-white mb-1">👥 {{ __('Gestion des utilisateurs') }}</h2>
-                        <p class="text-white/90 text-sm">{{ __('Administration des élus et territoires') }}</p>
-                    </div>
-                </div>
+        <x-elus-header
+            title="{{ __('Gestion des utilisateurs') }}"
+            subtitle="{{ __('Administration des élus et territoires') }}"
+            icon="👥"
+            :backRoute="route('elus.admin.index')"
+            :backLabel="__('Retour à l\'administration')"
+            activeSection="admin"
+            :showNav="false"
+        >
+            <x-slot name="actions">
                 <button type="button" onclick="document.getElementById('create-elu-modal').classList.remove('hidden')" class="inline-flex items-center px-6 py-3 bg-white text-[#faa21b] border border-transparent rounded-xl font-bold text-sm hover:bg-white/90 transition shadow-lg hover:shadow-xl transform hover:scale-105">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                     {{ __('Nouvel élu') }}
                 </button>
-            </div>
-        </div>
+            </x-slot>
+        </x-elus-header>
     </x-slot>
 
     <div class="py-8">

@@ -1,26 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-[#faa21b] -mx-8 -my-6 px-8 py-6 shadow-lg">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('elus.dashboard') }}" class="text-white/80 hover:text-white transition" aria-label="{{ __('Retour au tableau de bord') }}">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </a>
-                    <div>
-                        <h2 class="font-bold text-2xl text-white mb-1">✏️ {{ __('Modifier instance') }}</h2>
-                        <p class="text-white/90 text-sm">{{ __('Mise à jour de') }}: {{ $instance->name }}</p>
-                    </div>
-                </div>
-                <nav class="flex space-x-2 items-center">
-                    <a href="{{ route('elus.projects.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Projets') }}</a>
-                    <a href="{{ route('elus.reunions.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Réunions') }}</a>
-                    <a href="{{ route('elus.documents.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Documents') }}</a>
-                    <a href="{{ route('elus.dashboard') }}" class="px-4 py-2 text-sm bg-white text-[#faa21b] hover:bg-white/90 rounded-lg transition font-bold">{{ __('Tableau de bord') }}</a>
-                </nav>
-            </div>
-        </div>
+        <x-elus-header
+            title="{{ __('Modifier instance') }}"
+            subtitle="{{ __('Mise à jour de') }}: {{ $instance->name }}"
+            icon="✏️"
+            :backRoute="route('elus.instances.index')"
+            :backLabel="__('Retour aux instances')"
+            activeSection="instances"
+        />
     </x-slot>
 
     <div class="py-8">

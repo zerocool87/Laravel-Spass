@@ -1,9 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl leading-tight">{{ __('Users') }}</h2>
-            <x-primary-button href="{{ route('admin.users.create') }}">{{ __('Create User') }}</x-primary-button>
-        </div>
+        <x-admin-header
+            title="{{ __('Users') }}"
+            icon="👥"
+        >
+            <x-slot name="actions">
+                <x-primary-button href="{{ route('admin.users.create') }}">{{ __('Create User') }}</x-primary-button>
+            </x-slot>
+        </x-admin-header>
     </x-slot>
 
     <div class="py-6">

@@ -1,20 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-[#faa21b] -mx-8 -my-6 px-8 py-6 shadow-lg">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('elus.dashboard') }}" class="text-white/80 hover:text-white transition">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </a>
-                    <div>
-                        <h2 class="font-bold text-2xl text-white mb-1">⚙️ {{ __('Administration - Espace Élus') }}</h2>
-                        <p class="text-white/90 text-sm">{{ __('Gestion des utilisateurs et paramètres') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <x-elus-header
+            title="{{ __('Administration - Espace Élus') }}"
+            subtitle="{{ __('Gestion des utilisateurs et paramètres') }}"
+            icon="⚙️"
+            :backRoute="route('elus.dashboard')"
+            :backLabel="__('Retour au tableau de bord')"
+            activeSection="admin"
+        />
     </x-slot>
 
     <div class="py-8">

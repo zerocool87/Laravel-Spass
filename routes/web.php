@@ -4,11 +4,11 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('elus.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Public JSON feed for events (read-only) — intentionally public so dashboard calendars can load without auth

@@ -1,11 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
+    <header>
         <x-elus-header
             :title="__('Espace Élus')"
             :subtitle="__('Gouvernance et projets territoriaux')"
             icon="🏛️"
             activeSection="dashboard"
         />
+    </header>
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Statistics Cards --}}

@@ -1,16 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center space-x-4">
-            <a href="{{ route('elus.documents.index') }}" class="text-gray-500 hover:text-gray-700">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </a>
-            <div>
-                <h2 class="font-semibold text-xl text-gray-900">{{ __('Téléverser un document') }}</h2>
-                <p class="text-sm text-gray-600">{{ __('Ajouter un nouveau document à la bibliothèque') }}</p>
-            </div>
-        </div>
+        <x-elus-header
+            title="{{ __('Téléverser un document') }}"
+            subtitle="{{ __('Ajouter un nouveau document à la bibliothèque') }}"
+            icon="📄"
+            :backRoute="route('elus.documents.index')"
+            :backLabel="__('Retour aux documents')"
+            activeSection="documents"
+        />
     </x-slot>
 
     <div class="py-6">

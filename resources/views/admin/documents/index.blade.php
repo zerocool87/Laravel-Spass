@@ -1,6 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl leading-tight">{{ __('Documents') }}</h2>
+        <x-admin-header
+            title="{{ __('Documents') }}"
+            icon="📄"
+        />
     </x-slot>
 
     <div class="py-6">

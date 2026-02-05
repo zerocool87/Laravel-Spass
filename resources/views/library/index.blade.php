@@ -1,6 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-900">{{ __('Bibliothèque') }}</h2>
+        <x-public-header
+            title="{{ __('Bibliothèque') }}"
+            icon="📚"
+        />
     </x-slot>
 
     <div class="py-6">
