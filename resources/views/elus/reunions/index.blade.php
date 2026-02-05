@@ -60,6 +60,15 @@
                 </form>
             </div>
 
+            {{-- Create Reunion Button --}}
+            <div class="mb-6">
+                @can('admin')
+                <a href="{{ route('elus.reunions.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-[#faa21b] hover:bg-[#e89315] transition shadow-sm">
+                    + {{ __('Nouvelle réunion') }}
+                </a>
+                @endcan
+            </div>
+
             {{-- Reunions List --}}
             <div class="widget-container">
                 <x-widget-header

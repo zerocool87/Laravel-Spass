@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <x-elus-header
-            title="{{ __('Bibliothèque de documents') }}"
+            title="{{ __('Bibliothèque') }}"
             subtitle="{{ __('Accédez à tous les documents officiels') }}"
             icon="📚"
             :backRoute="route('elus.dashboard')"

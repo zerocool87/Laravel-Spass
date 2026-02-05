@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <x-elus-header
-            title="{{ __('Administration - Espace Élus') }}"
+            title="{{ __('Administration') }}"
             subtitle="{{ __('Gestion des utilisateurs et paramètres') }}"
             icon="⚙️"
             :backRoute="route('elus.dashboard')"

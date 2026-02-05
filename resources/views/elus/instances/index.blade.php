@@ -9,11 +9,6 @@
             activeSection="instances"
         >
             <x-slot name="actions">
-                @can('admin')
-                <a href="{{ route('elus.instances.create') }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
-                    + {{ __('Nouvelle instance') }}
-                </a>
-                @endcan
             </x-slot>
         </x-elus-header>
     </x-slot>
@@ -49,6 +44,15 @@
                         </button>
                     </div>
                 </form>
+            </div>
+
+            {{-- Create Instance Button --}}
+            <div class="mb-6">
+                @can('admin')
+                <a href="{{ route('elus.instances.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-[#faa21b] hover:bg-[#e89315] transition shadow-sm">
+                    + {{ __('Nouvelle instance') }}
+                </a>
+                @endcan
             </div>
 
             {{-- Instances Grid --}}
