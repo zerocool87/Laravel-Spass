@@ -141,6 +141,7 @@
                     <div class="bg-white rounded-lg shadow p-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Actions') }}</h3>
                         <div class="space-y-2">
+                            @can('admin')
                             <a href="{{ route('elus.reunions.edit', $reunion) }}" class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                                 {{ __('Modifier la réunion') }}
                             </a>
@@ -151,6 +152,7 @@
                                     {{ __('Supprimer') }}
                                 </button>
                             </form>
+                            @endcan
                         </div>
                     </div>
                 </div>

@@ -15,9 +15,11 @@
                 </div>
             </div>
             @can('admin')
-            <a href="{{ route('elus.projects.edit', $project) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 transition">
-                {{ __('Modifier') }}
-            </a>
+            <div class="flex space-x-2">
+                <a href="{{ route('elus.projects.edit', $project) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 transition">
+                    {{ __('Modifier') }}
+                </a>
+            </div>
             @endcan
         </div>
     </x-slot>
@@ -140,6 +142,7 @@
                     <div class="bg-white rounded-lg shadow p-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Actions') }}</h3>
                         <div class="space-y-2">
+                            @can('admin')
                             <a href="{{ route('elus.projects.edit', $project) }}" class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                                 {{ __('Modifier le projet') }}
                             </a>
@@ -150,6 +153,7 @@
                                     {{ __('Supprimer') }}
                                 </button>
                             </form>
+                            @endcan
                         </div>
                     </div>
 
