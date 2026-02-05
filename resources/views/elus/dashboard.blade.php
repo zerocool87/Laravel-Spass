@@ -173,39 +173,11 @@
 
                 {{-- Right Column: Quick Access + Recent Documents --}}
                 <div class="space-y-6">
-                    @if($latestDocuments->count() > 0)
+                    {{-- Quick Actions --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
-                            <h3 class="text-lg font-bold text-[#faa21b]">📄 {{ __('Documents récents') }}</h3>
-                            <a href="{{ route('elus.documents.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
-                                {{ __('Bibliothèque') }}
-                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                </svg>
-                            </a>
+                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20">
+                            <h3 class="text-lg font-bold text-[#faa21b]">⚡ {{ __('Accès rapides') }}</h3>
                         </div>
-                        <div class="divide-y divide-orange-50 max-h-[445px] overflow-y-auto">
-                            @foreach($latestDocuments->take(3) as $document)
-                                <a href="{{ route('documents.download', $document) }}" class="flex items-center px-6 py-3 hover:bg-orange-50/50 transition group">
-                                    <div class="flex-shrink-0 p-2 rounded-lg transition">
-                                        <x-category-icon :document="$document" size="w-5 h-5" />
-                                    </div>
-                                    <div class="ml-3 overflow-hidden flex-1">
-                                        <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-[#faa21b] transition">{{ $document->title }}</p>
-                                        <p class="text-xs text-gray-500">{{ $document->created_at->format('d/m/Y') }}</p>
-                                    </div>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-                </div>
-
-                {{-- Quick Actions --}}
-                <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                    <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20">
-                        <h3 class="text-lg font-bold text-[#faa21b]">⚡ {{ __('Accès rapides') }}</h3>
-                    </div>
                     <div class="p-4 grid grid-cols-2 gap-3">
                         <a href="{{ route('elus.documents.index') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
                             <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
@@ -252,8 +224,36 @@
                             </div>
                         </a>
                     </div>
+                    </div>
+
+                    {{-- Recent Documents Widget --}}
+                    @if($latestDocuments->count() > 0)
+                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
+                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                            <h3 class="text-lg font-bold text-[#faa21b]">📄 {{ __('Documents récents') }}</h3>
+                            <a href="{{ route('elus.documents.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
+                                {{ __('Bibliothèque') }}
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="divide-y divide-orange-50 max-h-[445px] overflow-y-auto">
+                            @foreach($latestDocuments->take(3) as $document)
+                                <a href="{{ route('documents.download', $document) }}" class="flex items-center px-6 py-3 hover:bg-orange-50/50 transition group">
+                                    <div class="flex-shrink-0 p-2 rounded-lg transition">
+                                        <x-category-icon :document="$document" size="w-5 h-5" />
+                                    </div>
+                                    <div class="ml-3 overflow-hidden flex-1">
+                                        <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-[#faa21b] transition">{{ $document->title }}</p>
+                                        <p class="text-xs text-gray-500">{{ $document->created_at->format('d/m/Y') }}</p>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
                 </div>
-            </div>
 
             {{-- Active Projects --}}
             <div class="mt-8">
