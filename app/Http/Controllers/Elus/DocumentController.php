@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\FiltersDocuments;
+use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
 use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class DocumentController extends Controller
 {
     use FiltersDocuments;
+    use RequiresAdmin;
 
     /**
      * Display a listing of the documents.
@@ -61,6 +62,8 @@ class DocumentController extends Controller
      */
     public function create(): View
     {
+        $this->requireAdmin();
+
         $users = User::orderBy('name')->get();
 
         return view('elus.documents.create', compact('users'));
@@ -71,6 +74,8 @@ class DocumentController extends Controller
      */
     public function store(DocumentRequest $request): RedirectResponse
     {
+        $this->requireAdmin();
+
         $data = $request->validated();
 
         $file = $request->file('file');

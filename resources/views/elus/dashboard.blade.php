@@ -8,7 +8,7 @@
                     </h2>
                     <p class="text-white/90 text-sm">{{ __('Gouvernance et projets territoriaux') }}</p>
                 </div>
-                <nav class="flex space-x-2">
+                <nav class="flex space-x-2 items-center">
                     <a href="{{ route('elus.instances.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Instances') }}</a>
                     <a href="{{ route('elus.projects.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Projets') }}</a>
                     <a href="{{ route('elus.reunions.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Réunions') }}</a>
@@ -16,6 +16,11 @@
                     @can('admin')
                     <a href="{{ route('elus.admin.index') }}" class="px-4 py-2 text-sm bg-white text-[#faa21b] hover:bg-white/90 rounded-lg transition font-bold">{{ __('Administration') }}</a>
                     @endcan
+                    
+                    <!-- User Menu - Using reusable component -->
+                    <div class="ml-4">
+                        <x-elus-user-menu />
+                    </div>
                 </nav>
             </div>
         </div>
