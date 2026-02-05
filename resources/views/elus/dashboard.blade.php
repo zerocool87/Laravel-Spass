@@ -93,7 +93,7 @@
                 <div class="space-y-6">
                     {{-- Upcoming Reunions --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">📅 {{ __('Prochaines réunions') }}</h3>
                             <a href="{{ route('elus.reunions.calendar') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                                 {{ __('Voir le calendrier') }}
@@ -145,7 +145,7 @@
 
                     {{-- Instances --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">🏛️ {{ __('Instances') }}</h3>
                             <a href="{{ route('elus.instances.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                                 {{ __('Tout voir') }}

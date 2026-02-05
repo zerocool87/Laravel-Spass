@@ -262,5 +262,131 @@ input[type="text"], textarea, select, .input-text {
 }
 
 
+/* Widget Styles - Consistent across all pages */
+.widget-container {
+    background-color: white;
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+    border: 2px solid rgba(250, 162, 27, 0.2); /* border-2 border-[#faa21b]/20 */
+    transition: all 0.2s ease-in-out;
+}
+
+.widget-container:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* hover:shadow-xl */
+}
+
+.widget-header {
+    padding: 1.5rem; /* px-6 py-4 */
+    background-color: rgba(250, 162, 27, 0.15); /* bg-[#faa21b]/15 */
+    border-bottom: 2px solid rgba(250, 162, 27, 0.2); /* border-b-2 border-[#faa21b]/20 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 0.75rem; /* rounded-t-xl */
+    border-top-right-radius: 0.75rem; /* rounded-t-xl */
+}
+
+.widget-title {
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 700; /* font-bold */
+    color: #faa21b; /* text-[#faa21b] */
+}
+
+.widget-link {
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 600; /* font-semibold */
+    color: #faa21b; /* text-[#faa21b] */
+    display: flex;
+    align-items: center;
+    transition: color 0.2s ease-in-out;
+}
+
+.widget-link:hover {
+    color: #e89315; /* hover:text-[#e89315] */
+}
+
+.widget-link-icon {
+    margin-left: 0.25rem; /* ml-1 */
+}
+
+.widget-content {
+    padding: 1.5rem; /* p-6 */
+}
+
+.widget-empty {
+    padding: 2rem; /* p-8 */
+    text-align: center;
+}
+
+.widget-empty-icon {
+    width: 3rem; /* h-12 */
+    height: 3rem; /* w-12 */
+    margin: 0 auto; /* mx-auto */
+    color: rgba(250, 162, 27, 0.3); /* text-[#faa21b]/30 */
+}
+
+.widget-empty-title {
+    margin-top: 0.5rem; /* mt-2 */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    color: #1f2937; /* text-gray-900 */
+}
+
+.widget-empty-description {
+    margin-top: 0.25rem; /* mt-1 */
+    font-size: 0.875rem; /* text-sm */
+    color: #6b7280; /* text-gray-500 */
+}
+
+.btn-primary-orange {
+    background-color: #faa21b; /* bg-[#faa21b] */
+    color: white; /* text-white */
+    border: 1px solid transparent; /* border border-transparent */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 0.5rem 1rem; /* px-4 py-2 */
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 600; /* font-semibold */
+    text-transform: uppercase; /* uppercase */
+    letter-spacing: 0.05em; /* tracking-widest */
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.btn-primary-orange:hover {
+    background-color: #e89315; /* hover:bg-[#e89315] */
+}
+
+.btn-icon {
+    width: 1rem; /* w-4 */
+    height: 1rem; /* h-4 */
+    margin-right: 0.5rem; /* mr-1 */
+}
+
+.type-badge-orange {
+    background-color: rgba(250, 162, 27, 0.2); /* bg-[#faa21b]/20 */
+    color: #faa21b; /* text-[#faa21b] */
+}
+
+.input-orange {
+    border-color: rgba(250, 162, 27, 0.3); /* border-[#faa21b]/30 */
+    border-radius: 0.5rem; /* rounded-lg */
+}
+
+.input-orange:focus {
+    border-color: #faa21b; /* focus:border-[#faa21b] */
+    box-shadow: 0 0 0 3px rgba(250, 162, 27, 0.1); /* focus:ring-[#faa21b] */
+}
+
+.select-orange {
+    border-color: rgba(250, 162, 27, 0.3); /* border-[#faa21b]/30 */
+    border-radius: 0.5rem; /* rounded-lg */
+}
+
+.select-orange:focus {
+    border-color: #faa21b; /* focus:border-[#faa21b] */
+    box-shadow: 0 0 0 3px rgba(250, 162, 27, 0.1); /* focus:ring-[#faa21b] */
+}
+
+
 /* End - clean Laravel light theme CSS */
 
