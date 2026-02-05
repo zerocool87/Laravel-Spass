@@ -1,28 +1,30 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('elus.dashboard') }}" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </a>
-                <h2 class="font-semibold text-xl leading-tight">{{ __('Instances') }}</h2>
-            </div>
-            @can('admin')
-            <a href="{{ route('elus.instances.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
-                + {{ __('Nouvelle instance') }}
-            </a>
-            @endcan
-        </div>
-    </x-slot>
+          <div class="bg-[#FFA500] -mx-8 -my-6 px-8 py-6 shadow-lg">
+              <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-4">
+                      <a href="{{ route('elus.dashboard') }}" class="text-white/80 hover:text-white transition">
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                          </svg>
+                      </a>
+                      <h2 class="font-semibold text-xl text-white leading-tight">{{ __('Instances') }}</h2>
+                  </div>
+                  @can('admin')
+                  <a href="{{ route('elus.instances.create') }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
+                      + {{ __('Nouvelle instance') }}
+                  </a>
+                  @endcan
+              </div>
+          </div>
+      </x-slot>
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Filters --}}
             <div class="widget-container mb-6">
-                <x-widget-header 
-                    title="🔍 {{ __('Filtres') }}" 
+                <x-widget-header
+                    title="🔍 {{ __('Filtres') }}"
                     :link="route('elus.instances.index')"
                     linkText="{{ __('Réinitialiser') }}"
                     linkIcon="🔄"

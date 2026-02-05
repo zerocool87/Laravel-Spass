@@ -1,23 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('elus.dashboard') }}" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                </a>
-                <h2 class="font-semibold text-xl leading-tight">{{ __('Réunions') }}</h2>
-            </div>
-            <div class="flex space-x-2">
-                <a href="{{ route('elus.reunions.calendar') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 transition">
-                    📅 {{ __('Calendrier') }}
-                </a>
-                @can('admin')
-                <a href="{{ route('elus.reunions.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
-                    + {{ __('Nouvelle réunion') }}
-                </a>
-                @endcan
+        <div class="bg-[#FFA500] -mx-8 -my-6 px-8 py-6 shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="{{ route('elus.dashboard') }}" class="text-white/80 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                    <h2 class="font-semibold text-xl text-white leading-tight">{{ __('Réunions') }}</h2>
+                </div>
+                <div class="flex space-x-2">
+                    <a href="{{ route('elus.reunions.calendar') }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
+                        📅 {{ __('Calendrier') }}
+                    </a>
+                    @can('admin')
+                    <a href="{{ route('elus.reunions.create') }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
+                        + {{ __('Nouvelle réunion') }}
+                    </a>
+                    @endcan
+                </div>
             </div>
         </div>
     </x-slot>
@@ -26,8 +28,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Filters --}}
             <div class="widget-container mb-6">
-                <x-widget-header 
-                    title="🔍 {{ __('Filtres') }}" 
+                <x-widget-header
+                    title="🔍 {{ __('Filtres') }}"
                     :link="route('elus.reunions.index')"
                     linkText="{{ __('Réinitialiser') }}"
                     linkIcon="🔄"
@@ -71,8 +73,8 @@
 
             {{-- Reunions List --}}
             <div class="widget-container">
-                <x-widget-header 
-                    title="📅 {{ __('Liste des réunions') }}" 
+                <x-widget-header
+                    title="📅 {{ __('Liste des réunions') }}"
                     :link="route('elus.reunions.calendar')"
                     linkText="{{ __('Voir calendrier') }}"
                     linkIcon="📅"
