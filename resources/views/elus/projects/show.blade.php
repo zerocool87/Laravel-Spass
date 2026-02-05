@@ -57,6 +57,13 @@
                     </div>
                     @endif
 
+                    {{-- Google Maps Placeholder --}}
+                    <x-google-map-placeholder 
+                        title="{{ __('Localisation du projet') }}" 
+                        location="{{ $project->territories && count($project->territories) > 0 ? $project->territories[0] : 'Paris, France' }}"
+                        height="350px"
+                    />
+
                     {{-- Indicators --}}
                     @if($project->indicators && count($project->indicators) > 0)
                     <div class="bg-white rounded-lg shadow p-6">
