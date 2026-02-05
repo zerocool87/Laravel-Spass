@@ -3,7 +3,7 @@
         <div class="bg-[#FFA500] -mx-8 -my-6 px-8 py-6 shadow-lg">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
-                    <a href="{{ route('elus.dashboard') }}" class="text-white/80 hover:text-white transition">
+                    <a href="{{ route('elus.dashboard') }}" class="text-white/80 hover:text-white transition" aria-label="{{ __('Retour au tableau de bord') }}">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                         </svg>
