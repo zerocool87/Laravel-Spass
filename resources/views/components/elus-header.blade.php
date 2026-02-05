@@ -49,7 +49,7 @@
                     <a href="{{ route('elus.admin.index') }}" class="px-4 py-2 text-sm {{ $activeSection === 'admin' ? 'bg-white text-[#faa21b] font-bold' : 'bg-white/10 text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Administration') }}</a>
                 @endcan
 
-                <a href="{{ route('elus.dashboard') }}" class="px-4 py-2 text-sm {{ $activeSection === 'dashboard' ? 'bg-white text-[#faa21b] font-bold' : 'bg-white/10 text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Tableau de bord') }}</a>
+                <a href="{{ route('elus.dashboard') }}" class="px-4 py-2 text-sm bg-white text-[#faa21b] font-bold rounded-lg transition">{{ __('Tableau de bord') }}</a>
 
                 <div class="ml-2">
                     <x-elus-user-menu />
