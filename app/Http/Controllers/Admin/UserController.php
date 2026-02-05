@@ -47,9 +47,11 @@ class UserController extends Controller
 
         $data['password'] = Hash::make($temp);
         $data['is_admin'] = $request->boolean('is_admin');
+        $data['is_elu'] = $request->boolean('is_elu');
         $data['fonction'] = $request->input('fonction');
         // default to fictive commune SEHV when none selected
         $data['commune'] = $request->input('commune') ?: 'SEHV';
+        $data['territory'] = $request->input('territory');
 
         $user = User::create($data);
 
@@ -73,9 +75,11 @@ class UserController extends Controller
         }
 
         $data['is_admin'] = $request->boolean('is_admin');
+        $data['is_elu'] = $request->boolean('is_elu');
         $data['fonction'] = $request->input('fonction');
         // default to fictive commune SEHV when none selected
         $data['commune'] = $request->input('commune') ?: 'SEHV';
+        $data['territory'] = $request->input('territory');
 
         $user->update($data);
 

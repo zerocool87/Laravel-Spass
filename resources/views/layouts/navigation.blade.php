@@ -19,6 +19,11 @@
                     <x-nav-link :href="route('library.index')" :active="request()->routeIs('library.index')">
                         {{ __('Library') }}
                     </x-nav-link>
+                    @if(Auth::user()->isElu() || Auth::user()->isAdmin())
+                    <x-nav-link :href="route('elus.dashboard')" :active="request()->routeIs('elus.*')">
+                        {{ __('Espace Élus') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -86,6 +91,14 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('library.index')" :active="request()->routeIs('library.index')">
+                {{ __('Library') }}
+            </x-responsive-nav-link>
+            @if(Auth::user()->isElu() || Auth::user()->isAdmin())
+            <x-responsive-nav-link :href="route('elus.dashboard')" :active="request()->routeIs('elus.*')">
+                {{ __('Espace Élus') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

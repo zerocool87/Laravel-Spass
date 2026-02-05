@@ -47,6 +47,7 @@
                     // Multi-day timed
                     $dateStr = 'Du ' . $start->translatedFormat('j M Y à H:i') . ' au ' . $end->translatedFormat('j M Y à H:i');
                     $ariaLabel = $dateStr;
+                    $timeStr = null; // No separate time display for multi-day timed events
                 } else {
                     // Single-day timed
                     $dateStr = $start->translatedFormat('l j F Y');

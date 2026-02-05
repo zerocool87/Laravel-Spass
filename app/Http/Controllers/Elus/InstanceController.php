@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Http\Controllers\Elus;
+
+use App\Http\Controllers\Controller;
+use App\Models\Instance;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+
+class InstanceController extends Controller
+{
+    /**
+     * Display a listing of the instances.
+     */
+    public function index(Request $request): View
+    {
+        $query = Instance::withCount('reunions');
+
+        // Filter by type
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Filter by territory
+        if ($request->filled('territory')) {
+            $query->where('territory', $request->territory);
+        }
+
+        // Search
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $instances = $query->orderBy('name')->paginate(12);
+        $types = Instance::TYPES;
+
+        return view('elus.instances.index', compact('instances', 'types'));
+    }
+
+    /**
+     * Show the form for creating a new instance.
+     */
+    public function create(): View
+    {
+        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+
+        $types = Instance::TYPES;
+        return view('elus.instances.create', compact('types'));
+    }
+
+    /**
+     * Store a newly created instance in storage.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|in:' . implode(',', array_keys(Instance::TYPES)),
+            'description' => 'nullable|string',
+            'territory' => 'nullable|string|max:255',
+            'members' => 'nullable|array',
+        ]);
+
+        Instance::create($validated);
+
+        return redirect()
+            ->route('elus.instances.index')
+            ->with('success', __('Instance créée avec succès.'));
+    }
+
+    /**
+     * Display the specified instance.
+     */
+    public function show(Instance $instance): View
+    {
+        $instance->load(['reunions' => function ($query) {
+            $query->orderBy('date', 'desc');
+        }]);
+
+        $upcomingReunions = $instance->upcomingReunions()->take(5)->get();
+        $pastReunions = $instance->reunions()->past()->take(10)->get();
+
+        return view('elus.instances.show', compact('instance', 'upcomingReunions', 'pastReunions'));
+    }
+
+    /**
+     * Show the form for editing the specified instance.
+     */
+    public function edit(Instance $instance): View
+    {
+        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+
+        $types = Instance::TYPES;
+        return view('elus.instances.edit', compact('instance', 'types'));
+    }
+
+    /**
+     * Update the specified instance in storage.
+     */
+    public function update(Request $request, Instance $instance): RedirectResponse
+    {
+        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|in:' . implode(',', array_keys(Instance::TYPES)),
+            'description' => 'nullable|string',
+            'territory' => 'nullable|string|max:255',
+            'members' => 'nullable|array',
+        ]);
+
+        $instance->update($validated);
+
+        return redirect()
+            ->route('elus.instances.show', $instance)
+            ->with('success', __('Instance mise à jour avec succès.'));
+    }
+
+    /**
+     * Remove the specified instance from storage.
+     */
+    public function destroy(Instance $instance): RedirectResponse
+    {
+        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+
+        $instance->delete();
+
+        return redirect()
+            ->route('elus.instances.index')
+            ->with('success', __('Instance supprimée avec succès.'));
+    }
+}

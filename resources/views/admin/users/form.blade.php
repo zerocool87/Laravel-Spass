@@ -33,6 +33,9 @@
     <div class="mb-4">
         <x-input-label for="password" :value="__('Password')" />
         <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" />
+        @if(isset($user) && $user->exists)
+            <p class="text-sm text-gray-500 mt-1">{{ __('Leave empty to keep current password') }}</p>
+        @endif
         <x-input-error :messages="$errors->get('password')" class="mt-2" />
     </div>
 
@@ -44,10 +47,26 @@
 </div>
 
 <div class="mb-4">
-    <label class="inline-flex items-center">
-        <input type="checkbox" name="is_admin" value="1" class="rounded" {{ old('is_admin', $user->is_admin ?? false) ? 'checked' : '' }}>
-        <span class="ms-2">{{ __('Administrator') }}</span>
-    </label>
+    <x-input-label for="territory" :value="__('Territoire')" />
+    <x-text-input id="territory" class="block mt-1 w-full" type="text" name="territory" :value="old('territory', $user->territory ?? '')" placeholder="Ex: Zone Nord, Centre-ville..." />
+    <x-input-error :messages="$errors->get('territory')" class="mt-2" />
+</div>
+
+<div class="mb-4 p-4 bg-gray-50 rounded-lg">
+    <x-input-label :value="__('Rôles')" class="mb-3" />
+    <div class="space-y-2">
+        <label class="inline-flex items-center">
+            <input type="checkbox" name="is_admin" value="1" class="rounded text-blue-600" {{ old('is_admin', $user->is_admin ?? false) ? 'checked' : '' }}>
+            <span class="ms-2">{{ __('Administrateur') }}</span>
+            <span class="ms-2 text-xs text-gray-500">{{ __('(Accès complet à l\'administration)') }}</span>
+        </label>
+        <br>
+        <label class="inline-flex items-center">
+            <input type="checkbox" name="is_elu" value="1" class="rounded text-green-600" {{ old('is_elu', $user->is_elu ?? false) ? 'checked' : '' }}>
+            <span class="ms-2">{{ __('Élu') }}</span>
+            <span class="ms-2 text-xs text-gray-500">{{ __('(Accès à l\'Espace Élus)') }}</span>
+        </label>
+    </div>
 </div>
 
 <div class="flex items-center justify-end mt-4">

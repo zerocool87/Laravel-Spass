@@ -66,4 +66,34 @@ Route::middleware('auth')->group(function () {
     Route::get('/library', [\App\Http\Controllers\LibraryController::class, 'index'])->name('library.index');
 });
 
+// Espace Élus routes (requires authenticated user with élu or admin role)
+Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(function () {
+    // Dashboard
+    Route::get('/', [\App\Http\Controllers\Elus\DashboardController::class, 'index'])->name('dashboard');
+
+    // Instances (Comités, Bureaux, Commissions)
+    Route::resource('instances', \App\Http\Controllers\Elus\InstanceController::class);
+
+    // Projects
+    Route::get('/projects/geojson', [\App\Http\Controllers\Elus\ProjectController::class, 'geojson'])->name('projects.geojson');
+    Route::resource('projects', \App\Http\Controllers\Elus\ProjectController::class);
+
+    // Reunions
+    Route::get('/reunions/calendar', [\App\Http\Controllers\Elus\ReunionController::class, 'calendar'])->name('reunions.calendar');
+    Route::get('/reunions/json', [\App\Http\Controllers\Elus\ReunionController::class, 'json'])->name('reunions.json');
+    Route::resource('reunions', \App\Http\Controllers\Elus\ReunionController::class);
+
+    // Documents / Library
+    Route::get('/documents', [\App\Http\Controllers\Elus\DocumentController::class, 'index'])->name('documents.index');
+
+    // Admin section (only for admins within Espace Élus)
+    Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Elus\AdminController::class, 'index'])->name('index');
+        Route::get('/users', [\App\Http\Controllers\Elus\AdminController::class, 'users'])->name('users');
+        Route::post('/users', [\App\Http\Controllers\Elus\AdminController::class, 'storeElu'])->name('users.store');
+        Route::patch('/users/{user}/toggle-elu', [\App\Http\Controllers\Elus\AdminController::class, 'toggleElu'])->name('users.toggle-elu');
+        Route::patch('/users/{user}/territory', [\App\Http\Controllers\Elus\AdminController::class, 'updateTerritory'])->name('users.territory');
+    });
+});
+
 require __DIR__.'/auth.php';

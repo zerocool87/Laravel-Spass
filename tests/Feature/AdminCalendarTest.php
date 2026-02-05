@@ -20,7 +20,7 @@ class AdminCalendarTest extends TestCase
         $this->actingAs($admin)
             ->get(route('events.calendar'))
             ->assertStatus(200)
-            ->assertSee('Create Event');
+            ->assertSee('Créer un événement');
     }
 
     public function test_regular_user_does_not_see_create_button()

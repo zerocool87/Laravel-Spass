@@ -22,8 +22,10 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'is_elu',
         'fonction',
         'commune',
+        'territory',
     ];
 
     /**
@@ -47,6 +49,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'is_elu' => 'boolean',
         ];
     }
 
@@ -56,5 +59,13 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return (bool) $this->is_admin;
+    }
+
+    /**
+     * Return whether the user is an élu.
+     */
+    public function isElu(): bool
+    {
+        return (bool) $this->is_elu;
     }
 }
