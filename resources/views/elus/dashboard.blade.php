@@ -16,7 +16,7 @@
                     @can('admin')
                     <a href="{{ route('elus.admin.index') }}" class="px-4 py-2 text-sm bg-white text-[#faa21b] hover:bg-white/90 rounded-lg transition font-bold">{{ __('Administration') }}</a>
                     @endcan
-                    
+
                     <!-- User Menu - Using reusable component -->
                     <div class="ml-4">
                         <x-elus-user-menu />
@@ -103,7 +103,7 @@
                             </a>
                         </div>
                         <div class="divide-y divide-orange-50">
-                            @forelse($upcomingReunions as $reunion)
+                            @forelse($upcomingReunions->take(2) as $reunion)
                                 <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-6 py-4 hover:bg-orange-50/50 transition group">
                                     <div class="flex items-center justify-between">
                                         <div class="flex-1">
