@@ -3,26 +3,22 @@
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Elus\Concerns\FiltersDocuments;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DocumentController extends Controller
 {
+    use FiltersDocuments;
+
     /**
      * Display a listing of the documents.
      */
     public function index(Request $request): View
     {
-        $query = Document::query()
-            ->where(function ($q) use ($request) {
-                $user = $request->user();
-                $q->where('visible_to_all', true)
-                    ->orWhere('created_by', $user->id)
-                    ->orWhereHas('users', function ($query) use ($user) {
-                        $query->where('user_id', $user->id);
-                    });
-            });
+        $user = $request->user();
+        $query = $this->getUserAccessibleDocuments($user);
 
         // Filter by category
         if ($request->filled('category')) {

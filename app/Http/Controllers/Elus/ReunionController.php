@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
 use App\Models\Reunion;
 use App\Models\Instance;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 
 class ReunionController extends Controller
 {
+    use RequiresAdmin;
     /**
      * Display a listing of the reunions.
      */
@@ -57,7 +59,7 @@ class ReunionController extends Controller
      */
     public function create(Request $request): View
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $instances = Instance::orderBy('name')->get();
         $statuses = Reunion::STATUSES;
@@ -71,7 +73,7 @@ class ReunionController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $validated = $request->validate([
             'instance_id' => 'required|exists:instances,id',
@@ -105,7 +107,7 @@ class ReunionController extends Controller
      */
     public function edit(Reunion $reunion): View
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $instances = Instance::orderBy('name')->get();
         $statuses = Reunion::STATUSES;
@@ -117,7 +119,7 @@ class ReunionController extends Controller
      */
     public function update(Request $request, Reunion $reunion): RedirectResponse
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $validated = $request->validate([
             'instance_id' => 'required|exists:instances,id',
@@ -143,7 +145,7 @@ class ReunionController extends Controller
      */
     public function destroy(Reunion $reunion): RedirectResponse
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $reunion->delete();
 

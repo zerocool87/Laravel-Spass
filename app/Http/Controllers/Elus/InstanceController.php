@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
 use App\Models\Instance;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -10,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 
 class InstanceController extends Controller
 {
+    use RequiresAdmin;
     /**
      * Display a listing of the instances.
      */
@@ -46,7 +48,7 @@ class InstanceController extends Controller
      */
     public function create(): View
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $types = Instance::TYPES;
         return view('elus.instances.create', compact('types'));
@@ -57,7 +59,7 @@ class InstanceController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -94,7 +96,7 @@ class InstanceController extends Controller
      */
     public function edit(Instance $instance): View
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $types = Instance::TYPES;
         return view('elus.instances.edit', compact('instance', 'types'));
@@ -105,7 +107,7 @@ class InstanceController extends Controller
      */
     public function update(Request $request, Instance $instance): RedirectResponse
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -127,7 +129,7 @@ class InstanceController extends Controller
      */
     public function destroy(Instance $instance): RedirectResponse
     {
-        abort_unless(request()->user()->isAdmin(), 403, __('Vous n\'avez pas l\'autorisation d\'effectuer cette action.'));
+        $this->requireAdmin();
 
         $instance->delete();
 

@@ -87,7 +87,7 @@
                 <div class="lg:col-span-2 space-y-6">
                     {{-- Upcoming Reunions --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">📅 {{ __('Prochaines réunions') }}</h3>
                             <a href="{{ route('elus.reunions.calendar') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                                 {{ __('Voir le calendrier') }}
@@ -126,7 +126,7 @@
                             @endforelse
                         </div>
                         @can('admin')
-                        <div class="px-6 py-3 bg-[#faa21b]/5 rounded-b-xl border-t-2 border-[#faa21b]/20">
+                        <div class="px-6 py-3 bg-[#faa21b]/15 rounded-b-xl border-t-2 border-[#faa21b]/20">
                             <a href="{{ route('elus.reunions.create') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -139,7 +139,7 @@
 
                     {{-- Instances --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">🏛️ {{ __('Instances') }}</h3>
                             <a href="{{ route('elus.instances.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                                 {{ __('Tout voir') }}
@@ -174,7 +174,7 @@
                 <div class="space-y-6">
                     {{-- Quick Actions --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20">
+                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20">
                             <h3 class="text-lg font-bold text-[#faa21b]">⚡ {{ __('Accès rapides') }}</h3>
                         </div>
                         <div class="p-4 grid grid-cols-2 gap-3">
@@ -228,7 +228,7 @@
                     {{-- Recent Documents Widget --}}
                     @if($latestDocuments->count() > 0)
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">📄 {{ __('Documents récents') }}</h3>
                             <a href="{{ route('elus.documents.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                                 {{ __('Bibliothèque') }}
@@ -258,7 +258,7 @@
             {{-- Active Projects --}}
             <div class="mt-8">
                 <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 overflow-hidden">
-                    <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20 flex items-center justify-between">
+                    <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-[#faa21b]">📋 {{ __('Projets en cours') }}</h3>
                         <a href="{{ route('elus.projects.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Tous les projets') }}
@@ -319,7 +319,7 @@
             @if($latestDocuments->count() > 0)
             <div class="mt-6">
                 <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 overflow-hidden">
-                    <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20 flex items-center justify-between">
+                    <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-[#faa21b]">📚 {{ __('Bibliothèque de documents') }}</h3>
                         <a href="{{ route('elus.documents.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Voir tout') }}

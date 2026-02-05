@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Elus\Concerns\FiltersDocuments;
 use App\Models\Instance;
 use App\Models\Project;
 use App\Models\Reunion;
-use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
+    use FiltersDocuments;
     /**
      * Display the Espace Élus dashboard.
      */
@@ -19,10 +20,10 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        // Get upcoming reunions (next 2)
+        // Get upcoming reunions (next 5)
         $upcomingReunions = Reunion::with('instance')
             ->upcoming()
-            ->take(2)
+            ->take(5)
             ->get();
 
         // Get active projects
@@ -32,13 +33,7 @@ class DashboardController extends Controller
             ->get();
 
         // Get latest documents accessible to the user
-        $latestDocuments = Document::where(function ($q) use ($user) {
-                $q->where('visible_to_all', true)
-                    ->orWhere('created_by', $user->id)
-                    ->orWhereHas('users', function ($query) use ($user) {
-                        $query->where('user_id', $user->id);
-                    });
-            })
+        $latestDocuments = $this->getUserAccessibleDocuments($user)
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
@@ -56,13 +51,7 @@ class DashboardController extends Controller
             'upcoming_reunions' => Reunion::upcoming()->count(),
             'total_instances' => Instance::count(),
             'total_budget' => Project::active()->sum('budget'),
-            'total_documents' => Document::where(function ($q) use ($user) {
-                $q->where('visible_to_all', true)
-                    ->orWhere('created_by', $user->id)
-                    ->orWhereHas('users', function ($query) use ($user) {
-                        $query->where('user_id', $user->id);
-                    });
-            })->count(),
+            'total_documents' => $this->getUserAccessibleDocuments($user)->count(),
         ];
 
         return view('elus.dashboard', compact(
