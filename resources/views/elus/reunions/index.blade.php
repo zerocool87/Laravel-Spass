@@ -9,11 +9,6 @@
             activeSection="reunions"
         >
             <x-slot name="actions">
-                @can('admin')
-                <a href="{{ route('elus.reunions.create') }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
-                    + {{ __('Nouvelle réunion') }}
-                </a>
-                @endcan
             </x-slot>
         </x-elus-header>
     </x-slot>

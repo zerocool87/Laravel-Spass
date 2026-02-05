@@ -9,11 +9,6 @@
             activeSection="projects"
         >
             <x-slot name="actions">
-                @can('admin')
-                <a href="{{ route('elus.projects.create') }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
-                    + {{ __('Nouveau projet') }}
-                </a>
-                @endcan
             </x-slot>
         </x-elus-header>
     </x-slot>

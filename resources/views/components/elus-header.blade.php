@@ -50,7 +50,6 @@
                 @endcan
 
                 <a href="{{ route('elus.dashboard') }}" class="px-4 py-2 text-sm bg-white text-[#faa21b] font-bold rounded-lg transition">{{ __('Tableau de bord') }}</a>
-
                 <div class="ml-2">
                     <x-elus-user-menu />
                 </div>
