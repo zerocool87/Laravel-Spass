@@ -67,12 +67,12 @@ class DashboardUpcomingReunionsTest extends TestCase
         $response = $this->actingAs($user)->get('/elus');
 
         $response->assertStatus(200);
-        
+
         // Should see the first 5 reunions
         for ($i = 1; $i <= 5; $i++) {
             $response->assertSee('Réunion ' . $i);
         }
-        
+
         // Should not see the 6th reunion
         $response->assertDontSee('Réunion 6');
     }

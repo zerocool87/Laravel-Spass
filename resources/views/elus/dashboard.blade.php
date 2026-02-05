@@ -82,12 +82,13 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {{-- Left Column: Réunions + Instances --}}
-                <div class="lg:col-span-2 space-y-6">
+            {{-- Main Content Grid: 2 columns --}}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {{-- Left Column: Reunions + Instances --}}
+                <div class="space-y-6">
                     {{-- Upcoming Reunions --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                        <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">📅 {{ __('Prochaines réunions') }}</h3>
                             <a href="{{ route('elus.reunions.calendar') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                                 {{ __('Voir le calendrier') }}
@@ -139,7 +140,7 @@
 
                     {{-- Instances --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                        <div class="px-6 py-4 bg-[#faa21b]/5 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">🏛️ {{ __('Instances') }}</h3>
                             <a href="{{ route('elus.instances.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                                 {{ __('Tout voir') }}
@@ -148,21 +149,21 @@
                                 </svg>
                             </a>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-orange-50">
+                        <div class="divide-y divide-orange-50">
                             @forelse($instances as $instance)
-                                <a href="{{ route('elus.instances.show', $instance) }}" class="block px-6 py-3 hover:bg-orange-50/50 transition group border-b md:border-b-0 border-orange-50 last:border-b-0">
+                                <a href="{{ route('elus.instances.show', $instance) }}" class="block px-6 py-3 hover:bg-orange-50/50 transition group">
                                     <div class="flex items-center justify-between">
-                                        <div>
+                                        <div class="flex-1">
                                             <p class="font-semibold text-gray-900 group-hover:text-orange-600 transition">{{ $instance->name }}</p>
                                             <p class="text-xs text-gray-600 mt-1">{{ $instance->type_label }}</p>
                                         </div>
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700 ml-2 flex-shrink-0">
                                             {{ $instance->reunions_count }} {{ __('réunions') }}
                                         </span>
                                     </div>
                                 </a>
                             @empty
-                                <div class="px-6 py-4 text-center text-gray-500 col-span-2">
+                                <div class="px-6 py-8 text-center text-gray-500">
                                     🏛️ {{ __('Aucune instance') }}
                                 </div>
                             @endforelse
@@ -170,62 +171,8 @@
                     </div>
                 </div>
 
-                {{-- Right Column: Quick Actions + Recent Documents --}}
+                {{-- Right Column: Quick Access + Recent Documents --}}
                 <div class="space-y-6">
-                    {{-- Quick Actions --}}
-                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
-                        <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20">
-                            <h3 class="text-lg font-bold text-[#faa21b]">⚡ {{ __('Accès rapides') }}</h3>
-                        </div>
-                        <div class="p-4 grid grid-cols-2 gap-3">
-                            <a href="{{ route('elus.documents.index') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
-                                <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
-                                    <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Bibliothèque') }}</p>
-                                    <p class="text-xs text-gray-500">{{ $stats['total_documents'] }} {{ __('documents') }}</p>
-                                </div>
-                            </a>
-                            <a href="{{ route('elus.reunions.calendar') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
-                                <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
-                                    <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Calendrier') }}</p>
-                                    <p class="text-xs text-gray-500">{{ __('Réunions') }}</p>
-                                </div>
-                            </a>
-                            <a href="{{ route('elus.projects.index') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
-                                <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
-                                    <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Projets') }}</p>
-                                    <p class="text-xs text-gray-500">{{ $stats['total_projects'] }} {{ __('projets') }}</p>
-                                </div>
-                            </a>
-                            <a href="{{ route('elus.instances.index') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
-                                <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
-                                    <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Instances') }}</p>
-                                    <p class="text-xs text-gray-500">{{ $stats['total_instances'] }} {{ __('instances') }}</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    {{-- Recent Documents Widget --}}
                     @if($latestDocuments->count() > 0)
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
                         <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
@@ -252,6 +199,59 @@
                         </div>
                     </div>
                     @endif
+                </div>
+
+                {{-- Quick Actions --}}
+                <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
+                    <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20">
+                        <h3 class="text-lg font-bold text-[#faa21b]">⚡ {{ __('Accès rapides') }}</h3>
+                    </div>
+                    <div class="p-4 grid grid-cols-2 gap-3">
+                        <a href="{{ route('elus.documents.index') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
+                            <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
+                                <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Bibliothèque') }}</p>
+                                <p class="text-xs text-gray-500">{{ $stats['total_documents'] }} {{ __('documents') }}</p>
+                            </div>
+                        </a>
+                        <a href="{{ route('elus.reunions.calendar') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
+                            <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
+                                <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Calendrier') }}</p>
+                                <p class="text-xs text-gray-500">{{ __('Réunions') }}</p>
+                            </div>
+                        </a>
+                        <a href="{{ route('elus.projects.index') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
+                            <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
+                                <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Projets') }}</p>
+                                <p class="text-xs text-gray-500">{{ $stats['total_projects'] }} {{ __('projets') }}</p>
+                            </div>
+                        </a>
+                        <a href="{{ route('elus.instances.index') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
+                            <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
+                                <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Instances') }}</p>
+                                <p class="text-xs text-gray-500">{{ $stats['total_instances'] }} {{ __('instances') }}</p>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
 
