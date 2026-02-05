@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\FiltersDocuments;
+use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class DocumentController extends Controller
@@ -49,5 +54,42 @@ class DocumentController extends Controller
             ->sort();
 
         return view('elus.documents.index', compact('documentsByCategory', 'categories'));
+    }
+
+    /**
+     * Show the form for creating a new document.
+     */
+    public function create(): View
+    {
+        $users = User::orderBy('name')->get();
+
+        return view('elus.documents.create', compact('users'));
+    }
+
+    /**
+     * Store a newly created document in storage.
+     */
+    public function store(DocumentRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+
+        $file = $request->file('file');
+        $path = $file->store('documents');
+
+        $document = Document::create([
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
+            'path' => $path,
+            'original_name' => $file->getClientOriginalName(),
+            'created_by' => $request->user()->id,
+            'visible_to_all' => boolval($data['visible_to_all']),
+            'category' => $data['category'] ?? null,
+        ]);
+
+        if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
+            $document->users()->sync($data['assigned_users']);
+        }
+
+        return Redirect::route('elus.documents.index')->with('success', 'Document uploaded.');
     }
 }

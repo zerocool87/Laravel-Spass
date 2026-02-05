@@ -19,6 +19,50 @@
                     <a href="{{ route('elus.reunions.index') }}" class="px-4 py-2 text-sm text-white hover:bg-white/20 rounded-lg transition font-medium">{{ __('Réunions') }}</a>
                     <a href="{{ route('elus.dashboard') }}" class="px-4 py-2 text-sm bg-white text-[#faa21b] hover:bg-white/90 rounded-lg transition font-bold">{{ __('Tableau de bord') }}</a>
                 </nav>
+
+                <!-- User Menu - Moved from main layout -->
+                <div class="flex items-center ms-6">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-[#faa21b]/20 hover:bg-[#faa21b]/30 focus:outline-none transition ease-in-out duration-150">
+                                <div>{{ Auth::user()->name }}</div>
+                                <div class="ms-1">
+                                    <svg class="fill-current h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            @if(Auth::user()->isAdmin())
+                            <x-dropdown-link :href="route('admin.users.index')">
+                                {{ __('Admin - Users') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.documents.index')">
+                                {{ __('Admin - Documents') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.events.index')">
+                                {{ __('Admin - Events') }}
+                            </x-dropdown-link>
+                            @endif
+
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ __('Profile') }}
+                            </x-dropdown-link>
+
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
             </div>
         </div>
     </x-slot>

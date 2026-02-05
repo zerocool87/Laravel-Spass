@@ -85,6 +85,8 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
 
     // Documents / Library
     Route::get('/documents', [\App\Http\Controllers\Elus\DocumentController::class, 'index'])->name('documents.index');
+    Route::get('/documents/create', [\App\Http\Controllers\Elus\DocumentController::class, 'create'])->name('documents.create');
+    Route::post('/documents', [\App\Http\Controllers\Elus\DocumentController::class, 'store'])->name('documents.store');
 
     // Admin section (only for admins within Espace Élus)
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {

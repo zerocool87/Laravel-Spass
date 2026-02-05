@@ -174,11 +174,11 @@
                 {{-- Right Column: Quick Access + Recent Documents --}}
                 <div class="space-y-6">
                     {{-- Quick Actions --}}
-                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
+                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 quick-actions-widget">
                         <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20">
                             <h3 class="text-lg font-bold text-[#faa21b]">⚡ {{ __('Accès rapides') }}</h3>
                         </div>
-                    <div class="p-4 grid grid-cols-2 gap-3">
+                    <div class="p-4 grid grid-cols-2 gap-3 quick-actions-content">
                         <a href="{{ route('elus.documents.index') }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
                             <div class="flex-shrink-0 w-10 h-10 bg-[#faa21b]/10 rounded-lg flex items-center justify-center group-hover:bg-[#faa21b]/20 transition">
                                 <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
