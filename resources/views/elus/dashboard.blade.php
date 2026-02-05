@@ -238,8 +238,8 @@
                                 </svg>
                             </a>
                         </div>
-                        <div class="divide-y divide-orange-50 max-h-[445px] overflow-y-auto">
-                            @foreach($latestDocuments->take(3) as $document)
+                        <div class="divide-y divide-orange-50 max-h-[360px] overflow-y-auto">
+                            @foreach($latestDocuments->take(5) as $document)
                                 <a href="{{ route('documents.download', $document) }}" class="flex items-center px-6 py-3 hover:bg-orange-50/50 transition group">
                                     <div class="flex-shrink-0 p-2 rounded-lg transition">
                                         <x-category-icon :document="$document" size="w-5 h-5" />
@@ -254,6 +254,7 @@
                     </div>
                     @endif
                 </div>
+            </div>
 
             {{-- Active Projects --}}
             <div class="mt-8">
@@ -314,41 +315,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Latest Documents --}}
-            @if($latestDocuments->count() > 0)
-            <div class="mt-6">
-                <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 overflow-hidden">
-                    <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between">
-                        <h3 class="text-lg font-bold text-[#faa21b]">📚 {{ __('Bibliothèque de documents') }}</h3>
-                        <a href="{{ route('elus.documents.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
-                            {{ __('Voir tout') }}
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </a>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6">
-                        @foreach($latestDocuments as $document)
-                            <a href="{{ route('documents.download', $document) }}" class="flex items-center p-4 border-2 border-[#faa21b]/20 rounded-lg hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
-                                <div class="flex-shrink-0 p-3 rounded-lg transition">
-                                    <x-category-icon :document="$document" size="w-6 h-6" />
-                                </div>
-                                <div class="ml-3 overflow-hidden flex-1">
-                                    <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-[#faa21b] transition">{{ $document->title }}</p>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <p class="text-xs text-gray-500">{{ $document->created_at->format('d/m/Y') }}</p>
-                                        @if($document->category)
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#faa21b]/10 text-[#faa21b]">{{ $document->category }}</span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            @endif
         </div>
     </div>
 </x-app-layout>
