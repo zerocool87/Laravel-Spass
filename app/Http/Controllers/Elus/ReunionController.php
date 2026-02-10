@@ -175,7 +175,7 @@ class ReunionController extends Controller
             return [
                 'id' => $reunion->id,
                 'title' => $reunion->title,
-                'start' => $reunion->date->toIso8601String(),
+                'start' => $reunion->date ? $reunion->date->toIso8601String() : null,
                 'url' => route('elus.reunions.show', $reunion),
                 'backgroundColor' => $this->getStatusColor($reunion->status),
                 'borderColor' => $this->getStatusColor($reunion->status),
