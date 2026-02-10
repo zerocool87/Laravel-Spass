@@ -62,6 +62,12 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
         Route::post('/documents', [\App\Http\Controllers\Elus\DocumentController::class, 'store'])->name('documents.store');
     });
 
+    // Collaborative messaging
+    Route::get('/collab', [\App\Http\Controllers\Elus\CollabController::class, 'index'])->name('collab.index');
+    Route::post('/collab', [\App\Http\Controllers\Elus\CollabController::class, 'storeConversation'])->name('collab.store');
+    Route::get('/collab/{conversation}', [\App\Http\Controllers\Elus\CollabController::class, 'show'])->name('collab.show');
+    Route::post('/collab/{conversation}/messages', [\App\Http\Controllers\Elus\CollabController::class, 'storeMessage'])->name('collab.messages.store');
+
     // Admin section (only for admins within Espace Élus)
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Elus\AdminController::class, 'index'])->name('index');

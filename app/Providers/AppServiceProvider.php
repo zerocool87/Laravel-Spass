@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Message;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,21 @@ class AppServiceProvider extends ServiceProvider
         // Define a simple gate for admin users
         Gate::define('admin', function ($user) {
             return method_exists($user, 'isAdmin') && $user->isAdmin();
+        });
+
+        View::composer('components.elus-header', function ($view) {
+            $user = auth()->user();
+            $unreadCount = 0;
+
+            if ($user && ($user->isElu() || $user->isAdmin())) {
+                $unreadCount = Message::query()
+                    ->whereNull('read_at')
+                    ->where('user_id', '!=', $user->id)
+                    ->whereHas('conversation.users', fn ($query) => $query->where('users.id', $user->id))
+                    ->count();
+            }
+
+            $view->with('collabUnreadCount', $unreadCount);
         });
     }
 }
