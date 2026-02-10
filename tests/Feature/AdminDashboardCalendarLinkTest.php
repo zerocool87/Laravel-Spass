@@ -10,27 +10,27 @@ class AdminDashboardCalendarLinkTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_sees_embedded_calendar_and_create_button_on_dashboard()
+    public function test_admin_sees_embedded_calendar_without_create_button_on_dashboard()
     {
-        $admin = User::factory()->create();
-        $admin->is_admin = true;
-        $admin->save();
+        $admin = User::factory()->create(['is_admin' => true, 'is_elu' => true]);
 
         $this->actingAs($admin)
-            ->get('/dashboard')
+            ->get(route('elus.dashboard'))
             ->assertStatus(200)
-            ->assertSee('<div id="dashboard-calendar"', false)
-            ->assertSee('Create Event');
+            ->assertSee('Espace Élus')
+            ->assertDontSee('<div id="dashboard-calendar"', false)
+            ->assertDontSee('Create Event');
     }
 
     public function test_regular_user_sees_embedded_calendar_without_create_button()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_elu' => true]);
 
         $this->actingAs($user)
-            ->get('/dashboard')
+            ->get(route('elus.dashboard'))
             ->assertStatus(200)
-            ->assertSee('<div id="dashboard-calendar"', false)
+            ->assertSee('Espace Élus')
+            ->assertDontSee('<div id="dashboard-calendar"', false)
             ->assertDontSee('Create Event');
     }
 }

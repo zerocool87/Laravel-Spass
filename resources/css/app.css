@@ -1,12 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Category badge styling */
 .category-badge {
   border: 1.5px solid #ffd580;
   box-shadow: 0 2px 8px rgba(16,24,40,0.10);
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
   /* Laravel default light theme palette */

@@ -12,9 +12,9 @@ class DashboardCalendarCompactTest extends TestCase
 
     public function test_dashboard_has_compact_toggle_buttons()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['is_elu' => true]);
 
-        $response = $this->actingAs($user)->get('/dashboard');
+        $response = $this->actingAs($user)->get(route('elus.dashboard'));
 
         $response->assertStatus(200);
         $response->assertDontSee('Compact');

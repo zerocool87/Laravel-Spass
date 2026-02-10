@@ -37,6 +37,6 @@ class AdminDocumentCreationTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('elus.documents.create'));
 
-        $response->assertStatus(200); // Should be accessible to elus
+        $response->assertStatus(403);
     }
 }

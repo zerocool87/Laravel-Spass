@@ -14,18 +14,6 @@
         </x-slot>
 
         <x-slot name="content">
-            @if(Auth::user()->isAdmin())
-            <x-dropdown-link :href="route('admin.users.index')">
-                {{ __('Admin - Users') }}
-            </x-dropdown-link>
-            <x-dropdown-link :href="route('admin.documents.index')">
-                {{ __('Admin - Documents') }}
-            </x-dropdown-link>
-            <x-dropdown-link :href="route('admin.events.index')">
-                {{ __('Admin - Events') }}
-            </x-dropdown-link>
-            @endif
-
             <x-dropdown-link :href="route('profile.edit')">
                 {{ __('Profile') }}
             </x-dropdown-link>

@@ -22,7 +22,7 @@ class LibraryGroupingTest extends TestCase
             ->get(route('library.index'))
             ->assertStatus(200)
             ->assertSee('Convocations')
-            ->assertSee('?category=Convocations')
+            ->assertSee('data-slug="convocations"', false)
             ->assertSee('Ordres du jour')
             ->assertSee('Tous'); // French translation for "All"
     }
@@ -41,7 +41,7 @@ class LibraryGroupingTest extends TestCase
             ->assertStatus(200)
             ->assertSee('Convocations');
 
-        // Check that pagination is present (page 2 link)
-        $response->assertSee('page=2', false);
+        // Client-side filtering uses data attributes; no pagination links are expected
+        $response->assertDontSee('page=2', false);
     }
 }

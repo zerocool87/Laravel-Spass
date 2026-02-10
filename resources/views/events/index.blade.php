@@ -10,11 +10,6 @@
     <script>window.CALENDAR_DEBUG = {{ config('app.debug') ? 'true' : 'false' }};</script>
 
     <div class="container">
-        @can('admin')
-            <div class="mb-4 flex justify-center">
-                <button type="button" onclick="window.openEventCreateModal(new Date().toISOString().slice(0,10))" class="bg-[#faa21b] hover:bg-[#e89315] text-white rounded-lg px-5 py-2.5 font-semibold shadow-sm transition">{{ __('Create Event') }}</button>
-            </div>
-        @endcan
 
         <div class="mt-6">
                 @foreach($events as $event)
@@ -65,14 +60,8 @@
             <div id="events-calendar"
                  data-feed-url="{{ route('events.json') }}"
                  data-mode="full"
-                 data-can-edit="{{ auth()->check() && auth()->user()->can('admin') ? '1' : '0' }}"
-                 data-create-url="{{ auth()->check() && auth()->user()->can('admin') ? route('admin.events.create') : '' }}"
-                 data-edit-base="{{ auth()->check() && auth()->user()->can('admin') ? route('admin.events.index') : '' }}"
+                 data-can-edit="0"
                  class="w-full max-w-4xl"></div>
         </div>
     </div>
-
-    @can('admin')
-        @include('events._admin_create_modal')
-    @endcan
 </x-app-layout>

@@ -218,7 +218,7 @@ class ReunionController extends Controller
      */
     public function toggleCalendar(Request $request): RedirectResponse
     {
-        $showCalendar = $request->session()->get('show_calendar', true);
+        $showCalendar = $request->session()->get('show_calendar', false);
         $request->session()->put('show_calendar', !$showCalendar);
 
         return back();

@@ -11,11 +11,11 @@ class EventTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_can_create_event()
+    public function test_admin_cannot_create_event_via_removed_admin_route()
     {
         $admin = User::factory()->create(['is_admin' => true]);
 
-        $response = $this->actingAs($admin)->post(route('admin.events.store'), [
+        $response = $this->actingAs($admin)->post('/admin/events', [
             'title' => 'Team Meeting',
             'description' => 'Discuss project status',
             'start_at' => now()->addDay()->format('Y-m-d H:i:s'),
@@ -24,8 +24,8 @@ class EventTest extends TestCase
             'is_all_day' => false,
         ]);
 
-        $response->assertRedirect(route('admin.events.index'));
-        $this->assertDatabaseHas('events', ['title' => 'Team Meeting']);
+        $response->assertStatus(404);
+        $this->assertDatabaseMissing('events', ['title' => 'Team Meeting']);
     }
 
     public function test_user_can_view_events_index()
@@ -38,15 +38,15 @@ class EventTest extends TestCase
         $response->assertSee('Public Event');
     }
 
-    public function test_event_validation_fails_on_missing_title()
+    public function test_event_validation_route_is_removed_for_admins()
     {
         $admin = User::factory()->create(['is_admin' => true]);
 
-        $response = $this->actingAs($admin)->post(route('admin.events.store'), [
+        $response = $this->actingAs($admin)->post('/admin/events', [
             'description' => 'No title',
             'start_at' => now()->addDay()->format('Y-m-d H:i:s'),
         ]);
 
-        $response->assertSessionHasErrors('title');
+        $response->assertStatus(404);
     }
 }

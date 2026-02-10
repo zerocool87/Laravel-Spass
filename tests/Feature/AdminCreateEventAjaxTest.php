@@ -10,7 +10,7 @@ class AdminCreateEventAjaxTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_can_create_event_via_ajax()
+    public function test_admin_cannot_create_event_via_removed_admin_route()
     {
         $admin = User::factory()->create();
         $admin->is_admin = true;
@@ -26,10 +26,9 @@ class AdminCreateEventAjaxTest extends TestCase
         ];
 
         $this->actingAs($admin)
-            ->postJson(route('admin.events.store'), $payload)
-            ->assertStatus(201)
-            ->assertJsonStructure(['id', 'title', 'start', 'end', 'allDay', 'url']);
+            ->postJson('/admin/events', $payload)
+            ->assertStatus(404);
 
-        $this->assertDatabaseHas('events', ['title' => 'AJAX Event']);
+        $this->assertDatabaseMissing('events', ['title' => 'AJAX Event']);
     }
 }

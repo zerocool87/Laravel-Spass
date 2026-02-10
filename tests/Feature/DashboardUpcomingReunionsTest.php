@@ -22,21 +22,21 @@ class DashboardUpcomingReunionsTest extends TestCase
             'instance_id' => $instance->id,
             'title' => 'Réunion planifiée',
             'date' => now()->addDays(1),
-            'status' => 'planifiee'
+            'status' => 'planifiee',
         ]);
 
         $confirmeeReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion confirmée',
             'date' => now()->addDays(2),
-            'status' => 'confirmee'
+            'status' => 'confirmee',
         ]);
 
         $termineeReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion terminée',
             'date' => now()->addDays(3),
-            'status' => 'terminee'
+            'status' => 'terminee',
         ]);
 
         // Visit elus dashboard
@@ -48,7 +48,7 @@ class DashboardUpcomingReunionsTest extends TestCase
         $response->assertDontSee($termineeReunion->title);
     }
 
-    public function test_dashboard_shows_max_5_upcoming_reunions()
+    public function test_dashboard_shows_max_2_upcoming_reunions()
     {
         $user = User::factory()->create(['is_elu' => true]);
         $instance = Instance::factory()->create();
@@ -57,9 +57,9 @@ class DashboardUpcomingReunionsTest extends TestCase
         for ($i = 1; $i <= 6; $i++) {
             Reunion::factory()->create([
                 'instance_id' => $instance->id,
-                'title' => 'Réunion ' . $i,
+                'title' => 'Réunion '.$i,
                 'date' => now()->addDays($i),
-                'status' => 'planifiee'
+                'status' => 'planifiee',
             ]);
         }
 
@@ -68,12 +68,14 @@ class DashboardUpcomingReunionsTest extends TestCase
 
         $response->assertStatus(200);
 
-        // Should see the first 5 reunions
-        for ($i = 1; $i <= 5; $i++) {
-            $response->assertSee('Réunion ' . $i);
+        // Should see the first 2 reunions
+        for ($i = 1; $i <= 2; $i++) {
+            $response->assertSee('Réunion '.$i);
         }
 
-        // Should not see the 6th reunion
-        $response->assertDontSee('Réunion 6');
+        // Should not see reunions beyond the first 2
+        for ($i = 3; $i <= 6; $i++) {
+            $response->assertDontSee('Réunion '.$i);
+        }
     }
 }

@@ -11,7 +11,7 @@ class AdminDeleteEventAjaxTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_can_delete_event_via_ajax()
+    public function test_admin_cannot_delete_event_via_removed_admin_route()
     {
         $admin = User::factory()->create();
         $admin->is_admin = true;
@@ -20,19 +20,21 @@ class AdminDeleteEventAjaxTest extends TestCase
         $event = Event::create(['title' => 'To be deleted', 'start_at' => now(), 'created_by' => $admin->id]);
 
         $this->actingAs($admin)
-            ->deleteJson(route('admin.events.destroy', $event))
-            ->assertStatus(204);
+            ->deleteJson("/admin/events/{$event->id}")
+            ->assertStatus(404);
 
-        $this->assertSoftDeleted('events', ['id' => $event->id]);
+        $this->assertDatabaseHas('events', ['id' => $event->id]);
     }
 
-    public function test_non_admin_cannot_delete_event_via_ajax()
+    public function test_non_admin_cannot_delete_event_via_removed_admin_route()
     {
         $user = User::factory()->create();
         $event = Event::create(['title' => 'Cannot delete', 'start_at' => now(), 'created_by' => $user->id]);
 
         $this->actingAs($user)
-            ->deleteJson(route('admin.events.destroy', $event))
-            ->assertStatus(403);
+            ->deleteJson("/admin/events/{$event->id}")
+            ->assertStatus(404);
+
+        $this->assertDatabaseHas('events', ['id' => $event->id]);
     }
 }

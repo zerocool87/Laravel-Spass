@@ -18,12 +18,6 @@
                     {{-- <h3 class="text-lg font-semibold mb-3">{{ __('Calendar') }}</h3> --}}
                     <div id="dashboard-calendar" data-feed-url="/events/json" data-mode="month" data-can-edit="false" aria-label="Events Calendar"></div>
 
-                    @can('admin')
-                        <div class="mt-3 flex justify-end">
-                            <x-primary-button href="{{ route('admin.events.create') }}">{{ __('Create Event') }}</x-primary-button>
-                        </div>
-                    @endcan
-
                     <style>
                     /* Dashboard calendar – defer to app.css, only layout tweaks here */
                     #dashboard-calendar[data-mode="mini"] { max-height: 320px; overflow-y: auto; }
