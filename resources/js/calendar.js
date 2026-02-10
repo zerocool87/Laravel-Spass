@@ -312,6 +312,9 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             calendar.render();
 
+            // Ensure container is visible after render (fix cases where CSS hid it)
+            try { el.style.display = 'block'; } catch (e) { /* ignore */ }
+
             // expose instance for UI toggles
             el._fcCalendar = calendar;
             el._fcMode = mode;

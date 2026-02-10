@@ -316,6 +316,8 @@ input[type="text"], textarea, select, .input-text {
   border-radius: 16px;
   box-shadow: var(--card-shadow);
   border: 1.5px solid var(--panel-border);
+  /* Ensure calendar area is visible by default; JS will handle initialization */
+  min-height: 320px;
 }
 
 /* Base */
