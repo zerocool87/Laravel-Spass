@@ -88,7 +88,11 @@
                     @foreach($documentsByCategory as $category => $docs)
                         <div class="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-[#faa21b]/20">
                             {{-- Category Header --}}
-                            <div class="bg-[#faa21b] px-6 py-4">
+                            @php
+                                $categoryColors = config('documents.category_colors', []);
+                                $colorClass = $categoryColors[$category] ?? 'bg-[#faa21b]';
+                            @endphp
+                            <div class="{{ $colorClass }} px-6 py-4">
                                 <div class="flex items-center justify-between">
                                     <h3 class="text-lg font-bold text-white flex items-center">
                                         @php
