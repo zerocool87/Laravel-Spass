@@ -212,4 +212,15 @@ class ReunionController extends Controller
         $instances = Instance::orderBy('name')->get();
         return view('elus.reunions.calendar', compact('instances'));
     }
+
+    /**
+     * Toggle calendar visibility.
+     */
+    public function toggleCalendar(Request $request): RedirectResponse
+    {
+        $showCalendar = $request->session()->get('show_calendar', true);
+        $request->session()->put('show_calendar', !$showCalendar);
+
+        return back();
+    }
 }

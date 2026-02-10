@@ -15,6 +15,44 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- Create Reunion Button --}}
+            <div class="mb-6 flex justify-between items-center">
+                @can('admin')
+                <a href="{{ route('elus.reunions.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-[#faa21b] hover:bg-[#e89315] transition shadow-sm">
+                    + {{ __('Nouvelle réunion') }}
+                </a>
+                @endcan
+
+                <form method="POST" action="{{ route('elus.reunions.toggle-calendar') }}" class="flex items-center">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-[#faa21b] hover:bg-[#e89315] transition shadow-sm">
+                        @if(session('show_calendar', true))
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            {{ __('Masquer le calendrier') }}
+                        @else
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            {{ __('Afficher le calendrier') }}
+                        @endif
+                    </button>
+                </form>
+            </div>
+
+            @if(session('show_calendar', true))
+                {{-- Calendar Section --}}
+                <div class="widget-container mb-6">
+                    <x-widget-header
+                        title="📅 {{ __('Calendrier') }}"
+                    />
+                    <div class="bg-white rounded-lg shadow-lg border-2 border-[#faa21b]/20 p-6">
+                        <div id="reunions-calendar" data-feed-url="{{ route('elus.reunions.json') }}" data-mode="compact"></div>
+                    </div>
+                </div>
+            @endif
+
             {{-- Filters --}}
             <div class="widget-container mb-6">
                 <x-widget-header
@@ -58,15 +96,6 @@
                         </button>
                     </div>
                 </form>
-            </div>
-
-            {{-- Create Reunion Button --}}
-            <div class="mb-6">
-                @can('admin')
-                <a href="{{ route('elus.reunions.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-[#faa21b] hover:bg-[#e89315] transition shadow-sm">
-                    + {{ __('Nouvelle réunion') }}
-                </a>
-                @endcan
             </div>
 
             {{-- Reunions List --}}

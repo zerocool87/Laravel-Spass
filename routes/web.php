@@ -83,6 +83,7 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
     // Reunions
     Route::get('/reunions/calendar', [\App\Http\Controllers\Elus\ReunionController::class, 'calendar'])->name('reunions.calendar');
     Route::get('/reunions/json', [\App\Http\Controllers\Elus\ReunionController::class, 'json'])->name('reunions.json');
+    Route::post('/reunions/toggle-calendar', [\App\Http\Controllers\Elus\ReunionController::class, 'toggleCalendar'])->name('reunions.toggle-calendar');
     Route::resource('reunions', \App\Http\Controllers\Elus\ReunionController::class);
 
     // Documents / Library
