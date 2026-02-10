@@ -57,7 +57,7 @@
             }
         @endphp
         <div class="flex items-center p-3 rounded-xl bg-gray-50 border border-gray-100 transition-colors hover:bg-white hover:shadow-sm group">
-            <div class="p-2.5 rounded-lg bg-cyan-100 text-cyan-600 mr-4 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
+            <div class="p-2.5 rounded-lg bg-[#faa21b]/15 text-[#faa21b] mr-4 group-hover:bg-[#faa21b] group-hover:text-white transition-colors">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>

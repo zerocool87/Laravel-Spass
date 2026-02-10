@@ -11,7 +11,7 @@
                         <li class="flex items-center justify-between">
                             <div>
                                 <div class="font-semibold">{{ $doc->title }}</div>
-                                <div class="text-sm text-cyan-300">{{ $doc->description }}</div>
+                                <div class="text-sm text-[#faa21b]/70">{{ $doc->description }}</div>
                             </div>
                             <div class="flex items-center gap-2">
                                 <x-secondary-button type="button" onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})">{{ __('View') }}</x-secondary-button>

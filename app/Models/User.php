@@ -25,7 +25,6 @@ class User extends Authenticatable
         'is_elu',
         'fonction',
         'commune',
-        'territory',
     ];
 
     /**

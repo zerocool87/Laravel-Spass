@@ -60,31 +60,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Helper: apply event colors and list styling
         function applyEventColors(info) {
-            const type = (info.event.extendedProps && info.event.extendedProps.type) || 'Autre';
-            const typeColors = {
-                'Reunion': { bg: '#2563eb', border: '#1d4ed8' }, // blue
-                'Bureau': { bg: '#dc2626', border: '#b91c1c' }, // red
-                'Commissions': { bg: '#059669', border: '#047857' }, // green
-                'Assemblée pleniere': { bg: '#f59e42', border: '#b45309' }, // orange
-                'Autre': { bg: '#a21caf', border: '#701a75' } // purple
-            };
-            const col = typeColors[type] || typeColors['Autre'];
-            try { info.el.style.setProperty('background-color', col.bg, 'important'); } catch (e) { info.el.style.backgroundColor = col.bg; }
-            try { info.el.style.setProperty('border-color', col.border, 'important'); } catch (e) { info.el.style.borderColor = col.border; }
-            try { info.el.style.setProperty('color', 'white', 'important'); } catch (e) { info.el.style.color = 'white'; }
-            try {
-                const main = info.el.querySelector('.fc-list-event-main');
-                if (main) {
-                    main.style.backgroundColor = col.bg;
-                    main.style.borderColor = col.border;
-                    main.style.color = 'white';
-                    main.style.padding = '0.35rem 0.6rem';
-                    main.style.borderRadius = '0.375rem';
-                    main.style.display = 'flex';
-                    main.style.alignItems = 'center';
-                    main.style.gap = '0.75rem';
-                }
-            } catch (e) { }
+            const props = info.event.extendedProps || {};
+            let col = null;
+
+            if (props.status) {
+                const statusColors = {
+                    'Planifiée': { bg: '#3b82f6', border: '#2563eb' },
+                    'Confirmée': { bg: '#22c55e', border: '#16a34a' },
+                    'Terminée':  { bg: '#6b7280', border: '#4b5563' },
+                    'Annulée':   { bg: '#ef4444', border: '#dc2626' },
+                };
+                col = statusColors[props.status];
+            }
+
+            if (!col) {
+                const type = props.type || 'Autre';
+                const typeColors = {
+                    'Reunion': { bg: '#2563eb', border: '#1d4ed8' }, // blue
+                    'Bureau': { bg: '#dc2626', border: '#b91c1c' }, // red
+                    'Commissions': { bg: '#059669', border: '#047857' }, // green
+                    'Assemblée pleniere': { bg: '#f59e42', border: '#b45309' }, // orange
+                    'Autre': { bg: '#a21caf', border: '#701a75' } // purple
+                };
+                col = typeColors[type] || typeColors['Autre'];
+            }
+
+            if (col) {
+                try { info.el.style.setProperty('background-color', col.bg, 'important'); } catch (e) { info.el.style.backgroundColor = col.bg; }
+                try { info.el.style.setProperty('border-color', col.border, 'important'); } catch (e) { info.el.style.borderColor = col.border; }
+                try { info.el.style.setProperty('color', 'white', 'important'); } catch (e) { info.el.style.color = 'white'; }
+                try {
+                    const main = info.el.querySelector('.fc-list-event-main');
+                    if (main) {
+                        main.style.backgroundColor = col.bg;
+                        main.style.borderColor = col.border;
+                        main.style.color = 'white';
+                        main.style.padding = '0.35rem 0.6rem';
+                        main.style.borderRadius = '0.375rem';
+                        main.style.display = 'flex';
+                        main.style.alignItems = 'center';
+                        main.style.gap = '0.75rem';
+                    }
+                } catch (e) { }
+            }
         }
 
         // Helper: format time in event display

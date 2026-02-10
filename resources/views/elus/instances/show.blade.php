@@ -7,11 +7,11 @@
             :backLabel="__('Retour aux instances')"
             activeSection="instances"
             :badge="$instance->type_label"
-            badgeColor="bg-blue-100 text-blue-800"
+            badgeColor="bg-[#faa21b]/15 text-[#b36b00]"
         >
             <x-slot name="actions">
                 @can('admin')
-                <a href="{{ route('elus.reunions.create', ['instance_id' => $instance->id]) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 transition">
+                <a href="{{ route('elus.reunions.create', ['instance_id' => $instance->id]) }}" class="inline-flex items-center px-4 py-2 bg-[#faa21b] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[#e89315] transition">
                     + {{ __('Planifier une réunion') }}
                 </a>
                 <a href="{{ route('elus.instances.edit', $instance) }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
@@ -34,8 +34,8 @@
                 {{-- Main Info --}}
                 <div class="lg:col-span-2 space-y-6">
                     {{-- Description --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Informations') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Informations') }}</h3>
                         @if($instance->description)
                             <p class="text-gray-600">{{ $instance->description }}</p>
                         @else
@@ -50,13 +50,13 @@
                     </div>
 
                     {{-- Upcoming Reunions --}}
-                    <div class="bg-white rounded-lg shadow">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <h3 class="text-lg font-medium text-gray-900">{{ __('Prochaines réunions') }}</h3>
+                    <div class="widget-container">
+                        <div class="px-6 py-4 border-b border-[#faa21b]/20">
+                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Prochaines réunions') }}</h3>
                         </div>
-                        <div class="divide-y divide-gray-200">
+                        <div class="divide-y divide-[#faa21b]/10">
                             @forelse($upcomingReunions as $reunion)
-                                <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-6 py-4 hover:bg-gray-50 transition">
+                                <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-6 py-4 hover:bg-[#faa21b]/5 transition">
                                     <div class="flex items-center justify-between">
                                         <div>
                                             <p class="font-medium text-gray-900">{{ $reunion->title }}</p>
@@ -82,13 +82,13 @@
                     </div>
 
                     {{-- Past Reunions --}}
-                    <div class="bg-white rounded-lg shadow">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <h3 class="text-lg font-medium text-gray-900">{{ __('Réunions passées') }}</h3>
+                    <div class="widget-container">
+                        <div class="px-6 py-4 border-b border-[#faa21b]/20">
+                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Réunions passées') }}</h3>
                         </div>
-                        <div class="divide-y divide-gray-200">
+                        <div class="divide-y divide-[#faa21b]/10">
                             @forelse($pastReunions as $reunion)
-                                <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-6 py-4 hover:bg-gray-50 transition">
+                                <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-6 py-4 hover:bg-[#faa21b]/5 transition">
                                     <div class="flex items-center justify-between">
                                         <div>
                                             <p class="font-medium text-gray-900">{{ $reunion->title }}</p>
@@ -113,8 +113,8 @@
                 {{-- Sidebar --}}
                 <div class="space-y-6">
                     {{-- Members --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Membres') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Membres') }}</h3>
                          @if($instance->members && is_array($instance->members) && count($instance->members) > 0)
                              <ul class="space-y-2">
                                  @foreach($instance->members as $member)
@@ -127,14 +127,14 @@
                     </div>
 
                     {{-- Actions --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Actions') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Actions') }}</h3>
                         <div class="space-y-2">
                             @can('admin')
-                            <a href="{{ route('elus.reunions.create', ['instance_id' => $instance->id]) }}" class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                            <a href="{{ route('elus.reunions.create', ['instance_id' => $instance->id]) }}" class="block w-full text-center px-4 py-2 bg-[#faa21b] text-white rounded-md hover:bg-[#e89315] transition">
                                 {{ __('Planifier une réunion') }}
                             </a>
-                            <a href="{{ route('elus.instances.edit', $instance) }}" class="block w-full text-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                            <a href="{{ route('elus.instances.edit', $instance) }}" class="block w-full text-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-[#faa21b]/5 transition">
                                 {{ __('Modifier l\'instance') }}
                             </a>
                             <form method="POST" action="{{ route('elus.instances.destroy', $instance) }}" onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer cette instance ?') }}')">

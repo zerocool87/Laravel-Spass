@@ -2,28 +2,21 @@
     <x-slot name="header">
         <x-elus-header
             title="{{ __('Gestion des utilisateurs') }}"
-            subtitle="{{ __('Administration des élus et territoires') }}"
+            subtitle="{{ __('Administration des élus') }}"
             icon="👥"
             :backRoute="route('elus.admin.index')"
             :backLabel="__('Retour à l\'administration')"
             activeSection="admin"
             :showNav="false"
         >
-            <x-slot name="actions">
-                <button type="button" onclick="document.getElementById('create-elu-modal').classList.remove('hidden')" class="inline-flex items-center px-6 py-3 bg-white text-[#faa21b] border border-transparent rounded-xl font-bold text-sm hover:bg-white/90 transition shadow-lg hover:shadow-xl transform hover:scale-105">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    {{ __('Nouvel élu') }}
-                </button>
-            </x-slot>
+
         </x-elus-header>
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             @if(session('success'))
-                <div class="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 text-green-800 px-6 py-4 rounded-xl flex items-center shadow-lg">
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 text-green-800 px-6 py-4 rounded-xl flex items-center shadow-lg">
                     <svg class="w-6 h-6 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
@@ -31,55 +24,72 @@
                 </div>
             @endif
 
-            {{-- Filters --}}
-            <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 mb-6 p-6">
-                <form method="GET" action="{{ route('elus.admin.users') }}" class="flex flex-wrap gap-4">
-                    <div class="flex-1 min-w-[200px]">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Rechercher par nom, email, commune...') }}" class="w-full rounded-lg border-[#faa21b]/30 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
-                    </div>
+            <div class="bg-white rounded-xl shadow-lg border border-[#faa21b]/20">
+                <div class="flex flex-col gap-4 px-6 pt-6 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <select name="role" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <h2 class="text-lg font-semibold text-gray-900">{{ __('Gestion des utilisateurs') }}</h2>
+                        <p class="text-sm text-gray-500">{{ __('Filtrer, modifier et gérer les rôles') }}</p>
+                    </div>
+                    <button type="button" onclick="document.getElementById('create-elu-modal').classList.remove('hidden')" class="inline-flex items-center justify-center px-5 py-2.5 bg-[#faa21b] text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        {{ __('Nouvel élu') }}
+                    </button>
+                </div>
+
+                {{-- Filters --}}
+                <form method="GET" action="{{ route('elus.admin.users') }}" class="mt-6 border-t border-[#faa21b]/10 px-6 py-6">
+                    <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.5fr_0.7fr_auto] items-end">
+                        <div class="min-w-[200px]">
+                            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Recherche') }}</label>
+                            <input id="search" type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Nom, email, commune...') }}" class="w-full rounded-lg border-gray-200 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                        </div>
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Rôle') }}</label>
+                            <select id="role" name="role" class="w-full rounded-lg border-gray-200 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             <option value="">{{ __('Tous les rôles') }}</option>
                             <option value="elu" {{ request('role') == 'elu' ? 'selected' : '' }}>{{ __('Élus uniquement') }}</option>
                             <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>{{ __('Administrateurs') }}</option>
                             <option value="standard" {{ request('role') == 'standard' ? 'selected' : '' }}>{{ __('Utilisateurs standard') }}</option>
-                        </select>
-                    </div>
-                    <div>
-                        <select name="territory" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <option value="">{{ __('Tous les territoires') }}</option>
-                            @foreach($territories as $territory)
-                                <option value="{{ $territory }}" {{ request('territory') == $territory ? 'selected' : '' }}>{{ $territory }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 transition">
-                            {{ __('Filtrer') }}
-                        </button>
-                        @if(request()->hasAny(['search', 'role', 'territory']))
-                            <a href="{{ route('elus.admin.users') }}" class="ml-2 text-sm text-gray-600 hover:text-gray-800">{{ __('Réinitialiser') }}</a>
-                        @endif
+                            </select>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-[#faa21b] border border-transparent rounded-lg font-semibold text-sm text-white shadow hover:bg-[#f39b14] transition">
+                                {{ __('Filtrer') }}
+                            </button>
+                            @if(request()->hasAny(['search', 'role']))
+                                <a href="{{ route('elus.admin.users') }}" class="text-sm font-medium text-gray-600 hover:text-gray-800">{{ __('Réinitialiser') }}</a>
+                            @endif
+                        </div>
                     </div>
                 </form>
             </div>
 
             {{-- Users Table --}}
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-semibold text-gray-900">{{ __('Liste des utilisateurs') }}</h3>
+                        <p class="text-sm text-gray-500">{{ __('Mettez à jour les rôles et informations') }}</p>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        {{ __('Total') }}: {{ $users->total() }}
+                    </div>
+                </div>
+                <table class="min-w-full divide-y divide-gray-100">
+                    <thead class="bg-[#faa21b]/10">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Utilisateur') }}</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Rôles') }}</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Fonction') }}</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Commune') }}</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Territoire') }}</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Utilisateur') }}</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Rôles') }}</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Fonction') }}</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Commune') }}</th>
+                            <th class="px-6 py-3 text-right text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white divide-y divide-gray-100">
                         @forelse($users as $user)
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-[#faa21b]/5 transition">
                                 <td class="px-6 py-4">
                                     <div>
                                         <p class="font-medium text-gray-900">{{ $user->name }}</p>
@@ -89,46 +99,34 @@
                                 <td class="px-6 py-4">
                                     <div class="flex flex-wrap gap-1">
                                         @if($user->is_admin)
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">Admin</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#faa21b]/20 text-[#b36b00]">Admin</span>
                                         @endif
                                         @if($user->is_elu)
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Élu</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Élu</span>
                                         @endif
                                         @if(!$user->is_admin && !$user->is_elu)
-                                            <span class="text-gray-400 text-sm">Standard</span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">Standard</span>
                                         @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $user->fonction ?? '-' }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $user->commune ?? '-' }}</td>
-                                <td class="px-6 py-4">
-                                    <form method="POST" action="{{ route('elus.admin.users.territory', $user) }}" class="flex items-center gap-2">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="text" name="territory" value="{{ $user->territory }}" placeholder="{{ __('Territoire...') }}" class="text-sm rounded border-gray-300 w-32 focus:border-blue-500 focus:ring-blue-500">
-                                        <button type="submit" class="text-blue-600 hover:text-blue-800">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </td>
                                 <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end space-x-2">
+                                    <div class="flex items-center justify-end gap-2">
                                         <form method="POST" action="{{ route('elus.admin.users.toggle-elu', $user) }}">
                                             @csrf
                                             @method('PATCH')
                                             @if($user->is_elu)
-                                                <button type="submit" class="inline-flex items-center px-3 py-1 border border-red-300 rounded text-xs font-medium text-red-600 hover:bg-red-50" onclick="return confirm('{{ __('Retirer le statut élu à cet utilisateur ?') }}')">
+                                                <button type="submit" class="inline-flex items-center px-3 py-1 border border-red-200 rounded-full text-xs font-semibold text-red-600 hover:bg-red-50" onclick="return confirm('{{ __('Retirer le statut élu à cet utilisateur ?') }}')">
                                                     {{ __('Retirer élu') }}
                                                 </button>
                                             @else
-                                                <button type="submit" class="inline-flex items-center px-3 py-1 border border-green-300 rounded text-xs font-medium text-green-600 hover:bg-green-50">
+                                                <button type="submit" class="inline-flex items-center px-3 py-1 border border-green-200 rounded-full text-xs font-semibold text-green-600 hover:bg-green-50">
                                                     {{ __('Ajouter élu') }}
                                                 </button>
                                             @endif
                                         </form>
-                                        <a href="{{ route('admin.users.edit', $user) }}" class="text-gray-600 hover:text-gray-900">
+                                        <a href="{{ route('admin.users.edit', $user) }}" class="text-gray-500 hover:text-gray-900">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                             </svg>
@@ -138,7 +136,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-500">
                                     {{ __('Aucun utilisateur trouvé') }}
                                 </td>
                             </tr>
@@ -168,27 +166,22 @@
                         <div class="space-y-4">
                             <div>
                                 <label for="modal-name" class="block text-sm font-medium text-gray-700">{{ __('Nom') }} *</label>
-                                <input type="text" name="name" id="modal-name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <input type="text" name="name" id="modal-name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             </div>
 
                             <div>
                                 <label for="modal-email" class="block text-sm font-medium text-gray-700">{{ __('Email') }} *</label>
-                                <input type="email" name="email" id="modal-email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <input type="email" name="email" id="modal-email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             </div>
 
                             <div>
                                 <label for="modal-fonction" class="block text-sm font-medium text-gray-700">{{ __('Fonction') }}</label>
-                                <input type="text" name="fonction" id="modal-fonction" placeholder="{{ __('Ex: Maire, Conseiller municipal...') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <input type="text" name="fonction" id="modal-fonction" placeholder="{{ __('Ex: Maire, Conseiller municipal...') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             </div>
 
                             <div>
                                 <label for="modal-commune" class="block text-sm font-medium text-gray-700">{{ __('Commune') }}</label>
-                                <input type="text" name="commune" id="modal-commune" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-
-                            <div>
-                                <label for="modal-territory" class="block text-sm font-medium text-gray-700">{{ __('Territoire') }}</label>
-                                <input type="text" name="territory" id="modal-territory" placeholder="{{ __('Ex: Zone Nord, Centre...') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <input type="text" name="commune" id="modal-commune" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             </div>
                         </div>
 
@@ -198,7 +191,7 @@
                     </div>
 
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#faa21b] text-base font-medium text-white hover:bg-[#f39b14] focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
                             {{ __('Créer l\'élu') }}
                         </button>
                         <button type="button" onclick="document.getElementById('create-elu-modal').classList.add('hidden')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">

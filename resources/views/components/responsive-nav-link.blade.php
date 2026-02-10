@@ -2,7 +2,7 @@
 
 @php
 $classes = ($active ?? false)
-            ? 'block w-full ps-3 pe-4 py-2 border-l-4 border-blue-200 text-start text-base font-medium text-gray-900 bg-white focus:outline-none focus:text-gray-900 focus:bg-gray-100 focus:border-blue-400 transition duration-150 ease-in-out'
+            ? 'block w-full ps-3 pe-4 py-2 border-l-4 border-[#faa21b] text-start text-base font-medium text-gray-900 bg-white focus:outline-none focus:text-gray-900 focus:bg-gray-100 focus:border-[#faa21b] transition duration-150 ease-in-out'
             : 'block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-200 focus:outline-none focus:text-gray-900 focus:bg-gray-50 focus:border-gray-200 transition duration-150 ease-in-out';
 @endphp
 

@@ -32,15 +32,15 @@
                 <div class="lg:col-span-2 space-y-6">
                     {{-- Description --}}
                     @if($reunion->description)
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Description') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Description') }}</h3>
                         <p class="text-gray-600 whitespace-pre-line">{{ $reunion->description }}</p>
                     </div>
                     @endif
 
                     {{-- Ordre du jour --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Ordre du jour') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Ordre du jour') }}</h3>
                         @if($reunion->ordre_du_jour)
                             <div class="text-gray-600 whitespace-pre-line">{{ $reunion->ordre_du_jour }}</div>
                         @else
@@ -49,12 +49,12 @@
                     </div>
 
                     {{-- Compte rendu --}}
-                    <div class="bg-white rounded-lg shadow p-6">
+                    <div class="widget-container p-6">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-medium text-gray-900">{{ __('Compte rendu') }}</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Compte rendu') }}</h3>
                             @can('admin')
                             @if(!$reunion->compte_rendu)
-                                <a href="{{ route('elus.reunions.edit', $reunion) }}" class="text-sm text-blue-600 hover:text-blue-800">+ {{ __('Ajouter') }}</a>
+                                <a href="{{ route('elus.reunions.edit', $reunion) }}" class="text-sm text-[#faa21b] hover:text-[#e89315]">+ {{ __('Ajouter') }}</a>
                             @endif
                             @endcan
                         </div>
@@ -67,9 +67,9 @@
 
                     {{-- Documents --}}
                     @if($reunion->documents && count($reunion->documents) > 0)
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Documents') }}</h3>
-                        <ul class="divide-y divide-gray-200">
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Documents') }}</h3>
+                        <ul class="divide-y divide-[#faa21b]/10">
                             @foreach($reunion->documents as $doc)
                                 <li class="py-3 flex items-center">
                                     <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,13 +86,13 @@
                 {{-- Sidebar --}}
                 <div class="space-y-6">
                     {{-- Info Card --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Informations') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Informations') }}</h3>
                         <dl class="space-y-4">
                             <div>
                                 <dt class="text-sm text-gray-500">{{ __('Instance') }}</dt>
                                 <dd class="text-sm font-medium text-gray-900">
-                                    <a href="{{ route('elus.instances.show', $reunion->instance) }}" class="text-blue-600 hover:text-blue-800">
+                                    <a href="{{ route('elus.instances.show', $reunion->instance) }}" class="text-[#faa21b] hover:text-[#e89315]">
                                         {{ $reunion->instance->name }}
                                     </a>
                                 </dd>
@@ -124,8 +124,8 @@
 
                     {{-- Participants --}}
                     @if($reunion->participants && count($reunion->participants) > 0)
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Participants') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Participants') }}</h3>
                         <ul class="space-y-2">
                             @foreach($reunion->participants as $participant)
                                 <li class="text-sm text-gray-600">{{ $participant }}</li>
@@ -135,11 +135,11 @@
                     @endif
 
                     {{-- Actions --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Actions') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Actions') }}</h3>
                         <div class="space-y-2">
                             @can('admin')
-                            <a href="{{ route('elus.reunions.edit', $reunion) }}" class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                            <a href="{{ route('elus.reunions.edit', $reunion) }}" class="block w-full text-center px-4 py-2 bg-[#faa21b] text-white rounded-md hover:bg-[#e89315] transition">
                                 {{ __('Modifier la réunion') }}
                             </a>
                             <form method="POST" action="{{ route('elus.reunions.destroy', $reunion) }}" onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer cette réunion ?') }}')">

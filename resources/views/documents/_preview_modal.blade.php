@@ -10,7 +10,7 @@
                 'bg-amber-600': info.category === 'Convocations',
                 'bg-amber-500': info.category === 'Ordres du jour',
                 'bg-emerald-600': info.category === 'Comptes rendus',
-                'bg-cyan-600': info.category === 'Rapports',
+                'bg-[#faa21b]': info.category === 'Rapports',
                 'bg-rose-600': info.category === 'Délibérations',
                 'bg-sky-600': info.category === 'Guides',
                 'bg-gray-400': !info.category
@@ -32,13 +32,13 @@
                         <div class="border-4 border-t-cyan-400 rounded-full w-12 h-12 animate-spin"></div>
                     </div>
 
-                    <div x-show="showNotPreviewable" class="p-6 text-center text-cyan-200">
+                    <div x-show="showNotPreviewable" class="p-6 text-center text-[#faa21b]/70">
                         <p class="mb-2">{{ __('Preview not available for this file type.') }}</p>
-                        <p class="text-sm text-cyan-300">{{ __('You can download the file to view it on your device.') }}</p>
+                        <p class="text-sm text-[#faa21b]/60">{{ __('You can download the file to view it on your device.') }}</p>
 
                         <div class="mt-4 text-left">
-                            <div class="text-sm font-semibold text-cyan-100">{{ __('Previewable file types:') }}</div>
-                            <ul class="list-disc list-inside text-sm text-cyan-300 mt-2">
+                            <div class="text-sm font-semibold text-[#faa21b]/80">{{ __('Previewable file types:') }}</div>
+                            <ul class="list-disc list-inside text-sm text-[#faa21b]/60 mt-2">
                                 <template x-for="t in previewTypes" :key="t">
                                     <li x-text="t"></li>
                                 </template>
@@ -51,7 +51,7 @@
                             <div class="h-full w-full min-w-0 flex flex-col">
                                 <div class="p-2 bg-gray-800 flex items-center gap-2">
                                     <x-secondary-button @click.prevent="prevPage()" x-bind:disabled="currentPage<=1">{{ __('Prev') }}</x-secondary-button>
-                                    <div class="px-2 text-cyan-200">{{ __('Page') }} <span x-text="currentPage"></span> / <span x-text="totalPages"></span></div>
+                                    <div class="px-2 text-[#faa21b]/70">{{ __('Page') }} <span x-text="currentPage"></span> / <span x-text="totalPages"></span></div>
                                     <x-secondary-button @click.prevent="nextPage()" x-bind:disabled="currentPage>=totalPages">{{ __('Next') }}</x-secondary-button>
 
                                     <div class="border-l border-gray-700 h-6 mx-2"></div>
@@ -62,8 +62,8 @@
                                     <x-secondary-button @click.prevent="rotatePdf()">Rotate</x-secondary-button>
                                     <x-primary-button x-bind:href="downloadUrl" target="_blank" rel="noopener">{{ __('Download') }}</x-primary-button>
                                     <x-primary-button x-bind:href="embed" target="_blank" rel="noopener">Open in new tab</x-primary-button>
-                                    <div class="ml-4 text-sm text-cyan-200">{{ __('Zoom') }}: <span x-text="pdfZoom"></span></div>
-                                    <div class="ml-4 text-sm text-cyan-200" x-show="_progress">Loading: <span x-text="_progress+'%'"></span></div>
+                                    <div class="ml-4 text-sm text-[#faa21b]/70">{{ __('Zoom') }}: <span x-text="pdfZoom"></span></div>
+                                    <div class="ml-4 text-sm text-[#faa21b]/70" x-show="_progress">Loading: <span x-text="_progress+'%'"></span></div>
                                 </div>
                                 <div class="flex-1 min-h-0 min-w-0 modal-pdf-canvas-container overflow-auto flex items-center justify-center">
                                     <canvas id="pdf-canvas" class="w-auto inline-block mx-auto block" style="display:block;" aria-label="PDF canvas"></canvas>

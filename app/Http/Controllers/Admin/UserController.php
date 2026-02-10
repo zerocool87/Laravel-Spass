@@ -51,12 +51,11 @@ class UserController extends Controller
         $data['fonction'] = $request->input('fonction');
         // default to fictive commune SEHV when none selected
         $data['commune'] = $request->input('commune') ?: 'SEHV';
-        $data['territory'] = $request->input('territory');
 
         $user = User::create($data);
 
         // flash the temporary password for admin to copy (only on creation)
-        return Redirect::route('admin.users.index')->with('success', "User created. Temporary password: {$temp}");
+        return Redirect::to('/elus/admin/users')->with('success', "User created. Temporary password: {$temp}");
     }
 
     public function edit(User $user): View
@@ -79,11 +78,10 @@ class UserController extends Controller
         $data['fonction'] = $request->input('fonction');
         // default to fictive commune SEHV when none selected
         $data['commune'] = $request->input('commune') ?: 'SEHV';
-        $data['territory'] = $request->input('territory');
 
         $user->update($data);
 
-        return Redirect::route('admin.users.index')->with('success', 'User updated.');
+        return Redirect::to('/elus/admin/users')->with('success', 'User updated.');
     }
 
     public function destroy(User $user): RedirectResponse

@@ -45,11 +45,6 @@ class AdminController extends Controller
             }
         }
 
-        // Filter by territory
-        if ($request->filled('territory')) {
-            $query->where('territory', $request->territory);
-        }
-
         // Search
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -61,13 +56,7 @@ class AdminController extends Controller
 
         $users = $query->orderBy('name')->paginate(20);
 
-        // Get unique territories for filter
-        $territories = User::whereNotNull('territory')
-            ->distinct()
-            ->pluck('territory')
-            ->sort();
-
-        return view('elus.admin.users', compact('users', 'territories'));
+        return view('elus.admin.users', compact('users'));
     }
 
     /**
@@ -83,20 +72,6 @@ class AdminController extends Controller
     }
 
     /**
-     * Update user territory.
-     */
-    public function updateTerritory(Request $request, User $user): RedirectResponse
-    {
-        $request->validate([
-            'territory' => 'nullable|string|max:255',
-        ]);
-
-        $user->update(['territory' => $request->territory]);
-
-        return back()->with('success', "Territoire de {$user->name} mis à jour.");
-    }
-
-    /**
      * Quick create a new élu user.
      */
     public function storeElu(Request $request): RedirectResponse
@@ -106,7 +81,6 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users,email',
             'fonction' => 'nullable|string|max:255',
             'commune' => 'nullable|string|max:255',
-            'territory' => 'nullable|string|max:255',
         ]);
 
         // Generate a random password
@@ -119,7 +93,6 @@ class AdminController extends Controller
             'is_elu' => true,
             'fonction' => $validated['fonction'] ?? null,
             'commune' => $validated['commune'] ?? 'SEHV',
-            'territory' => $validated['territory'] ?? null,
         ]);
 
         return redirect()

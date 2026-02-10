@@ -31,8 +31,8 @@
                 {{-- Main Content --}}
                 <div class="lg:col-span-2 space-y-6">
                     {{-- Description --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Description') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Description') }}</h3>
                         @if($project->description)
                             <p class="text-gray-600 whitespace-pre-line">{{ $project->description }}</p>
                         @else
@@ -42,11 +42,11 @@
 
                     {{-- Territories --}}
                     @if($project->territories && count($project->territories) > 0)
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Territoires concernés') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Territoires concernés') }}</h3>
                         <div class="flex flex-wrap gap-2">
                             @foreach($project->territories as $territory)
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#faa21b]/15 text-[#b36b00]">
                                     📍 {{ $territory }}
                                 </span>
                             @endforeach
@@ -63,11 +63,11 @@
 
                     {{-- Indicators --}}
                     @if($project->indicators && count($project->indicators) > 0)
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Indicateurs') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Indicateurs') }}</h3>
                         <div class="grid grid-cols-2 gap-4">
                             @foreach($project->indicators as $key => $value)
-                                <div class="bg-gray-50 rounded p-4">
+                                <div class="bg-[#faa21b]/5 rounded-lg p-4 border border-[#faa21b]/15">
                                     <p class="text-sm text-gray-500">{{ $key }}</p>
                                     <p class="text-lg font-semibold text-gray-900">{{ $value }}</p>
                                 </div>
@@ -78,9 +78,9 @@
 
                     {{-- Documents --}}
                     @if($project->documents && count($project->documents) > 0)
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Documents associés') }}</h3>
-                        <ul class="divide-y divide-gray-200">
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Documents associés') }}</h3>
+                        <ul class="divide-y divide-[#faa21b]/10">
                             @foreach($project->documents as $doc)
                                 <li class="py-3 flex items-center justify-between">
                                     <div class="flex items-center">
@@ -99,8 +99,8 @@
                 {{-- Sidebar --}}
                 <div class="space-y-6">
                     {{-- Info Card --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Informations') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Informations') }}</h3>
                         <dl class="space-y-4">
                             <div>
                                 <dt class="text-sm text-gray-500">{{ __('Type') }}</dt>
@@ -134,11 +134,11 @@
                     </div>
 
                     {{-- Actions --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Actions') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Actions') }}</h3>
                         <div class="space-y-2">
                             @can('admin')
-                            <a href="{{ route('elus.projects.edit', $project) }}" class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                            <a href="{{ route('elus.projects.edit', $project) }}" class="block w-full text-center px-4 py-2 bg-[#faa21b] text-white rounded-md hover:bg-[#e89315] transition">
                                 {{ __('Modifier le projet') }}
                             </a>
                             <form method="POST" action="{{ route('elus.projects.destroy', $project) }}" onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer ce projet ?') }}')">
@@ -153,8 +153,8 @@
                     </div>
 
                     {{-- Timeline --}}
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Historique') }}</h3>
+                    <div class="widget-container p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Historique') }}</h3>
                         <div class="text-sm text-gray-500">
                             <p>{{ __('Créé le') }}: {{ $project->created_at->format('d/m/Y H:i') }}</p>
                             <p>{{ __('Modifié le') }}: {{ $project->updated_at->format('d/m/Y H:i') }}</p>

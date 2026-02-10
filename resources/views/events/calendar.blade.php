@@ -25,7 +25,7 @@
             {{-- Admin calendar styles moved to resources/css/app.css --}}
             @include('events._admin_create_modal')
 
-            <button type="button" aria-label="{{ __('Create Event') }}" title="{{ __('Create Event') }}" onclick="window.openEventCreateModal(new Date().toISOString().slice(0,10))" class="fixed bottom-8 right-8 z-50 bg-cyan-600 hover:bg-cyan-500 text-white rounded-full w-auto h-14 flex items-center justify-center shadow-lg transition-colors px-4 space-x-3 animate-pulse">
+            <button type="button" aria-label="{{ __('Create Event') }}" title="{{ __('Create Event') }}" onclick="window.openEventCreateModal(new Date().toISOString().slice(0,10))" class="fixed bottom-8 right-8 z-50 bg-[#faa21b] hover:bg-[#b36b00] text-white rounded-full w-auto h-14 flex items-center justify-center shadow-lg hover:shadow-xl transition-all px-5 space-x-3">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 <span class="font-medium">{{ __('Create Event') }}</span>
             </button>

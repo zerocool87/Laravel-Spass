@@ -98,7 +98,6 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
         Route::get('/users', [\App\Http\Controllers\Elus\AdminController::class, 'users'])->name('users');
         Route::post('/users', [\App\Http\Controllers\Elus\AdminController::class, 'storeElu'])->name('users.store');
         Route::patch('/users/{user}/toggle-elu', [\App\Http\Controllers\Elus\AdminController::class, 'toggleElu'])->name('users.toggle-elu');
-        Route::patch('/users/{user}/territory', [\App\Http\Controllers\Elus\AdminController::class, 'updateTerritory'])->name('users.territory');
     });
 });
 

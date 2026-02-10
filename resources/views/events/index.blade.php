@@ -12,41 +12,51 @@
     <div class="container">
         @can('admin')
             <div class="mb-4 flex justify-center">
-                <button type="button" onclick="window.openEventCreateModal(new Date().toISOString().slice(0,10))" class="bg-cyan-600 hover:bg-cyan-500 text-white rounded px-4 py-2">{{ __('Create Event') }}</button>
+                <button type="button" onclick="window.openEventCreateModal(new Date().toISOString().slice(0,10))" class="bg-[#faa21b] hover:bg-[#e89315] text-white rounded-lg px-5 py-2.5 font-semibold shadow-sm transition">{{ __('Create Event') }}</button>
             </div>
         @endcan
 
         <div class="mt-6">
-                @php
-                    $typeColors = [
-                        'assemblee' => '#7c3aed',
-                        'bureau' => '#dc2626',
-                        'commissions' => '#059669',
-                        'autre' => '#0369a1',
-                    ];
-                @endphp
                 @foreach($events as $event)
-                <div class="glass mb-3 p-3">
-                        @php
-                            $color = $typeColors[$event->type ?? 'autre'] ?? $typeColors['autre'];
-                            $typeLabels = [
-                                'assemblee' => 'Assemblée plénière',
-                                'bureau' => 'Réunion bureau',
-                                'commissions' => 'Commissions',
-                                'autre' => 'Autre',
-                            ];
-                            $label = $typeLabels[$event->type ?? 'autre'] ?? $typeLabels['autre'];
-                        @endphp
-                        <h5 class="text-2xl font-semibold inline-block" style="background: {{ $color }}; color: #fff; padding: 0.25rem 0.5rem; border-radius: 0.375rem; border: 1px solid rgba(0,0,0,0.25); box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
-                            <a href="{{ route('events.show', $event) }}" style="color: inherit;">{{ $event->title }}</a>
-                        </h5>
-                        <div class="mt-2">
-                            <span class="text-sm font-medium" style="color: {{ $color }};">{{ $label }}</span>
+                    @php
+                        $typeLabels = [
+                            'assemblee' => 'Assemblée plénière',
+                            'bureau' => 'Réunion bureau',
+                            'commissions' => 'Commissions',
+                            'autre' => 'Autre',
+                        ];
+                        $label = $typeLabels[$event->type ?? 'autre'] ?? $typeLabels['autre'];
+                    @endphp
+                    <div class="widget-container mb-4">
+                        <div class="p-5">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <a href="{{ route('events.show', $event) }}" class="text-xl font-bold text-gray-900 hover:text-[#faa21b] transition">
+                                        {{ $event->title }}
+                                    </a>
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#faa21b]/15 text-[#b36b00]">
+                                            {{ $label }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                                <span class="inline-flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-[#faa21b]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    {{ $event->start_at->format('d/m/Y H:i') }}
+                                    @if($event->end_at) → {{ $event->end_at->format('d/m/Y H:i') }} @endif
+                                </span>
+                                @if($event->location)
+                                    <span class="inline-flex items-center gap-1">
+                                        <svg class="w-4 h-4 text-[#faa21b]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        {{ $event->location }}
+                                    </span>
+                                @endif
+                            </div>
                         </div>
-                    <p>{{ $event->start_at->format('Y-m-d H:i') }} @if($event->end_at) - {{ $event->end_at->format('Y-m-d H:i') }} @endif</p>
-                    <p class="text-sm">{{ $event->location }}</p>
-                </div>
-            @endforeach
+                    </div>
+                @endforeach
 
             {{ $events->links() }}
         </div>

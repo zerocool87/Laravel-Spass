@@ -44,13 +44,13 @@
                         });
                     </script>
 
-                    <button id="show-all-categories" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition hover:bg-cyan-50">
+                    <button id="show-all-categories" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-[#faa21b]/30 bg-white text-[#b36b00] font-semibold shadow-sm transition hover:bg-[#faa21b]/10">
                         <span>🔁</span>
                         <span class="text-sm">{{ __('Tous') }}</span>
                     </button>
 
                         @foreach($allCategories as $cat)
-                        <button type="button" data-slug="{{ Str::slug($cat) }}" class="category-filter-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-cyan-200 bg-white text-cyan-700 font-semibold shadow-sm transition hover:bg-cyan-50">
+                        <button type="button" data-slug="{{ Str::slug($cat) }}" class="category-filter-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-[#faa21b]/30 bg-white text-[#b36b00] font-semibold shadow-sm transition hover:bg-[#faa21b]/10">
                             <x-category-badge :category="$cat === 'Uncategorized' ? null : $cat" />
                             <span class="sr-only">{{ $cat }}</span>
                             <span class="text-xs opacity-75">({{ $documentsByCategory[$cat]->count() }})</span>
@@ -68,18 +68,7 @@
                             <div id="category-{{ Str::slug($cat) }}">
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="w-full flex flex-col">
-                                        @php
-                                            $categoryColors = [
-                                                'Convocations' => '#d97706',
-                                                'Ordres du jour' => '#f59e42',
-                                                'Comptes rendus' => '#059669',
-                                                'Rapports' => '#0891b2',
-                                                'Délibérations' => '#e11d48',
-                                                'Guides' => '#0284c7',
-                                            ];
-                                            $barColor = $categoryColors[$cat] ?? '#9CA3AF';
-                                        @endphp
-                                        <div class="w-full h-8 mb-1 flex items-center justify-center" style="background: {{ $barColor }};">
+                                        <div class="w-full h-8 mb-1 flex items-center justify-center rounded-md bg-[#faa21b]">
                                             <div class="text-sm font-semibold text-white uppercase">{{ $cat }} <span class="text-xs text-white/80">({{ $docs->count() }})</span></div>
                                         </div>
                                     </div>
@@ -87,7 +76,7 @@
 
                                 <div class="space-y-2">
                                     @foreach($docs as $doc)
-                                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition">
+                                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border-2 border-[#faa21b]/15 shadow-sm hover:bg-[#faa21b]/5 transition">
                                             <div class="flex-1">
                                                 <div class="flex items-center gap-2">
                                                     <div class="font-semibold text-gray-900">{{ $doc->title }}</div>

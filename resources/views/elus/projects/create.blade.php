@@ -19,7 +19,7 @@
                     <div class="space-y-6">
                         <div>
                             <label for="title" class="block text-sm font-medium text-gray-700">{{ __('Titre') }} *</label>
-                            <input type="text" name="title" id="title" value="{{ old('title') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <input type="text" name="title" id="title" value="{{ old('title') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             @error('title')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -28,7 +28,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="type" class="block text-sm font-medium text-gray-700">{{ __('Type') }} *</label>
-                                <select name="type" id="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <select name="type" id="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                                     <option value="">{{ __('Sélectionner un type') }}</option>
                                     @foreach($types as $key => $label)
                                         <option value="{{ $key }}" {{ old('type') == $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -41,7 +41,7 @@
 
                             <div>
                                 <label for="status" class="block text-sm font-medium text-gray-700">{{ __('Statut') }} *</label>
-                                <select name="status" id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <select name="status" id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                                     @foreach($statuses as $key => $label)
                                         <option value="{{ $key }}" {{ old('status', 'planifie') == $key ? 'selected' : '' }}>{{ $label }}</option>
                                     @endforeach
@@ -54,7 +54,7 @@
 
                         <div>
                             <label for="description" class="block text-sm font-medium text-gray-700">{{ __('Description') }}</label>
-                            <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description') }}</textarea>
+                            <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">{{ old('description') }}</textarea>
                             @error('description')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -62,7 +62,7 @@
 
                         <div>
                             <label for="budget" class="block text-sm font-medium text-gray-700">{{ __('Budget (€)') }}</label>
-                            <input type="number" name="budget" id="budget" value="{{ old('budget') }}" step="0.01" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <input type="number" name="budget" id="budget" value="{{ old('budget') }}" step="0.01" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             @error('budget')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -71,7 +71,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="start_date" class="block text-sm font-medium text-gray-700">{{ __('Date de début') }}</label>
-                                <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                                 @error('start_date')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -79,7 +79,7 @@
 
                             <div>
                                 <label for="end_date" class="block text-sm font-medium text-gray-700">{{ __('Date de fin') }}</label>
-                                <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                                 @error('end_date')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -92,7 +92,7 @@
                                 {{-- Dynamic territory tags will be added here --}}
                             </div>
                             <div class="mt-2 flex gap-2">
-                                <input type="text" id="new-territory" placeholder="{{ __('Ajouter un territoire') }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                                <input type="text" id="new-territory" placeholder="{{ __('Ajouter un territoire') }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] text-sm">
                                 <button type="button" onclick="addTerritory()" class="px-3 py-2 bg-gray-200 rounded-md text-sm hover:bg-gray-300">+</button>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                         <a href="{{ route('elus.projects.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50">
                             {{ __('Annuler') }}
                         </a>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#faa21b] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[#e89315] transition">
                             {{ __('Créer') }}
                         </button>
                     </div>
@@ -132,10 +132,10 @@
         function renderTerritories() {
             const container = document.getElementById('territories-container');
             container.innerHTML = territories.map((t, i) => `
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#faa21b]/15 text-[#b36b00]">
                     ${t}
                     <input type="hidden" name="territories[]" value="${t}">
-                    <button type="button" onclick="removeTerritory(${i})" class="ml-2 text-blue-600 hover:text-blue-800">&times;</button>
+                    <button type="button" onclick="removeTerritory(${i})" class="ml-2 text-[#faa21b] hover:text-[#e89315]">&times;</button>
                 </span>
             `).join('');
         }
