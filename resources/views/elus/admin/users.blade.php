@@ -113,6 +113,12 @@
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ $user->commune ?? '-' }}</td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('elus.admin.users.edit', $user) }}" class="inline-flex items-center px-3 py-1 border border-[#faa21b] rounded-full text-xs font-semibold text-[#faa21b] hover:bg-[#faa21b]/10">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                            </svg>
+                                            {{ __('Modifier') }}
+                                        </a>
                                         <form method="POST" action="{{ route('elus.admin.users.toggle-elu', $user) }}">
                                             @csrf
                                             @method('PATCH')

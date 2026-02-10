@@ -60,7 +60,7 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
-        return view('admin.users.edit', ['user' => $user, 'communes' => $this->communes()]);
+        return view('elus.admin.users.edit', ['user' => $user, 'communes' => $this->communes()]);
     }
 
     public function update(AdminUserRequest $request, User $user): RedirectResponse

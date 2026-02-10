@@ -74,6 +74,8 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
         Route::get('/users', [\App\Http\Controllers\Elus\AdminController::class, 'users'])->name('users');
         Route::post('/users', [\App\Http\Controllers\Elus\AdminController::class, 'storeElu'])->name('users.store');
         Route::patch('/users/{user}/toggle-elu', [\App\Http\Controllers\Elus\AdminController::class, 'toggleElu'])->name('users.toggle-elu');
+        Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
+        Route::patch('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     });
 });
 
