@@ -38,9 +38,10 @@ class DashboardController extends Controller
             ->take(8)
             ->get();
 
-        // Get instances
+        // Get instances (limit to 4)
         $instances = Instance::withCount('reunions')
             ->orderBy('name')
+            ->take(4)
             ->get();
 
         // Statistics

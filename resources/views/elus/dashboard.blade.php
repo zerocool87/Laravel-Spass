@@ -112,16 +112,6 @@
                                 </div>
                             @endforelse
                         </div>
-                        @can('admin')
-                        <div class="px-6 py-3 bg-[#faa21b]/15 rounded-b-xl border-t-2 border-[#faa21b]/20">
-                            <a href="{{ route('elus.reunions.create') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                {{ __('Planifier une réunion') }}
-                            </a>
-                        </div>
-                        @endcan
                     </div>
 
                     {{-- Instances --}}
