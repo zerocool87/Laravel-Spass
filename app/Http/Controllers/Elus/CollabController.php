@@ -9,6 +9,7 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -17,7 +18,7 @@ class CollabController extends Controller
     public function index(): View
     {
         /** @var User $user */
-        $user = auth()->user();
+        $user = Auth::user();
 
         $conversations = Conversation::query()
             ->whereHas('users', fn ($query) => $query->where('users.id', $user->id))
@@ -78,7 +79,7 @@ class CollabController extends Controller
     public function show(Conversation $conversation): View
     {
         /** @var User $user */
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (! $conversation->users()->whereKey($user->id)->exists()) {
             abort(403, __('Accès réservé aux élus.'));

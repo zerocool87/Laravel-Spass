@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Message;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -28,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('components.elus-header', function ($view) {
-            $user = auth()->user();
+            $user = Auth::user();
             $unreadCount = 0;
 
             if ($user && ($user->isElu() || $user->isAdmin())) {
