@@ -570,7 +570,7 @@ input[type="text"], textarea, select, .input-text {
 
 /* Quick Actions Widget - Decreased height by 50px */
 .quick-actions-widget {
-    min-height: calc(39%); /* Adjusted from 40% to 39% to reduce height by 50px */
+    min-height: calc(41%); /* Adjusted from 40% to 39% to reduce height by 50px */
     display: flex;
     flex-direction: column;
 }
