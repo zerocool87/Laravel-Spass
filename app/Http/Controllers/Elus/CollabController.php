@@ -25,7 +25,7 @@ class CollabController extends Controller
             ->withCount([
                 'messages as unread_count' => fn ($query) => $query
                     ->whereNull('read_at')
-                    ->where('user_id', '!=', $user->id),
+                    ->where('user_id', '<>', $user->id),
             ])
             ->orderByDesc('last_message_at')
             ->orderByDesc('updated_at')
@@ -89,7 +89,7 @@ class CollabController extends Controller
         Message::query()
             ->where('conversation_id', $conversation->id)
             ->whereNull('read_at')
-            ->where('user_id', '!=', $user->id)
+            ->where('user_id', '<>', $user->id)
             ->update(['read_at' => now()]);
 
         $messages = $conversation->messages()
