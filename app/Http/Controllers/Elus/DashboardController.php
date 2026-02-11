@@ -32,16 +32,16 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Get latest documents accessible to the user (limit to 4)
+        // Get latest documents accessible to the user (limit to 3, sorted alphabetically)
         $latestDocuments = $this->getUserAccessibleDocuments($user)
-            ->orderBy('created_at', 'desc')
-            ->take(4)
+            ->orderBy('title')
+            ->take(3)
             ->get();
 
-        // Get instances (limit to 4)
+        // Get instances (limit to 3, sorted alphabetically)
         $instances = Instance::withCount('reunions')
             ->orderBy('name')
-            ->take(4)
+            ->take(3)
             ->get();
 
         // Statistics

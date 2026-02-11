@@ -570,12 +570,56 @@ input[type="text"], textarea, select, .input-text {
 
 /* Quick Actions Widget - Decreased height by 50px */
 .quick-actions-widget {
-    min-height: calc(43%); /* Adjusted from 40% to 39% to reduce height by 50px */
+    min-height: calc(50%); /* Adjusted from 40% to 39% to reduce height by 50px */
     display: flex;
     flex-direction: column;
 }
 
 .quick-actions-content {
+    flex: 1;
+}
+
+/* Upcoming Reunions Widget */
+.upcoming-reunions-widget {
+    min-height: calc(50%);
+    display: flex;
+    flex-direction: column;
+}
+
+.upcoming-reunions-content {
+    flex: 1;
+}
+
+/* Instances Widget */
+.instances-widget {
+    min-height: calc(46%);
+    display: flex;
+    flex-direction: column;
+}
+
+.instances-content {
+    flex: 1;
+}
+
+/* Recent Documents Widget */
+.recent-documents-widget {
+    min-height: calc(45%);
+    display: flex;
+    flex-direction: column;
+}
+
+.recent-documents-content {
+    flex: 1;
+}
+
+/* Active Projects Widget */
+.active-projects-widget {
+    min-height: calc(40%);
+    display: flex;
+    flex-direction: column;
+}
+
+.active-projects-content {
     flex: 1;
 }
 

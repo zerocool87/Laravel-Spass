@@ -73,7 +73,7 @@
                 {{-- Left Column: Reunions + Instances --}}
                 <div class="space-y-6">
                     {{-- Upcoming Reunions --}}
-                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
+                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 upcoming-reunions-widget">
                         <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">📅 {{ __('Prochaines réunions') }}</h3>
                             <a href="{{ route('elus.reunions.calendar') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
@@ -88,8 +88,8 @@
                                 <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-6 py-4 hover:bg-orange-50/50 transition group">
                                     <div class="flex items-center justify-between">
                                         <div class="flex-1">
-                                            <p class="font-semibold text-gray-900 group-hover:text-orange-600 transition">{{ $reunion->title }}</p>
-                                            <p class="text-sm text-gray-600 mt-1">{{ $reunion->instance->name ?? '-' }}</p>
+                                            <p class="text-sm font-semibold text-gray-900 group-hover:text-orange-600 transition">{{ Str::limit($reunion->title, 20) }}</p>
+                                            <p class="text-xs text-gray-600 mt-1">{{ Str::limit($reunion->instance->name ?? '-', 20) }}</p>
                                         </div>
                                         <div class="text-right ml-4">
                                             <p class="text-sm font-bold text-orange-600">{{ $reunion->date->format('d/m/Y') }}</p>
@@ -115,7 +115,7 @@
                     </div>
 
                     {{-- Instances --}}
-                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
+                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 instances-widget">
                         <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">🏛️ {{ __('Instances') }}</h3>
                             <a href="{{ route('elus.instances.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
@@ -130,7 +130,7 @@
                                 <a href="{{ route('elus.instances.show', $instance) }}" class="block px-6 py-3 hover:bg-orange-50/50 transition group">
                                     <div class="flex items-center justify-between">
                                         <div class="flex-1">
-                                            <p class="font-semibold text-gray-900 group-hover:text-orange-600 transition">{{ $instance->name }}</p>
+                                            <p class="text-sm font-semibold text-gray-900 group-hover:text-orange-600 transition">{{ Str::limit($instance->name, 20) }}</p>
                                             <p class="text-xs text-gray-600 mt-1">{{ $instance->type_label }}</p>
                                         </div>
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700 ml-2 flex-shrink-0">
@@ -204,7 +204,7 @@
 
                     {{-- Recent Documents Widget --}}
                     @if($latestDocuments->count() > 0)
-                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20">
+                    <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 recent-documents-widget">
                         <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">📄 {{ __('Documents récents') }}</h3>
                             <a href="{{ route('elus.documents.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
@@ -215,13 +215,13 @@
                             </a>
                         </div>
                         <div class="divide-y divide-orange-50 max-h-[360px] overflow-y-auto">
-                            @foreach($latestDocuments->take(5) as $document)
+                            @foreach($latestDocuments as $document)
                                 <a href="{{ route('documents.download', $document) }}" class="flex items-center px-6 py-3 hover:bg-orange-50/50 transition group">
                                     <div class="flex-shrink-0 p-2 rounded-lg transition">
                                         <x-category-icon :document="$document" size="w-5 h-5" />
                                     </div>
                                     <div class="ml-3 overflow-hidden flex-1">
-                                        <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-[#faa21b] transition">{{ $document->title }}</p>
+                                        <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-[#faa21b] transition">{{ Str::limit($document->title, 20) }}</p>
                                         <p class="text-xs text-gray-500">{{ $document->created_at->format('d/m/Y') }}</p>
                                     </div>
                                 </a>
@@ -234,7 +234,7 @@
 
             {{-- Active Projects --}}
             <div class="mt-8">
-                <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 overflow-hidden">
+                <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 overflow-hidden active-projects-widget">
                     <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-[#faa21b]">📋 {{ __('Projets en cours') }}</h3>
                         <a href="{{ route('elus.projects.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
@@ -259,7 +259,7 @@
                                 @forelse($activeProjects as $project)
                                     <tr class="hover:bg-orange-50/50 cursor-pointer transition" onclick="window.location='{{ route('elus.projects.show', $project) }}'">
                                         <td class="px-6 py-4">
-                                            <div class="text-sm font-semibold text-gray-900">{{ $project->title }}</div>
+                                            <div class="text-sm font-semibold text-gray-900">{{ Str::limit($project->title, 20) }}</div>
                                             @if($project->territories)
                                                 <div class="text-xs text-gray-600 mt-1 flex items-center">
                                                     <svg class="w-3 h-3 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
