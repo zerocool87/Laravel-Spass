@@ -312,8 +312,13 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             calendar.render();
 
-            // Ensure container is visible after render (fix cases where CSS hid it)
-            try { el.style.display = 'block'; } catch (e) { /* ignore */ }
+            // Ensure container visibility after render based on data-visible
+            if (parseBool(el.dataset.visible)) {
+                try { el.style.display = 'block'; } catch (e) { /* ignore */ }
+            } else {
+                // keep hidden by default; allow toggles to show it
+                try { el.style.display = 'none'; } catch (e) { /* ignore */ }
+            }
 
             // expose instance for UI toggles
             el._fcCalendar = calendar;
@@ -356,6 +361,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         el._fcToggle = function(newMode) {
             if (!el._fcCalendar) return;
+            // Ensure the container is visible when toggling views
+            try { el.style.display = 'block'; } catch (e) { /* ignore */ }
             if (newMode === el._fcMode) return;
             if (newMode === 'mini') {
                 el._fcCalendar.setOption('headerToolbar', { left: '', center: 'title', right: '' });

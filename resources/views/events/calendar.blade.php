@@ -11,7 +11,7 @@
             <h1 class="text-xl font-semibold text-gray-900">{{ __('Calendar') }}</h1>
         </div>
 
-        <div id="calendar"
+        <div id="calendar" class="hidden"
              data-feed-url="{{ route('events.json') }}"
              data-can-edit="0"
         ></div>
