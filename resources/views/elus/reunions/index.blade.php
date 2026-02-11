@@ -13,10 +13,10 @@
         </x-elus-header>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-4">
+        <div class="max-w-7xl mx-auto sm:px-3 lg:px-4">
             {{-- Create Reunion Button --}}
-            <div class="mb-6 flex justify-between items-center">
+            <div class="mb-3 flex justify-between items-center">
                 @can('admin')
                 <a href="{{ route('elus.reunions.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-[#faa21b] hover:bg-[#e89315] transition shadow-sm">
                     + {{ __('Nouvelle réunion') }}
@@ -43,65 +43,20 @@
 
             @if(session('show_calendar', true))
                 {{-- Calendar Section --}}
-                <div class="widget-container mb-6">
+                <div class="widget-container mb-3">
                     <x-widget-header
                         title="📅 {{ __('Calendrier') }}"
                     />
-                    <div class="bg-white rounded-lg shadow-lg border-2 border-[#faa21b]/20 p-6">
+                    <div class="bg-white rounded-lg shadow-lg border-2 border-[#faa21b]/20 p-3">
                         <div id="reunions-calendar" data-feed-url="{{ route('elus.reunions.json') }}" data-mode="compact"></div>
                     </div>
                 </div>
             @endif
 
-            {{-- Filters --}}
-            <div class="widget-container mb-6">
-                <x-widget-header
-                    title="🔍 {{ __('Filtres') }}"
-                    :link="route('elus.reunions.index')"
-                    linkText="{{ __('Réinitialiser') }}"
-                    linkIcon="🔄"
-                />
-                <form method="GET" action="{{ route('elus.reunions.index') }}" class="flex flex-wrap gap-4 mt-4">
-                    <div class="flex-1 min-w-[200px]">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Rechercher...') }}" class="w-full input-orange">
-                    </div>
-                    <div>
-                        <select name="instance_id" class="select-orange">
-                            <option value="">{{ __('Toutes les instances') }}</option>
-                            @foreach($instances as $instance)
-                                <option value="{{ $instance->id }}" {{ request('instance_id') == $instance->id ? 'selected' : '' }}>{{ $instance->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <select name="status" class="select-orange">
-                            <option value="">{{ __('Tous les statuts') }}</option>
-                            @foreach($statuses as $key => $label)
-                                <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <input type="date" name="from_date" value="{{ request('from_date') }}" class="input-orange" placeholder="{{ __('Du') }}">
-                    </div>
-                    <div>
-                        <input type="date" name="to_date" value="{{ request('to_date') }}" class="input-orange" placeholder="{{ __('Au') }}">
-                    </div>
-                    <div>
-                        <button type="submit" class="btn-primary-orange">
-                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                            {{ __('Filtrer') }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-
             {{-- Reunions List --}}
-            <div class="widget-container">
+            <div class="widget-container mt-3">
                 <x-widget-header
-                    title="📅 {{ __('Liste des réunions') }}"
+                    title="📅 {{ __('Les 2 prochaines réunions à venir') }}"
                 />
                 <div class="divide-y divide-[#faa21b]/20">
                     @forelse($reunions as $reunion)

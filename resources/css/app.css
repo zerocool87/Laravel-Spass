@@ -80,14 +80,14 @@
   }
 
   .fc .fc-daygrid-day-frame {
-    min-height: 13px;
+    min-height: 8px;
     width: 100%;
   }
 
   .fc .fc-daygrid-day-number {
-    width: 27px;
-    height: 27px;
-    font-size: 0.9rem;
+    width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
   }
 
   /* Widget optimizations */
@@ -426,25 +426,25 @@ input[type="text"], textarea, select, .input-text {
   transition: background .15s;
 }
 .fc .fc-daygrid-day-frame {
-  min-height: 10px;
+  min-height: 3.6px;
   padding: 0px 0px;
   width: 100%;
 }
 .fc .fc-daygrid-day-top {
-  padding: 2px 2px 2px 2px;
+  padding: 1px 1px 1px 1px;
 }
 .fc .fc-daygrid-day-top {
-  padding: 6px 6px 4px;
+  padding: 3px 3px 2px;
 }
 .fc .fc-daygrid-day-number {
   font-weight: 500;
   color: var(--text-default) !important;
-  font-size: 0.9rem;
+  font-size: 0.6rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
   border-radius: 999px;
   transition: all .15s;
 }
@@ -452,15 +452,15 @@ input[type="text"], textarea, select, .input-text {
 /* Responsive Calendar Enhancements */
 @media (min-width: 768px) {
   .fc .fc-daygrid-day-frame {
-    min-height: 12px;
+    min-height: 4.2px;
     padding: 0px 0px;
     width: 100%;
   }
 
   .fc .fc-daygrid-day-number {
-    font-size: 0.9rem;
-    width: 24px;
-    height: 24px;
+    font-size: 0.72rem;
+    width: 14px;
+    height: 14px;
   }
 
   .fc .fc-event {
@@ -488,15 +488,15 @@ input[type="text"], textarea, select, .input-text {
 /* Full HD Calendar Enhancements */
 @media (min-width: 1920px) {
   .fc .fc-daygrid-day-frame {
-    min-height: 14px;
+    min-height: 4.8px;
     padding: 0px 0px;
     width: 100%;
   }
 
   .fc .fc-daygrid-day-number {
-    font-size: 1rem;
-    width: 30px;
-    height: 30px;
+    font-size: 0.84rem;
+    width: 18px;
+    height: 18px;
   }
 
   .fc .fc-event {
@@ -710,29 +710,29 @@ input[type="text"], textarea, select, .input-text {
 }
 
 .widget-header {
-    padding: 1.5rem; /* px-6 py-4 */
-    background-color: rgba(250, 162, 27, 0.15); /* bg-[#faa21b]/15 */
-    border-bottom: 2px solid rgba(250, 162, 27, 0.2); /* border-b-2 border-[#faa21b]/20 */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top-left-radius: 0.75rem; /* rounded-t-xl */
-    border-top-right-radius: 0.75rem; /* rounded-t-xl */
+  padding: 0.75rem; /* px-3 py-1.5 */
+  background-color: rgba(250, 162, 27, 0.15); /* bg-[#faa21b]/15 */
+  border-bottom: 2px solid rgba(250, 162, 27, 0.2); /* border-b-2 border-[#faa21b]/20 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 0.75rem; /* rounded-t-xl */
+  border-top-right-radius: 0.75rem; /* rounded-t-xl */
 }
 
 .widget-title {
-    font-size: 1.125rem; /* text-lg */
-    font-weight: 700; /* font-bold */
-    color: #faa21b; /* text-[#faa21b] */
+  font-size: 0.875rem; /* text-base */
+  font-weight: 700; /* font-bold */
+  color: #faa21b; /* text-[#faa21b] */
 }
 
 .widget-link {
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 600; /* font-semibold */
-    color: #faa21b; /* text-[#faa21b] */
-    display: flex;
-    align-items: center;
-    transition: color 0.2s ease-in-out;
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 600; /* font-semibold */
+  color: #faa21b; /* text-[#faa21b] */
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease-in-out;
 }
 
 .widget-link:hover {
@@ -744,7 +744,7 @@ input[type="text"], textarea, select, .input-text {
 }
 
 .widget-content {
-    padding: 1.5rem; /* p-6 */
+  padding: 0.75rem; /* p-3 */
 }
 
 .widget-empty {
