@@ -80,12 +80,13 @@
   }
 
   .fc .fc-daygrid-day-frame {
-    min-height: 96px;
+    min-height: 13px;
+    width: 100%;
   }
 
   .fc .fc-daygrid-day-number {
-    width: 30px;
-    height: 30px;
+    width: 27px;
+    height: 27px;
     font-size: 0.9rem;
   }
 
@@ -344,13 +345,35 @@ input[type="text"], textarea, select, .input-text {
   padding: 0 0 14px 0;
   margin-bottom: 0;
   border: none;
-  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.fc .fc-toolbar .fc-toolbar-chunk {
+  display: flex;
   gap: 8px;
+}
+.fc .fc-toolbar .fc-toolbar-chunk:first-child {
+  justify-content: flex-start;
+  margin-left: 0;
+  margin-right: auto;
+}
+.fc .fc-toolbar .fc-toolbar-chunk:last-child {
+  justify-content: flex-end;
+  margin-left: auto;
+  margin-right: 0;
+}
+.fc .fc-toolbar .fc-toolbar-title {
+  flex: 1;
+  text-align: center;
+  margin: 0 20px;
 }
 .fc .fc-toolbar-title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--text-default);
+  color: var(--brand);
+  text-transform: uppercase;
 }
 .fc .fc-toolbar .fc-button {
   border-radius: 10px;
@@ -376,6 +399,13 @@ input[type="text"], textarea, select, .input-text {
   color: #fff;
   box-shadow: 0 4px 14px rgba(var(--brand-rgb),0.30);
 }
+/* Split prev/next to left/right edges */
+.fc .fc-toolbar .fc-prev-button.fc-button.fc-button-primary {
+  margin-right: auto;
+}
+.fc .fc-toolbar .fc-next-button.fc-button.fc-button-primary {
+  margin-left: auto;
+}
 
 /* ---- Column headers (days of week) ---- */
 .fc .fc-col-header-cell {
@@ -396,21 +426,25 @@ input[type="text"], textarea, select, .input-text {
   transition: background .15s;
 }
 .fc .fc-daygrid-day-frame {
-  min-height: 80px;
-  padding: 6px 8px;
+  min-height: 10px;
+  padding: 0px 0px;
+  width: 100%;
+}
+.fc .fc-daygrid-day-top {
+  padding: 2px 2px 2px 2px;
 }
 .fc .fc-daygrid-day-top {
   padding: 6px 6px 4px;
 }
 .fc .fc-daygrid-day-number {
-  font-weight: 700;
+  font-weight: 500;
   color: var(--text-default) !important;
   font-size: 0.9rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   border-radius: 999px;
   transition: all .15s;
 }
@@ -418,14 +452,15 @@ input[type="text"], textarea, select, .input-text {
 /* Responsive Calendar Enhancements */
 @media (min-width: 768px) {
   .fc .fc-daygrid-day-frame {
-    min-height: 90px;
-    padding: 6px 8px;
+    min-height: 12px;
+    padding: 0px 0px;
+    width: 100%;
   }
 
   .fc .fc-daygrid-day-number {
     font-size: 0.9rem;
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
   }
 
   .fc .fc-event {
@@ -453,14 +488,15 @@ input[type="text"], textarea, select, .input-text {
 /* Full HD Calendar Enhancements */
 @media (min-width: 1920px) {
   .fc .fc-daygrid-day-frame {
-    min-height: 120px;
-    padding: 8px 12px;
+    min-height: 14px;
+    padding: 0px 0px;
+    width: 100%;
   }
 
   .fc .fc-daygrid-day-number {
     font-size: 1rem;
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
   }
 
   .fc .fc-event {

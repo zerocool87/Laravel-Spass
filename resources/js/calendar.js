@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
             locale: frLocale,
             // Map mode to a sensible initial view: 'mini' -> listWeek, 'compact' -> dayGridMonth, 'week' -> timeGridWeek, otherwise month
             initialView: (mode === 'mini') ? 'listWeek' : (mode === 'compact' ? 'dayGridMonth' : (mode === 'week' ? 'timeGridWeek' : 'dayGridMonth')),
-            headerToolbar: (mode === 'mini') ? { left: '', center: 'title', right: '' } : (mode === 'compact' ? { left: 'prev,next', center: 'title', right: '' } : (mode === 'week' ? { left: 'prev,next today', center: 'title', right: 'timeGridWeek,dayGridMonth' } : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' })),
+            headerToolbar: (mode === 'mini') ? { left: 'prev', center: 'title', right: 'next' } : (mode === 'compact' ? { left: 'prev', center: 'title', right: 'next' } : (mode === 'week' ? { left: 'prev today', center: 'title', right: 'next timeGridWeek,dayGridMonth' } : { left: 'prev today', center: 'title', right: 'next dayGridMonth,timeGridWeek,timeGridDay,listWeek' })),
 
             aspectRatio: 1.6,
             dayMaxEventRows: 3,
