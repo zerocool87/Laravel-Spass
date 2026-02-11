@@ -67,7 +67,7 @@
 
   /* Better table spacing */
   .cyber-table th {
-    padding: 16px;
+    padding: 8px;
   }
   .cyber-table td {
     padding: 16px;
@@ -96,7 +96,7 @@
   }
 
   .widget-header {
-    padding: 24px;
+    padding: 12px;
   }
 
   .widget-content {
@@ -285,20 +285,20 @@ input[type="text"], textarea, select, .input-text {
 
 /* Tables */
 .cyber-table { width:100%; border-collapse:separate; border-spacing:0; }
-.cyber-table th { text-align:left; padding:10px; color:var(--text-default); border-bottom:2px solid #ffe6b8; background:#fffbe9; }
-.cyber-table td { padding:12px; color:var(--text-default); border-top:1.5px solid #ffe6b8; }
+.cyber-table th { text-align:left; padding:5px; color:var(--text-default); border-bottom:2px solid #ffe6b8; background:#fffbe9; }
+.cyber-table td { padding:6px; color:var(--text-default); border-top:1.5px solid #ffe6b8; }
 .cyber-table tr:nth-child(even) { background: #f3f4f6; }
 
 /* Full HD Table Enhancements */
 @media (min-width: 1920px) {
   .cyber-table th {
-    padding: 16px;
-    font-size: 16px;
+    padding: 8px;
+    font-size: 14px;
   }
 
   .cyber-table td {
-    padding: 16px;
-    font-size: 16px;
+    padding: 8px;
+    font-size: 14px;
   }
 
   .cyber-table tr:hover {
@@ -410,7 +410,7 @@ input[type="text"], textarea, select, .input-text {
 /* ---- Column headers (days of week) ---- */
 .fc .fc-col-header-cell {
   background: #fffaf0 !important;
-  padding: 10px 0 !important;
+  padding: 5px 0 !important;
 }
 .fc .fc-col-header-cell-cushion {
   font-weight: 700 !important;
@@ -710,7 +710,7 @@ input[type="text"], textarea, select, .input-text {
 }
 
 .widget-header {
-  padding: 0.75rem; /* px-3 py-1.5 */
+  padding: 0.1875rem; /* reduced by 50% */
   background-color: rgba(250, 162, 27, 0.15); /* bg-[#faa21b]/15 */
   border-bottom: 2px solid rgba(250, 162, 27, 0.2); /* border-b-2 border-[#faa21b]/20 */
   display: flex;
