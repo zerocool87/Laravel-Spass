@@ -310,6 +310,15 @@ input[type="text"], textarea, select, .input-text {
    FullCalendar – App-coherent styling
    ============================== */
 
+/* Calendar container visibility control */
+.calendar-hidden {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  position: absolute;
+  pointer-events: none;
+}
+
 /* Container */
 #calendar, #dashboard-calendar, #events-calendar, #reunions-calendar {
   background: #fff;
@@ -317,8 +326,6 @@ input[type="text"], textarea, select, .input-text {
   border-radius: 16px;
   box-shadow: var(--card-shadow);
   border: 1.5px solid var(--panel-border);
-  /* Masqué par défaut — JS affichera le conteneur une fois initialisé */
-  display: none;
   min-height: 300px;
 }
 

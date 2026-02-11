@@ -216,10 +216,14 @@ class ReunionController extends Controller
     /**
      * Toggle calendar visibility.
      */
-    public function toggleCalendar(Request $request): RedirectResponse
+    public function toggleCalendar(Request $request)
     {
         $showCalendar = $request->session()->get('show_calendar', false);
         $request->session()->put('show_calendar', !$showCalendar);
+
+        if ($request->wantsJson()) {
+            return response()->json(['show' => !$showCalendar]);
+        }
 
         return back();
     }

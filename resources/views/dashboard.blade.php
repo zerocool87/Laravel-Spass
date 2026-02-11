@@ -16,7 +16,7 @@
                 {{-- Read-only calendar for all users on the dashboard --}}
                 <div class="mt-6">
                     {{-- <h3 class="text-lg font-semibold mb-3">{{ __('Calendar') }}</h3> --}}
-                    <div id="dashboard-calendar" data-feed-url="/events/json" data-mode="month" data-can-edit="false" aria-label="Events Calendar"></div>
+                    <div id="dashboard-calendar" class="hidden" data-feed-url="/events/json" data-mode="month" data-can-edit="false" aria-label="Events Calendar"></div>
 
                     <style>
                     /* Dashboard calendar – defer to app.css, only layout tweaks here */

@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const createUrl = el.dataset.createUrl || '';
         const editBase = el.dataset.editBase || '';
 
+        console.info('[calendar] initializing calendar:', el.id || el, 'mode:', mode);
+
         // Helper: apply event colors and list styling
         function applyEventColors(info) {
             const props = info.event.extendedProps || {};
@@ -309,23 +311,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const calendar = new Calendar(el, defaultOptions);
 
         try {
+            // Render calendar (now visible since we skipped hidden ones)
             calendar.render();
-
-            // Ensure container visibility after render based on data-visible
-            const hasVisibleFlag = Object.prototype.hasOwnProperty.call(el.dataset, 'visible');
-            if (!hasVisibleFlag || parseBool(el.dataset.visible)) {
-                try { el.style.display = 'block'; } catch (e) { /* ignore */ }
-                try { el.classList.remove('hidden'); } catch (e) { /* ignore */ }
-            } else {
-                // allow toggles to keep it hidden when explicitly requested
-                try { el.style.display = 'none'; } catch (e) { /* ignore */ }
-            }
 
             // expose instance for UI toggles
             el._fcCalendar = calendar;
             el._fcMode = mode;
             el.dataset.initialized = '1';
-            if (window.CALENDAR_DEBUG) console.info('[calendar] initialized', el.id || el);
+            console.info('[calendar] initialized:', el.id || el);
 
             // Attach dateClick using FullCalendar's native option (set after render to avoid unknown option errors)
             if (canEdit) {
@@ -361,6 +354,119 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     });
+
+    // AJAX toggle for calendar visibility (progressive enhancement)
+    function handleAjaxToggle(form) {
+        if(!form) return;
+
+        const action = form.getAttribute('action');
+        const targetSelector = form.dataset.target;
+        const btn = form.querySelector('.js-toggle-button');
+        const tokenEl = document.querySelector('meta[name="csrf-token"]');
+        const token = tokenEl ? tokenEl.getAttribute('content') : '';
+
+        if (!targetSelector) {
+            console.warn('[calendar] No data-target attribute on form');
+            return;
+        }
+
+        const target = document.querySelector(targetSelector);
+        const calendarEl = target ? target.querySelector('[data-feed-url]') : null;
+        const messageEl = document.querySelector('#calendar-message');
+
+        if (!target) {
+            console.warn('[calendar] Target element not found:', targetSelector);
+            return;
+        }
+
+        if (btn) btn.disabled = true;
+
+        fetch(action, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
+        .then(json => {
+            const shouldShow = json.show === true;
+            console.info('[calendar] toggle response:', json.show, 'shouldShow:', shouldShow);
+
+            // Toggle container visibility
+            if (shouldShow) {
+                target.classList.remove('calendar-hidden');
+                if (messageEl) messageEl.classList.add('hidden');
+
+                // Update calendar size
+                if (calendarEl && calendarEl._fcCalendar) {
+                    setTimeout(() => {
+                        try {
+                            calendarEl._fcCalendar.updateSize();
+                            console.info('[calendar] updated size after show');
+                        } catch (e) {
+                            console.warn('[calendar] Could not update size:', e);
+                        }
+                    }, 150);
+                }
+            } else {
+                target.classList.add('calendar-hidden');
+                if (messageEl) messageEl.classList.remove('hidden');
+            }
+
+            // Update button labels
+            if (btn) {
+                const showSpan = btn.querySelector('.toggle-show');
+                const hideSpan = btn.querySelector('.toggle-hide');
+                if (showSpan && hideSpan) {
+                    if (shouldShow) {
+                        showSpan.style.display = '';
+                        hideSpan.style.display = 'none';
+                        btn.setAttribute('aria-pressed', 'true');
+                    } else {
+                        showSpan.style.display = 'none';
+                        hideSpan.style.display = '';
+                        btn.setAttribute('aria-pressed', 'false');
+                    }
+                }
+            }
+        })
+        .catch(err => {
+            console.error('[calendar] AJAX toggle failed:', err);
+            // Fallback: submit form normally
+            form.submit();
+        })
+        .finally(() => {
+            if (btn) btn.disabled = false;
+        });
+    }
+
+    // Delegated event listener for form submission
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        if (form && form.classList && form.classList.contains('js-ajax-toggle')) {
+            e.preventDefault();
+            handleAjaxToggle(form);
+        }
+    }, true);
+
+    // Delegated event listener for button clicks
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.js-toggle-button');
+        if (btn) {
+            const form = btn.closest('form.js-ajax-toggle');
+            if (form) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleAjaxToggle(form);
+            }
+        }
+    }, true)
 
     // Optional debug check: if enabled, report any un-initialized calendar placeholders to help debugging
     if (window.CALENDAR_DEBUG) {
