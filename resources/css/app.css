@@ -80,13 +80,13 @@
   }
 
   .fc .fc-daygrid-day-frame {
-    min-height: 120px;
+    min-height: 96px;
   }
 
   .fc .fc-daygrid-day-number {
-    width: 36px;
-    height: 36px;
-    font-size: 1rem;
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
   }
 
   /* Widget optimizations */
@@ -312,12 +312,13 @@ input[type="text"], textarea, select, .input-text {
 /* Container */
 #calendar, #dashboard-calendar, #events-calendar, #reunions-calendar {
   background: #fff;
-  padding: 20px;
+  padding: 0;
   border-radius: 16px;
   box-shadow: var(--card-shadow);
   border: 1.5px solid var(--panel-border);
   /* Masqué par défaut — JS affichera le conteneur une fois initialisé */
   display: none;
+  min-height: 300px;
 }
 
 /* Base */
@@ -331,6 +332,7 @@ input[type="text"], textarea, select, .input-text {
   border: 1px solid #f0e6d6 !important;
   border-radius: 12px;
   overflow: hidden;
+  min-height: 250px;
 }
 .fc td, .fc th {
   border-color: #f0e6d6 !important;
@@ -394,36 +396,36 @@ input[type="text"], textarea, select, .input-text {
   transition: background .15s;
 }
 .fc .fc-daygrid-day-frame {
-  min-height: 90px;
-  padding: 4px 6px;
+  min-height: 80px;
+  padding: 6px 8px;
 }
 .fc .fc-daygrid-day-top {
-  padding: 4px 4px 2px;
+  padding: 6px 6px 4px;
 }
 .fc .fc-daygrid-day-number {
   font-weight: 700;
   color: var(--text-default) !important;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 999px;
   transition: all .15s;
 }
 
-/* Full HD Calendar Enhancements */
-@media (min-width: 1920px) {
+/* Responsive Calendar Enhancements */
+@media (min-width: 768px) {
   .fc .fc-daygrid-day-frame {
-    min-height: 120px;
-    padding: 8px 12px;
+    min-height: 90px;
+    padding: 6px 8px;
   }
 
   .fc .fc-daygrid-day-number {
-    font-size: 1rem;
-    width: 36px;
-    height: 36px;
+    font-size: 0.9rem;
+    width: 30px;
+    height: 30px;
   }
 
   .fc .fc-event {
@@ -445,6 +447,41 @@ input[type="text"], textarea, select, .input-text {
 
   .fc .fc-timegrid-axis-cushion {
     font-size: 0.9rem;
+  }
+}
+
+/* Full HD Calendar Enhancements */
+@media (min-width: 1920px) {
+  .fc .fc-daygrid-day-frame {
+    min-height: 120px;
+    padding: 8px 12px;
+  }
+
+  .fc .fc-daygrid-day-number {
+    font-size: 1rem;
+    width: 36px;
+    height: 36px;
+  }
+
+  .fc .fc-event {
+    padding: 6px 16px !important;
+    font-size: 1rem !important;
+  }
+
+  .fc .fc-event-time {
+    font-size: 0.9em !important;
+  }
+
+  .fc .fc-event-title {
+    font-size: 1rem !important;
+  }
+
+  .fc .fc-timegrid-slot-label-cushion {
+    font-size: 1rem;
+  }
+
+  .fc .fc-timegrid-axis-cushion {
+    font-size: 1rem;
   }
 }
 .fc .fc-daygrid-day:hover {

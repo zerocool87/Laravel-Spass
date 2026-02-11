@@ -25,7 +25,7 @@
              </div>
              @endcan
               <div class="bg-white rounded-lg shadow-lg border-2 border-[#faa21b]/20 p-6">
-                   <div id="reunions-calendar" data-feed-url="{{ route('elus.reunions.json') }}" data-mode="compact"></div>
+                   <div id="reunions-calendar" data-feed-url="{{ route('elus.reunions.json') }}"></div>
               </div>
 
             {{-- Legend --}}

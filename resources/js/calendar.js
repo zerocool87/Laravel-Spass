@@ -52,8 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (el.id && el.id === 'admin-events-calendar') {
             el.classList.add('admin-calendar');
         }
-        const mode = el.dataset.mode || 'full'; // 'full' or 'mini'
-
+        const mode = el.dataset.mode || 'full';
         const canEdit = parseBool(el.dataset.canEdit);
         const createUrl = el.dataset.createUrl || '';
         const editBase = el.dataset.editBase || '';
@@ -138,9 +137,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Use French locale when the page language starts with 'fr'
             // Force French locale
             locale: frLocale,
-            // Map mode to a sensible initial view: 'mini' -> listWeek, 'week' -> timeGridWeek, otherwise month
-            initialView: mode === 'mini' ? 'listWeek' : (mode === 'week' ? 'timeGridWeek' : 'dayGridMonth'),
-            headerToolbar: mode === 'mini' ? { left: '', center: 'title', right: '' } : (mode === 'week' ? { left: 'prev,next today', center: 'title', right: 'timeGridWeek,dayGridMonth' } : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' }),
+            // Map mode to a sensible initial view: 'mini' -> listWeek, 'compact' -> dayGridMonth, 'week' -> timeGridWeek, otherwise month
+            initialView: (mode === 'mini') ? 'listWeek' : (mode === 'compact' ? 'dayGridMonth' : (mode === 'week' ? 'timeGridWeek' : 'dayGridMonth')),
+            headerToolbar: (mode === 'mini') ? { left: '', center: 'title', right: '' } : (mode === 'compact' ? { left: 'prev,next', center: 'title', right: '' } : (mode === 'week' ? { left: 'prev,next today', center: 'title', right: 'timeGridWeek,dayGridMonth' } : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' })),
+
             aspectRatio: 1.6,
             dayMaxEventRows: 3,
             eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     info.el.appendChild(del);
                 }
             },
-            height: mode === 'mini' ? 240 : (mode === 'week' ? 480 : 'auto')
+            height: 'auto'
         };
 
         // Insert a small loading spinner while the calendar initializes
@@ -266,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function () {
         spinner.setAttribute('aria-hidden', 'true');
         spinner.style.marginBottom = '8px';
         el.appendChild(spinner);
-
         // Define dateClick handler as a closed-over function (set after render to avoid Unknown option error)
         function handleDateClick(info) {
             if (!canEdit) return;
@@ -313,10 +312,12 @@ document.addEventListener('DOMContentLoaded', function () {
             calendar.render();
 
             // Ensure container visibility after render based on data-visible
-            if (parseBool(el.dataset.visible)) {
+            const hasVisibleFlag = Object.prototype.hasOwnProperty.call(el.dataset, 'visible');
+            if (!hasVisibleFlag || parseBool(el.dataset.visible)) {
                 try { el.style.display = 'block'; } catch (e) { /* ignore */ }
+                try { el.classList.remove('hidden'); } catch (e) { /* ignore */ }
             } else {
-                // keep hidden by default; allow toggles to show it
+                // allow toggles to keep it hidden when explicitly requested
                 try { el.style.display = 'none'; } catch (e) { /* ignore */ }
             }
 
@@ -359,56 +360,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        el._fcToggle = function(newMode) {
-            if (!el._fcCalendar) return;
-            // Ensure the container is visible when toggling views
-            try { el.style.display = 'block'; } catch (e) { /* ignore */ }
-            if (newMode === el._fcMode) return;
-            if (newMode === 'mini') {
-                el._fcCalendar.setOption('headerToolbar', { left: '', center: 'title', right: '' });
-                el._fcCalendar.changeView('listWeek');
-                el._fcCalendar.setOption('height', 240);
-            } else {
-                el._fcCalendar.setOption('headerToolbar', { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' });
-                el._fcCalendar.changeView('dayGridMonth');
-                el._fcCalendar.setOption('height', 'auto');
-            }
-            el._fcMode = newMode;
-        };
     });
-
-    // When an admin creates an event via modal, add it to the calendar(s)
-    window.addEventListener('admin:event-created', function(e) {
-        const json = e.detail || {};
-        const targetId = window.__lastCalendarId || null;
-
-        if (targetId) {
-            const targetEl = document.getElementById(targetId);
-            if (targetEl && targetEl._fcCalendar) {
-                targetEl._fcCalendar.addEvent(json);
-                return;
-            }
-        }
-
-        // Fallback: add to all calendars on the page
-        els.forEach(function(el) {
-            if (el._fcCalendar) {
-                try { el._fcCalendar.addEvent(json); } catch (err) { /* ignore */ }
-            }
-        });
-    });
-
-    // global helper for simple toggles
-    window.toggleCalendarView = function(id, mode) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (el._fcToggle) {
-            el._fcToggle(mode);
-        } else {
-            // save desired mode to dataset to be applied when initialized
-            el.dataset.mode = mode;
-        }
-    };
 
     // Optional debug check: if enabled, report any un-initialized calendar placeholders to help debugging
     if (window.CALENDAR_DEBUG) {
