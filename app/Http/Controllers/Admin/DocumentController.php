@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
 use App\Models\User;
+use App\Notifications\DocumentActionNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -65,6 +66,18 @@ class DocumentController extends Controller
             $document->users()->sync($data['assigned_users']);
         }
 
+        if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
+            $users = User::whereIn('id', $data['assigned_users'])->get();
+            foreach ($users as $user) {
+                $user->notify(new DocumentActionNotification(
+                    'Nouveau document partage avec vous',
+                    'Un document vous a ete partage : '.$document->title,
+                    'Voir le document',
+                    route('elus.documents.index'),
+                ));
+            }
+        }
+
         return Redirect::route('admin.documents.index')->with('success', 'Document uploaded.');
     }
 
@@ -99,6 +112,18 @@ class DocumentController extends Controller
             $document->users()->sync($data['assigned_users']);
         } else {
             $document->users()->detach();
+        }
+
+        if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
+            $users = User::whereIn('id', $data['assigned_users'])->get();
+            foreach ($users as $user) {
+                $user->notify(new DocumentActionNotification(
+                    'Document mis a jour : '.$document->title,
+                    'Le document a ete mis a jour : '.$document->title,
+                    'Voir le document',
+                    route('elus.documents.index'),
+                ));
+            }
         }
 
         return Redirect::route('admin.documents.index')->with('success', 'Document updated.');

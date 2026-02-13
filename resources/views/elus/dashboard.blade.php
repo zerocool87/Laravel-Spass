@@ -221,7 +221,14 @@
                                         <x-category-icon :document="$document" size="w-5 h-5" />
                                     </div>
                                     <div class="ml-3 overflow-hidden flex-1">
-                                        <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-[#faa21b] transition">{{ Str::limit($document->title, 20) }}</p>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-[#faa21b] transition">{{ Str::limit($document->title, 20) }}</p>
+                                            @if($document->created_at && $document->created_at->greaterThanOrEqualTo(now()->subDays(7)))
+                                                <span class="inline-flex items-center rounded-full bg-[#faa21b]/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#b36b00]">
+                                                    new
+                                                </span>
+                                            @endif
+                                        </div>
                                         <p class="text-xs text-gray-500">{{ $document->created_at->format('d/m/Y') }}</p>
                                     </div>
                                 </a>

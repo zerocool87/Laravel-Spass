@@ -93,15 +93,15 @@
                             </svg>
                         </a>
 
-                        <a href="{{ route('elus.documents.create') }}" class="flex items-center p-3 border-2 border-[#faa21b]/20 rounded-xl hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
+                        <a href="{{ route('admin.documents.index') }}" class="flex items-center p-3 border-2 border-[#faa21b]/20 rounded-xl hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
                             <div class="p-2 bg-[#faa21b]/10 rounded-lg group-hover:bg-[#faa21b]/20 transition">
                                 <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                             </div>
                             <div class="ml-4 flex-1">
-                                <p class="font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Créer un document') }}</p>
-                                <p class="text-sm text-gray-500">{{ __('Ajouter un nouveau document à la bibliothèque') }}</p>
+                                <p class="font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Gestion des documents') }}</p>
+                                <p class="text-sm text-gray-500">{{ __('Créer, modifier et supprimer les documents') }}</p>
                             </div>
                             <svg class="w-5 h-5 text-[#faa21b]/40 ml-auto group-hover:text-[#faa21b] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>

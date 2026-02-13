@@ -20,6 +20,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group(function () {
+    Route::prefix('documents')->name('documents.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\DocumentController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\DocumentController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\DocumentController::class, 'store'])->name('store');
+        Route::get('/{document}/edit', [\App\Http\Controllers\Admin\DocumentController::class, 'edit'])->name('edit');
+        Route::patch('/{document}', [\App\Http\Controllers\Admin\DocumentController::class, 'update'])->name('update');
+        Route::delete('/{document}', [\App\Http\Controllers\Admin\DocumentController::class, 'destroy'])->name('destroy');
+    });
+});
+
 // Public/Authenticated routes for documents (download, embed, info & library)
 Route::middleware('auth')->group(function () {
     Route::get('/documents/{document}/download', [\App\Http\Controllers\Admin\DocumentController::class, 'download'])->name('documents.download');
