@@ -4,16 +4,17 @@ namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
-use App\Models\Reunion;
 use App\Models\Instance;
+use App\Models\Reunion;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\JsonResponse;
 
 class ReunionController extends Controller
 {
     use RequiresAdmin;
+
     /**
      * Display a listing of the reunions.
      */
@@ -42,8 +43,8 @@ class ReunionController extends Controller
         // Search
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                $q->where('title', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -82,7 +83,7 @@ class ReunionController extends Controller
             'date' => 'required|date',
             'location' => 'nullable|string|max:255',
             'participants' => 'nullable|array',
-            'status' => 'required|string|in:' . implode(',', array_keys(Reunion::STATUSES)),
+            'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
             'ordre_du_jour' => 'nullable|string',
         ]);
 
@@ -99,6 +100,7 @@ class ReunionController extends Controller
     public function show(Reunion $reunion): View
     {
         $reunion->load('instance');
+
         return view('elus.reunions.show', compact('reunion'));
     }
 
@@ -111,6 +113,7 @@ class ReunionController extends Controller
 
         $instances = Instance::orderBy('name')->get();
         $statuses = Reunion::STATUSES;
+
         return view('elus.reunions.edit', compact('reunion', 'instances', 'statuses'));
     }
 
@@ -128,7 +131,7 @@ class ReunionController extends Controller
             'date' => 'required|date',
             'location' => 'nullable|string|max:255',
             'participants' => 'nullable|array',
-            'status' => 'required|string|in:' . implode(',', array_keys(Reunion::STATUSES)),
+            'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
             'ordre_du_jour' => 'nullable|string',
             'compte_rendu' => 'nullable|string',
         ]);
@@ -210,19 +213,20 @@ class ReunionController extends Controller
     public function calendar(): View
     {
         $instances = Instance::orderBy('name')->get();
+
         return view('elus.reunions.calendar', compact('instances'));
     }
 
     /**
      * Toggle calendar visibility.
      */
-    public function toggleCalendar(Request $request)
+    public function toggleCalendar(Request $request): JsonResponse|RedirectResponse
     {
         $showCalendar = $request->session()->get('show_calendar', false);
-        $request->session()->put('show_calendar', !$showCalendar);
+        $request->session()->put('show_calendar', ! $showCalendar);
 
         if ($request->wantsJson()) {
-            return response()->json(['show' => !$showCalendar]);
+            return response()->json(['show' => ! $showCalendar]);
         }
 
         return back();

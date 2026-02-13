@@ -14,6 +14,7 @@
         <div id="calendar"
               data-feed-url="{{ route('events.json') }}"
               data-mode="full"
+              data-can-edit="0"
               class="hidden h-[calc(100vh-150px)] w-full"
          ></div>
     </div>

@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -42,10 +43,10 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        // generate a secure temporary password when creating from admin
-        $temp = bin2hex(random_bytes(5)); // 10 chars
+        // Generate a secure temporary password
+        $tempPassword = Str::random(16);
 
-        $data['password'] = Hash::make($temp);
+        $data['password'] = Hash::make($tempPassword);
         $data['is_admin'] = $request->boolean('is_admin');
         $data['is_elu'] = $request->boolean('is_elu');
         $data['fonction'] = $request->input('fonction');
@@ -54,8 +55,11 @@ class UserController extends Controller
 
         $user = User::create($data);
 
-        // flash the temporary password for admin to copy (only on creation)
-        return Redirect::to('/elus/admin/users')->with('success', "User created. Temporary password: {$temp}");
+        // Use one-time flash for security - only shown once
+        return Redirect::to('/elus/admin/users')
+            ->with('temporaryPassword', $tempPassword)
+            ->with('newUserName', $user->name)
+            ->with('success', 'Utilisateur créé avec succès. Le mot de passe temporaire est affiché ci-dessous.');
     }
 
     public function edit(User $user): View

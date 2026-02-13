@@ -5,18 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class EventController extends Controller
 {
     public function index(): View
     {
-        $events = Event::where('start_at', '>=', now())->orderBy('start_at', 'asc')->paginate(20);
+        $events = Event::with('creator')->where('start_at', '>=', now())->orderBy('start_at', 'asc')->paginate(20);
 
         return view('events.index', compact('events'));
     }
 
-    public function show(Request $request, Event $event)
+    public function show(Request $request, Event $event): Response|JsonResponse|View
     {
         // Progressive enhancement: if the request is an X-HR or explicitly asked for a partial, return the server-rendered partial HTML
         // This is checked first to prioritize HTML for modals over JSON.
@@ -51,7 +52,7 @@ class EventController extends Controller
 
     public function json(Request $request): JsonResponse
     {
-        $query = Event::query();
+        $query = Event::with('creator');
 
         // If the calendar requests a range, filter events intersecting the range
         if ($request->has('start') && $request->has('end')) {

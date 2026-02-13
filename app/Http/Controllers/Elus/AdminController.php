@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class AdminController extends Controller
 {
@@ -48,9 +49,9 @@ class AdminController extends Controller
         // Search
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%')
-                  ->orWhere('commune', 'like', '%' . $request->search . '%');
+                $q->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('email', 'like', '%'.$request->search.'%')
+                    ->orWhere('commune', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -64,7 +65,7 @@ class AdminController extends Controller
      */
     public function toggleElu(User $user): RedirectResponse
     {
-        $user->update(['is_elu' => !$user->is_elu]);
+        $user->update(['is_elu' => ! $user->is_elu]);
 
         $status = $user->is_elu ? 'ajouté aux élus' : 'retiré des élus';
 
@@ -83,8 +84,8 @@ class AdminController extends Controller
             'commune' => 'nullable|string|max:255',
         ]);
 
-        // Generate a random password
-        $tempPassword = bin2hex(random_bytes(5));
+        // Generate a secure temporary password
+        $tempPassword = Str::random(16);
 
         $user = User::create([
             'name' => $validated['name'],
@@ -97,6 +98,8 @@ class AdminController extends Controller
 
         return redirect()
             ->route('elus.admin.users')
-            ->with('success', "Élu {$user->name} créé. Mot de passe temporaire: {$tempPassword}");
+            ->with('temporaryPassword', $tempPassword)
+            ->with('newUserName', $user->name)
+            ->with('success', "Élu {$user->name} créé avec succès. Le mot de passe temporaire est affiché ci-dessous.");
     }
 }
