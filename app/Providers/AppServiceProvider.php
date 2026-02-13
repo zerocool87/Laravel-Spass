@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Define a simple gate for admin users
         Gate::define('admin', function ($user) {
-            return method_exists($user, 'isAdmin') && $user->isAdmin();
+            return $user->isAdmin();
         });
 
         View::composer('components.elus-header', function ($view) {
@@ -33,11 +33,11 @@ class AppServiceProvider extends ServiceProvider
             $unreadCount = 0;
 
             if ($user && ($user->isElu() || $user->isAdmin())) {
-             $unreadCount = Message::query()
-                 ->whereNull('read_at')
-                 ->where('user_id', '<>', $user->id)
-                 ->whereHas('conversation.users', fn ($query) => $query->where('users.id', $user->id))
-                 ->count();
+                $unreadCount = Message::query()
+                    ->whereNull('read_at')
+                    ->where('user_id', '<>', $user->id)
+                    ->whereHas('conversation.users', fn ($query) => $query->where('users.id', $user->id))
+                    ->count();
             }
 
             $view->with('collabUnreadCount', $unreadCount);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,8 +25,9 @@ class AdminController extends Controller
         ];
 
         $recentUsers = User::orderBy('created_at', 'desc')->take(5)->get();
+        $recentDocuments = Document::orderBy('created_at', 'desc')->take(3)->get();
 
-        return view('elus.admin.index', compact('stats', 'recentUsers'));
+        return view('elus.admin.index', compact('stats', 'recentUsers', 'recentDocuments'));
     }
 
     /**

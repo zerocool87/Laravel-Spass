@@ -7,26 +7,20 @@ use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
 use App\Models\User;
 use App\Notifications\DocumentActionNotification;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
-    public function __construct()
-    {
-        // All users must be authenticated; administrative actions require admin
-        $this->middleware('auth');
-        $this->middleware('can:admin')->except(['download', 'view', 'embed', 'info']);
-    }
-
     public function index(Request $request): View
     {
         $category = $request->query('category');
 
-        // Admin doit voir tous les documents, publics et privés
         $documents = Document::with(['creator', 'users'])
             ->when($category, function ($q, $cat) {
                 $q->where('category', $cat);
@@ -64,21 +58,19 @@ class DocumentController extends Controller
 
         if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
             $document->users()->sync($data['assigned_users']);
-        }
 
-        if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
             $users = User::whereIn('id', $data['assigned_users'])->get();
             foreach ($users as $user) {
                 $user->notify(new DocumentActionNotification(
-                    'Nouveau document partage avec vous',
-                    'Un document vous a ete partage : '.$document->title,
+                    'Nouveau document partagé avec vous',
+                    'Un document vous a été partagé : '.$document->title,
                     'Voir le document',
                     route('elus.documents.index'),
                 ));
             }
         }
 
-        return Redirect::route('admin.documents.index')->with('success', 'Document uploaded.');
+        return redirect()->route('admin.documents.index')->with('success', 'Document créé.');
     }
 
     public function edit(Document $document): View
@@ -94,7 +86,6 @@ class DocumentController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('file')) {
-            // delete old
             Storage::delete($document->path);
             $file = $request->file('file');
             $path = $file->store('documents');
@@ -110,23 +101,21 @@ class DocumentController extends Controller
 
         if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
             $document->users()->sync($data['assigned_users']);
-        } else {
-            $document->users()->detach();
-        }
 
-        if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
             $users = User::whereIn('id', $data['assigned_users'])->get();
             foreach ($users as $user) {
                 $user->notify(new DocumentActionNotification(
-                    'Document mis a jour : '.$document->title,
-                    'Le document a ete mis a jour : '.$document->title,
+                    'Document mis à jour : '.$document->title,
+                    'Le document a été mis à jour : '.$document->title,
                     'Voir le document',
                     route('elus.documents.index'),
                 ));
             }
+        } else {
+            $document->users()->detach();
         }
 
-        return Redirect::route('admin.documents.index')->with('success', 'Document updated.');
+        return redirect()->route('admin.documents.index')->with('success', 'Document mis à jour.');
     }
 
     public function destroy(Document $document): RedirectResponse
@@ -134,43 +123,31 @@ class DocumentController extends Controller
         Storage::delete($document->path);
         $document->delete();
 
-        return Redirect::route('admin.documents.index')->with('success', 'Document deleted.');
+        return redirect()->route('admin.documents.index')->with('success', 'Document supprimé.');
     }
 
-    public function download(Document $document)
+    public function download(Document $document): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        // Authorization: must be visible to all or assigned to user or admin
-        $user = auth()->user();
-        if (! $document->visible_to_all && ! $user->isAdmin() && ! $document->users()->where('user_id', $user->id)->exists()) {
-            abort(403);
-        }
+        abort_unless($document->isAccessibleBy(auth()->user()), 403);
 
         return Storage::download($document->path, $document->original_name ?? basename($document->path));
     }
 
-    public function info(Document $document)
+    public function info(Document $document): JsonResponse
     {
-        $user = auth()->user();
-        if (! $document->visible_to_all && ! $user->isAdmin() && ! $document->users()->where('user_id', $user->id)->exists()) {
-            abort(403);
-        }
+        abort_unless($document->isAccessibleBy(auth()->user()), 403);
 
         return response()->json([
             'mime' => $document->getMimeType(),
             'previewable' => $document->isPreviewable(),
             'embed_url' => route('documents.embed', $document),
             'download_url' => route('documents.download', $document),
-            'preview_types' => array_values(config('documents.preview_examples', [])),
         ]);
     }
 
-    public function embed(Document $document)
+    public function embed(Document $document): Response|StreamedResponse
     {
-        // Authorization similar to download
-        $user = auth()->user();
-        if (! $document->visible_to_all && ! $user->isAdmin() && ! $document->users()->where('user_id', $user->id)->exists()) {
-            abort(403);
-        }
+        abort_unless($document->isAccessibleBy(auth()->user()), 403);
 
         $path = $document->getFullPath();
         if (! $path || ! file_exists($path)) {
@@ -181,50 +158,51 @@ class DocumentController extends Controller
         $filename = $document->original_name ?: basename($document->path);
         $filesize = filesize($path);
 
+        $headers = [
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'inline; filename="'.$filename.'"',
+            'Accept-Ranges' => 'bytes',
+        ];
+
         $rangeHeader = request()->header('Range');
 
-        // No Range requested -> return full file
         if (empty($rangeHeader)) {
-            if (app()->environment('testing')) {
-                $content = file_get_contents($path);
-
-                return response($content, 200, [
-                    'Content-Type' => $mime,
-                    'Content-Disposition' => 'inline; filename="'.$filename.'"',
-                    'Accept-Ranges' => 'bytes',
-                    'Content-Length' => (string) $filesize,
-                ]);
-            }
-
-            $stream = function () use ($path) {
-                $fp = fopen($path, 'rb');
-                while (! feof($fp)) {
-                    echo fread($fp, 8192);
-                    flush();
-                }
-                fclose($fp);
-            };
-
-            return new \Symfony\Component\HttpFoundation\StreamedResponse($stream, 200, [
-                'Content-Type' => $mime,
-                'Content-Disposition' => 'inline; filename="'.$filename.'"',
-                'Accept-Ranges' => 'bytes',
-                'Content-Length' => (string) $filesize,
-            ]);
+            return $this->respondFullFile($path, $filesize, $headers);
         }
 
-        // Parse Range header (bytes=start-end)
+        return $this->respondPartialFile($path, $filesize, $rangeHeader, $headers);
+    }
+
+    private function respondFullFile(string $path, int $filesize, array $headers): Response|StreamedResponse
+    {
+        $headers['Content-Length'] = (string) $filesize;
+
+        if (app()->environment('testing')) {
+            return response(file_get_contents($path), 200, $headers);
+        }
+
+        $stream = function () use ($path) {
+            $fp = fopen($path, 'rb');
+            while (! feof($fp)) {
+                echo fread($fp, 8192);
+                flush();
+            }
+            fclose($fp);
+        };
+
+        return new StreamedResponse($stream, 200, $headers);
+    }
+
+    private function respondPartialFile(string $path, int $filesize, string $rangeHeader, array $headers): Response|StreamedResponse
+    {
         if (! preg_match('/bytes=([0-9]*)-([0-9]*)/', $rangeHeader, $matches)) {
-            return response('', 416, [
-                'Content-Range' => "bytes */$filesize",
-            ]);
+            return response('', 416, ['Content-Range' => "bytes */$filesize"]);
         }
 
         $start = $matches[1] === '' ? null : (int) $matches[1];
         $end = $matches[2] === '' ? null : (int) $matches[2];
 
         if ($start === null && $end !== null) {
-            // suffix-byte-range-spec: last N bytes
             $start = max(0, $filesize - $end);
             $end = $filesize - 1;
         } elseif ($start !== null && $end === null) {
@@ -232,58 +210,38 @@ class DocumentController extends Controller
         }
 
         if ($start < 0 || $end < $start || $start >= $filesize) {
-            return response('', 416, [
-                'Content-Range' => "bytes */$filesize",
-            ]);
+            return response('', 416, ['Content-Range' => "bytes */$filesize"]);
         }
 
         $end = min($end, $filesize - 1);
         $length = $end - $start + 1;
 
-        // Stream partial outside testing to avoid memory pressure
-        if (! app()->environment('testing')) {
-            $stream = function () use ($path, $start, $length) {
-                $fp = fopen($path, 'rb');
-                fseek($fp, $start);
-                $remaining = $length;
-                while ($remaining > 0 && ! feof($fp)) {
-                    $read = min(8192, $remaining);
-                    $data = fread($fp, $read);
-                    echo $data;
-                    flush();
-                    $remaining -= strlen($data);
-                }
-                fclose($fp);
-            };
+        $headers['Content-Range'] = "bytes $start-$end/$filesize";
+        $headers['Content-Length'] = (string) $length;
 
-            return new \Symfony\Component\HttpFoundation\StreamedResponse($stream, 206, [
-                'Content-Type' => $mime,
-                'Content-Disposition' => 'inline; filename="'.$filename.'"',
-                'Accept-Ranges' => 'bytes',
-                'Content-Range' => "bytes $start-$end/$filesize",
-                'Content-Length' => (string) $length,
-            ]);
+        if (app()->environment('testing')) {
+            $fp = fopen($path, 'rb');
+            fseek($fp, $start);
+            $content = fread($fp, $length);
+            fclose($fp);
+
+            return response($content, 206, $headers);
         }
 
-        // In testing, return in-memory partial content for assertions
-        $fp = fopen($path, 'rb');
-        fseek($fp, $start);
-        $content = '';
-        $remaining = $length;
-        while ($remaining > 0 && ! feof($fp)) {
-            $read = min(8192, $remaining);
-            $chunk = fread($fp, $read);
-            $content .= $chunk;
-            $remaining -= strlen($chunk);
-        }
-        fclose($fp);
+        $stream = function () use ($path, $start, $length) {
+            $fp = fopen($path, 'rb');
+            fseek($fp, $start);
+            $remaining = $length;
+            while ($remaining > 0 && ! feof($fp)) {
+                $read = min(8192, $remaining);
+                $data = fread($fp, $read);
+                echo $data;
+                flush();
+                $remaining -= strlen($data);
+            }
+            fclose($fp);
+        };
 
-        return response($content, 206, [
-            'Content-Type' => $mime,
-            'Content-Disposition' => 'inline; filename="'.$filename.'"',
-            'Accept-Ranges' => 'bytes',
-            'Content-Range' => "bytes $start-$end/$filesize",
-            'Content-Length' => (string) $length,
-        ]);
+        return new StreamedResponse($stream, 206, $headers);
     }
 }

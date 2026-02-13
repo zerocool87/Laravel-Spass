@@ -4,19 +4,16 @@ namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\FiltersDocuments;
-use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
 use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class DocumentController extends Controller
 {
     use FiltersDocuments;
-    use RequiresAdmin;
 
     /**
      * Display a listing of the documents.
@@ -26,7 +23,6 @@ class DocumentController extends Controller
         $user = $request->user();
         $query = $this->getUserAccessibleDocuments($user);
 
-        // Filter by category
         if ($request->filled('category')) {
             if ($request->category === 'uncategorized') {
                 $query->whereNull('category');
@@ -35,11 +31,10 @@ class DocumentController extends Controller
             }
         }
 
-        // Search
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                $q->where('title', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -62,8 +57,6 @@ class DocumentController extends Controller
      */
     public function create(): View
     {
-        $this->requireAdmin();
-
         $users = User::orderBy('name')->get();
 
         return view('elus.documents.create', compact('users'));
@@ -74,8 +67,6 @@ class DocumentController extends Controller
      */
     public function store(DocumentRequest $request): RedirectResponse
     {
-        $this->requireAdmin();
-
         $data = $request->validated();
 
         $file = $request->file('file');
@@ -95,6 +86,6 @@ class DocumentController extends Controller
             $document->users()->sync($data['assigned_users']);
         }
 
-        return Redirect::route('elus.documents.index')->with('success', 'Document uploaded.');
+        return redirect()->route('elus.documents.index')->with('success', 'Document créé.');
     }
 }

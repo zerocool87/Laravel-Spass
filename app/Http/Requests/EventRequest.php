@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class EventRequest extends FormRequest
 {
@@ -20,7 +21,7 @@ class EventRequest extends FormRequest
             'end_at' => ['nullable', 'date', 'after_or_equal:start_at'],
             'location' => ['nullable', 'string', 'max:255'],
             'is_all_day' => ['sometimes', 'boolean'],
-            'type' => ['nullable', 'string', 'in:Reunion,Bureau,Commissions,Assemblée pleniere,Autre'],
+            'type' => ['nullable', 'string', Rule::in(config('events.types', []))],
         ];
     }
 }

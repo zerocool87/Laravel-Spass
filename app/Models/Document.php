@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
 class Document extends Model
 {
@@ -20,16 +22,22 @@ class Document extends Model
         'category',
     ];
 
-    protected $casts = [
-        'visible_to_all' => 'boolean',
-    ];
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'visible_to_all' => 'boolean',
+        ];
+    }
 
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'document_user');
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
@@ -48,7 +56,7 @@ class Document extends Model
         if ($this->created_by === $user->id) {
             return true;
         }
-        if (method_exists($user, 'isAdmin') && $user->isAdmin()) {
+        if ($user->isAdmin()) {
             return true;
         }
 
@@ -56,28 +64,12 @@ class Document extends Model
     }
 
     /**
-     * Scope to get documents visible to a given user (public or assigned to them)
-     */
-    public function scopeVisibleToUser(Builder $query, ?int $userId)
-    {
-        return $query->where(function ($q) use ($userId) {
-            $q->where('visible_to_all', true);
-
-            if ($userId) {
-                $q->orWhereHas('users', function ($q2) use ($userId) {
-                    $q2->where('users.id', $userId);
-                });
-            }
-        });
-    }
-
-    /**
      * Get full path to stored file on disk.
      */
     public function getFullPath(): ?string
     {
-        if (\Illuminate\Support\Facades\Storage::exists($this->path)) {
-            return \Illuminate\Support\Facades\Storage::path($this->path);
+        if (Storage::exists($this->path)) {
+            return Storage::path($this->path);
         }
         $fallback = storage_path('app/'.$this->path);
 
@@ -89,28 +81,12 @@ class Document extends Model
      */
     public function getMimeType(): ?string
     {
-        if (\Illuminate\Support\Facades\Storage::exists($this->path)) {
-            return \Illuminate\Support\Facades\Storage::mimeType($this->path) ?: null;
+        if (Storage::exists($this->path)) {
+            return Storage::mimeType($this->path) ?: null;
         }
         $fallback = storage_path('app/'.$this->path);
         if (file_exists($fallback)) {
             return mime_content_type($fallback) ?: null;
-        }
-
-        return null;
-    }
-
-    /**
-     * Get the file contents.
-     */
-    public function getFileContent(): ?string
-    {
-        if (\Illuminate\Support\Facades\Storage::exists($this->path)) {
-            return \Illuminate\Support\Facades\Storage::get($this->path);
-        }
-        $fallback = storage_path('app/'.$this->path);
-        if (file_exists($fallback)) {
-            return file_get_contents($fallback);
         }
 
         return null;
@@ -142,6 +118,7 @@ class Document extends Model
     public function getCategoryColor(): string
     {
         $categoryColors = config('documents.category_colors', []);
+
         return $categoryColors[$this->category] ?? 'bg-[#faa21b]';
     }
 
@@ -151,6 +128,7 @@ class Document extends Model
     public function getCategoryIcon(): string
     {
         $categoryIcons = config('documents.category_icons', []);
+
         return $categoryIcons[$this->category] ?? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>';
     }
 }

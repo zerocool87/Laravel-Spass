@@ -110,32 +110,35 @@
                     </div>
                 </div>
 
-                {{-- Recent Users --}}
+                {{-- Recent Documents --}}
                 <div class="widget-container">
                     <x-widget-header
-                        title="👥 {{ __('Utilisateurs récents') }}"
-                        :link="route('elus.admin.users')"
+                        title="📄 {{ __('Documents récents') }}"
+                        :link="route('admin.documents.index')"
                         linkText="{{ __('Voir tous') }}"
                     />
                     <div class="divide-y divide-[#faa21b]/10">
-                        @forelse($recentUsers as $user)
+                        @forelse($recentDocuments as $document)
                             <div class="px-6 py-3 flex items-center justify-between hover:bg-[#faa21b]/5 transition">
-                                <div>
-                                    <p class="font-semibold text-gray-900">{{ $user->name }}</p>
-                                    <p class="text-sm text-gray-500">{{ $user->email }}</p>
+                                <div class="flex items-center">
+                                    <div class="mr-3">
+                                        <x-category-icon category="{{ $document->category }}" class="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-900">{{ Str::limit($document->title, 30) }}</p>
+                                        <p class="text-sm text-gray-500">{{ $document->original_name }}</p>
+                                    </div>
                                 </div>
-                                <div class="flex items-center space-x-2">
-                                    @if($user->is_admin)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#faa21b]/20 text-[#b36b00]">Admin</span>
-                                    @endif
-                                    @if($user->is_elu)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700">Élu</span>
+                                <div class="text-right">
+                                    <p class="text-sm text-gray-500">{{ $document->created_at->format('d/m/Y') }}</p>
+                                    @if($document->created_at->diffInDays() < 7)
+                                        <span class="inline-flex items-center px-2 py-1 mt-1 rounded-full text-xs font-bold bg-green-100 text-green-700">Nouveau</span>
                                     @endif
                                 </div>
                             </div>
                         @empty
                             <div class="px-6 py-8 text-center text-gray-500">
-                                {{ __('Aucun utilisateur') }}
+                                {{ __('Aucun document') }}
                             </div>
                         @endforelse
                     </div>

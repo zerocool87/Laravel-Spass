@@ -19,9 +19,15 @@ class Conversation extends Model
         'last_message_at',
     ];
 
-    protected $casts = [
-        'last_message_at' => 'datetime',
-    ];
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'last_message_at' => 'datetime',
+        ];
+    }
 
     public function users(): BelongsToMany
     {

@@ -30,7 +30,7 @@ class DocumentPreviewTest extends TestCase
         $this->actingAs($user)
             ->get(route('documents.info', $doc))
             ->assertStatus(200)
-            ->assertJsonStructure(['mime', 'previewable', 'embed_url', 'download_url', 'preview_types']);
+            ->assertJsonStructure(['mime', 'previewable', 'embed_url', 'download_url']);
     }
 
     public function test_embed_returns_content()

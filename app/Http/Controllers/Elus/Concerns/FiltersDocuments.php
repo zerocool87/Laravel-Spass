@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Elus\Concerns;
 
 use App\Models\Document;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
 trait FiltersDocuments
@@ -10,10 +11,9 @@ trait FiltersDocuments
     /**
      * Get documents accessible to the specified user.
      *
-     * @param \App\Models\User $user
      * @return Builder<Document>
      */
-    protected function getUserAccessibleDocuments($user): Builder
+    protected function getUserAccessibleDocuments(User $user): Builder
     {
         return Document::query()
             ->where(function ($q) use ($user) {
