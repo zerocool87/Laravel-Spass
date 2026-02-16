@@ -20,8 +20,6 @@
     "PDF viewer failed to initialize; using browser fallback.": "Le visualiseur PDF n'a pas pu être initialisé ; utilisation du navigateur en secours.",
     "Error:": "Erreur :",
 
-    "Prev": "Préc",
-    "Next": "Suiv",
     "Fit width": "Ajuster largeur",
     "Fit page": "Ajuster page",
     "Rotate": "Pivoter",
@@ -116,10 +114,11 @@
     "Prev": "Précédent",
     "Next": "Suivant",
 
-    "View": "Voir",
-
     "custom": {},
 
+    "Titre": "Titre",
+    "Date de creation": "Date de création",
+    "Visibilite": "Visibilité",
     "attributes": {
         "name": "nom",
         "email": "adresse e-mail",
