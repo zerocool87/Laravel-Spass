@@ -1,3 +1,16 @@
+@php
+    $categoryIcons = [
+        'Convocations' => '📧',
+        'Ordres du jour' => '📋',
+        'Comptes rendus' => '📝',
+        'Rapports' => '📊',
+        'Délibérations' => '⚖️',
+        'Guides' => '📖',
+    ];
+    $filterActiveClass = 'border-[#faa21b] bg-[#faa21b] text-white';
+    $filterInactiveClass = 'border-[#faa21b]/30 bg-white text-[#faa21b]';
+@endphp
+
 <x-app-layout>
     <x-slot name="header">
         <x-elus-header
@@ -14,23 +27,15 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Quick Category Filters --}}
             <div class="mb-6 flex flex-wrap gap-2">
-                <a href="{{ route('elus.documents.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 {{ !request('category') ? 'border-[#faa21b] bg-[#faa21b] text-white' : 'border-[#faa21b]/30 bg-white text-[#faa21b]' }} font-semibold shadow-sm transition hover:bg-[#faa21b] hover:text-white hover:border-[#faa21b]">
+                <a href="{{ route('elus.documents.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 {{ !request('category') ? $filterActiveClass : $filterInactiveClass }} font-semibold shadow-sm transition hover:bg-[#faa21b] hover:text-white hover:border-[#faa21b]">
                     <span>🔁</span>
                     <span class="text-sm">{{ __('Tous') }}</span>
                 </a>
                 @foreach($categories as $cat)
                     @php
-                        $categoryIcons = [
-                            'Convocations' => '📧',
-                            'Ordres du jour' => '📋',
-                            'Comptes rendus' => '📝',
-                            'Rapports' => '📊',
-                            'Délibérations' => '⚖️',
-                            'Guides' => '📖',
-                        ];
                         $icon = $categoryIcons[$cat] ?? '📄';
                     @endphp
-                    <a href="{{ route('elus.documents.index', ['category' => $cat]) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 {{ request('category') === $cat ? 'border-[#faa21b] bg-[#faa21b] text-white' : 'border-[#faa21b]/30 bg-white text-[#faa21b]' }} font-semibold shadow-sm transition hover:bg-[#faa21b] hover:text-white hover:border-[#faa21b]">
+                    <a href="{{ route('elus.documents.index', ['category' => $cat]) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 {{ request('category') === $cat ? $filterActiveClass : $filterInactiveClass }} font-semibold shadow-sm transition hover:bg-[#faa21b] hover:text-white hover:border-[#faa21b]">
                         <span>{{ $icon }}</span>
                         <span class="text-sm">{{ $cat }}</span>
                     </a>
@@ -91,21 +96,11 @@
                             @php
                                 $categoryColors = config('documents.category_colors', []);
                                 $colorClass = $categoryColors[$category] ?? 'bg-[#faa21b]';
+                                $icon = $categoryIcons[$category] ?? '📄';
                             @endphp
                             <div class="{{ $colorClass }} px-6 py-4">
                                 <div class="flex items-center justify-between">
                                     <h3 class="text-lg font-bold text-white flex items-center">
-                                        @php
-                                            $categoryIcons = [
-                                                'Convocations' => '📧',
-                                                'Ordres du jour' => '📋',
-                                                'Comptes rendus' => '📝',
-                                                'Rapports' => '📊',
-                                                'Délibérations' => '⚖️',
-                                                'Guides' => '📖',
-                                            ];
-                                            $icon = $categoryIcons[$category] ?? '📄';
-                                        @endphp
                                         <span class="mr-2">{{ $icon }}</span>
                                         {{ $category }}
                                     </h3>
@@ -151,7 +146,9 @@
                                                         </span>
                                                     @endif
                                                     <span class="flex items-center">
-                                                        <x-category-icon :document="$doc" size="w-4 h-4" />
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                        </svg>
                                                         <span class="ml-1">{{ $doc->created_at->format('d/m/Y') }}</span>
                                                     </span>
                                                     @if($doc->creator)

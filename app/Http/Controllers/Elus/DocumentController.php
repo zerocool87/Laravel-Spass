@@ -40,7 +40,7 @@ class DocumentController extends Controller
 
         $documents = $query->latest()->get();
         $documentsByCategory = $documents->groupBy(function ($d) {
-            return $d->category ?: 'Non catégorisé';
+            return $d->category ?: __('Non catégorisé');
         });
 
         $categories = Document::query()
