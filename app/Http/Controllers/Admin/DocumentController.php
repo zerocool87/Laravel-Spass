@@ -20,16 +20,35 @@ class DocumentController extends Controller
     public function index(Request $request): View
     {
         $category = $request->query('category');
+        $search = trim((string) $request->query('q', ''));
+        $search = $search !== '' ? $search : null;
+        $visibility = $request->query('visibility');
+
+        if (! in_array($visibility, ['public', 'private'], true)) {
+            $visibility = null;
+        }
 
         $documents = Document::with(['creator', 'users'])
             ->when($category, function ($q, $cat) {
                 $q->where('category', $cat);
             })
+            ->when($search, function ($q, $search) {
+                $q->where(function ($subQuery) use ($search) {
+                    $like = '%'.$search.'%';
+
+                    $subQuery->where('title', 'like', $like)
+                        ->orWhere('description', 'like', $like)
+                        ->orWhere('original_name', 'like', $like);
+                });
+            })
+            ->when($visibility, function ($q, $visibility) {
+                $q->where('visible_to_all', $visibility === 'public');
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(20)
             ->withQueryString();
 
-        return view('admin.documents.index', compact('documents', 'category'));
+        return view('admin.documents.index', compact('documents', 'category', 'search', 'visibility'));
     }
 
     public function create(): View
