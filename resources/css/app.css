@@ -91,31 +91,70 @@
   }
 
   /* Widget optimizations */
-  .widget-container {
-    border-radius: 12px;
-  }
+   .widget-container {
+     border-radius: 12px;
+   }
 
-  .widget-header {
-    padding: 12px;
-  }
+   .widget-header {
+     padding: 12px;
+   }
 
-  .widget-content {
-    padding: 24px;
-  }
+   .widget-content {
+     padding: 24px;
+   }
 
-  .widget-empty {
-    padding: 32px;
-  }
+   .widget-empty {
+     padding: 32px;
+   }
 
-  .widget-empty-icon {
-    width: 4rem;
-    height: 4rem;
-  }
+   .widget-empty-icon {
+     width: 4rem;
+     height: 4rem;
+   }
 
-  /* Quick actions widget */
-  .quick-actions-widget {
-    min-height: calc(42%);
-  }
+   /* Quick actions widget */
+   .quick-actions-widget {
+     min-height: calc(50%);
+   }
+
+   /* Dashboard widget uniform dimensions */
+   .upcoming-reunions-widget,
+   .instances-widget,
+   .quick-actions-widget,
+   .recent-documents-widget,
+   .active-projects-widget {
+     min-height: 400px;
+     max-height: 400px;
+   }
+
+   .quick-actions-widget {
+     min-height: 200px;
+     max-height: 200px;
+   }
+
+   .recent-documents-widget {
+     min-height: 360px;
+     max-height: 360px;
+   }
+
+   /* Uniform widget padding */
+   .upcoming-reunions-widget .px-6,
+   .instances-widget .px-6,
+   .quick-actions-widget .p-4,
+   .recent-documents-widget .px-6,
+   .active-projects-widget .px-6 {
+     padding-left: 1.5rem !important;
+     padding-right: 1.5rem !important;
+   }
+
+   .upcoming-reunions-widget .py-4,
+   .instances-widget .py-4,
+   .quick-actions-widget .py-4,
+   .recent-documents-widget .py-4,
+   .active-projects-widget .py-4 {
+     padding-top: 1rem !important;
+     padding-bottom: 1rem !important;
+   }
 
   /* Enhanced grid layouts */
   .grid {
@@ -672,7 +711,7 @@ input[type="text"], textarea, select, .input-text {
 
 /* Instances Widget */
 .instances-widget {
-    min-height: calc(46%);
+    min-height: calc(50%);
     display: flex;
     flex-direction: column;
 }
@@ -683,7 +722,7 @@ input[type="text"], textarea, select, .input-text {
 
 /* Recent Documents Widget */
 .recent-documents-widget {
-    min-height: calc(45%);
+    min-height: calc(50%);
     display: flex;
     flex-direction: column;
 }
@@ -694,7 +733,7 @@ input[type="text"], textarea, select, .input-text {
 
 /* Active Projects Widget */
 .active-projects-widget {
-    min-height: calc(40%);
+    min-height: calc(50%);
     display: flex;
     flex-direction: column;
 }
