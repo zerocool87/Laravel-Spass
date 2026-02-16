@@ -10,7 +10,7 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Statistics Cards --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
                 <div class="bg-[#faa21b] rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition">
                     <div class="flex items-center justify-between">
                         <div>
@@ -71,7 +71,7 @@
             {{-- Main Content Grid: 2 columns --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {{-- Left Column: Reunions + Instances --}}
-                <div class="space-y-6">
+                <div class="space-y-8">
                     {{-- Upcoming Reunions --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 upcoming-reunions-widget">
                         <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
@@ -148,7 +148,7 @@
                 </div>
 
                 {{-- Right Column: Quick Access + Recent Documents --}}
-                <div class="space-y-6">
+                <div class="space-y-8">
                     {{-- Quick Actions --}}
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 quick-actions-widget">
                         <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20">
@@ -240,7 +240,7 @@
             </div>
 
             {{-- Active Projects --}}
-            <div class="mt-8">
+            <div class="mt-8" style="margin-top:56px;">
                 <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 overflow-hidden active-projects-widget">
                     <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-[#faa21b]">📋 {{ __('Projets en cours') }}</h3>

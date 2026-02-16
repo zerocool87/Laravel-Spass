@@ -138,28 +138,62 @@
    }
 
    /* Uniform widget padding */
-   .upcoming-reunions-widget .px-6,
-   .instances-widget .px-6,
-   .quick-actions-widget .p-4,
-   .recent-documents-widget .px-6,
-   .active-projects-widget .px-6 {
-     padding-left: 1.5rem !important;
-     padding-right: 1.5rem !important;
-   }
+    .upcoming-reunions-widget .px-6,
+    .instances-widget .px-6,
+    .quick-actions-widget .p-4,
+    .recent-documents-widget .px-6,
+    .active-projects-widget .px-6 {
+      padding-left: 1.5rem !important;
+      padding-right: 1.5rem !important;
+    }
 
-   .upcoming-reunions-widget .py-4,
-   .instances-widget .py-4,
-   .quick-actions-widget .py-4,
-   .recent-documents-widget .py-4,
-   .active-projects-widget .py-4 {
-     padding-top: 1rem !important;
-     padding-bottom: 1rem !important;
-   }
+    .upcoming-reunions-widget .py-4,
+    .instances-widget .py-4,
+    .quick-actions-widget .py-4,
+    .recent-documents-widget .py-4,
+    .active-projects-widget .py-4 {
+      padding-top: 1rem !important;
+      padding-bottom: 1rem !important;
+    }
+
+    /* Consistent spacing for all dashboard widgets */
+    .dashboard-widget {
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .dashboard-widget:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Specific margin for active projects widget */
+    .active-projects-widget {
+      margin-top: 24px !important;
+    }
 
   /* Enhanced grid layouts */
-  .grid {
-    gap: 24px;
-  }
+   .grid {
+     gap: 24px;
+   }
+
+   /* Uniform widget spacing for dashboard */
+   .widget-container {
+     padding: 24px;
+   }
+
+   .widget-header {
+     padding-bottom: 16px;
+     margin-bottom: 16px;
+     border-bottom: 1px solid var(--panel-border);
+   }
+
+   .widget-content {
+     padding: 24px;
+   }
+
+   .widget-empty {
+     padding: 32px;
+   }
 
   /* Better typography */
   h1, h2, h3, h4, h5, h6 {
