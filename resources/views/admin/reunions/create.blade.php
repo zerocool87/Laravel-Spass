@@ -10,10 +10,10 @@
         />
     </x-slot>
 
-    <div class="py-4">
+    <div class="py-8">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-6">
-                <form action="{{ route('admin.reunions.store') }}" method="POST" class="space-y-5">
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8">
+                <form action="{{ route('admin.reunions.store') }}" method="POST" class="space-y-6">
                     @csrf
 
                     @if($errors->any())
@@ -34,11 +34,11 @@
                         </div>
                     @endif
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <!-- Left column: Informations + Planification -->
-                        <div class="space-y-5">
+                        <div class="space-y-6">
                             <!-- Section: Informations principales -->
-                            <div class="space-y-4">
+                            <div class="space-y-5">
                                 <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                                     <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -98,7 +98,7 @@
                             </div>
 
                             <!-- Section: Planification -->
-                            <div class="space-y-4">
+                            <div class="space-y-5">
                                 <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                                     <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -148,7 +148,7 @@
                         </div>
 
                         <!-- Right column: Contenu de la réunion -->
-                        <div class="space-y-4">
+                        <div class="space-y-5">
                             <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                                 <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -202,7 +202,7 @@
                     </div>
 
                     <!-- Actions -->
-                    <div class="flex items-center justify-end gap-3 pt-5 border-t border-gray-200">
+                    <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
                         <a href="{{ route('admin.reunions.index') }}" class="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition">
                             {{ __('Annuler') }}
                         </a>

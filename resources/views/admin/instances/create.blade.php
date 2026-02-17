@@ -10,14 +10,14 @@
         />
     </x-slot>
 
-    <div class="py-4">
+    <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-6">
-                <form method="POST" action="{{ route('admin.instances.store') }}" class="space-y-5">
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8">
+                <form method="POST" action="{{ route('admin.instances.store') }}" class="space-y-6">
                     @csrf
 
                     @if($errors->any())
-                        <div class="rounded-xl border border-red-200 bg-red-50 p-3">
+                        <div class="rounded-xl border border-red-200 bg-red-50 p-4 mb-6">
                             <div class="flex items-start gap-3">
                                 <svg class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -35,7 +35,7 @@
                     @endif
 
                     <!-- Section: Informations principales -->
-                    <div class="space-y-4">
+                    <div class="space-y-5">
                         <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                             <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -104,7 +104,7 @@
                     </div>
 
                     <!-- Section: Membres -->
-                    <div class="space-y-4" x-data="membersManager()">
+                    <div class="space-y-5" x-data="membersManager()">
                         <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                             <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -112,7 +112,7 @@
                             {{ __('Membres') }}
                         </h3>
 
-                        <div class="space-y-2">
+                        <div class="space-y-3">
                             <template x-for="(member, index) in members" :key="index">
                                 <div class="flex gap-2">
                                     <input type="text" :name="'members[' + index + ']'" x-model="members[index]"

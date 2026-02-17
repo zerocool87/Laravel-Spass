@@ -10,11 +10,11 @@
         />
     </x-slot>
 
-    <div class="py-4">
+    <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-6">
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8">
                 @if($errors->any())
-                    <div class="rounded-xl border border-red-200 bg-red-50 p-3 mb-5">
+                    <div class="rounded-xl border border-red-200 bg-red-50 p-4 mb-6">
                         <div class="flex items-start gap-3">
                             <svg class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -32,7 +32,7 @@
                 @endif
 
                 <!-- Compact info bar -->
-                <div class="flex flex-wrap items-center gap-x-5 gap-y-1.5 rounded-xl bg-[#faa21b]/5 border border-[#faa21b]/20 px-4 py-2.5 text-sm mb-5">
+                <div class="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl bg-[#faa21b]/5 border border-[#faa21b]/20 px-5 py-3 text-sm mb-6">
                     <svg class="w-4 h-4 text-[#faa21b] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
@@ -43,12 +43,12 @@
                     <span class="text-gray-600"><strong class="text-gray-800">{{ __('Créé le :') }}</strong> {{ $document->created_at->format('d/m/Y') }}</span>
                 </div>
 
-                <form id="edit-form" action="{{ route('admin.documents.update', $document) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                <form id="edit-form" action="{{ route('admin.documents.update', $document) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     @method('PATCH')
 
                     <!-- Section: Informations du document -->
-                    <div class="space-y-4">
+                    <div class="space-y-5">
                         <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                             <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -102,7 +102,7 @@
                     </div>
 
                     <!-- Section: Fichier et accès -->
-                    <div class="space-y-4">
+                    <div class="space-y-5">
                         <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                             <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
@@ -155,7 +155,7 @@
                 </form>
 
                 <!-- Actions (outside form to avoid nesting) -->
-                <div class="flex items-center justify-between pt-5 mt-5 border-t border-gray-200">
+                <div class="flex items-center justify-between pt-6 mt-6 border-t border-gray-200">
                     <form method="POST" action="{{ route('admin.documents.destroy', $document) }}" onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer ce document ? Cette action est irréversible.') }}')">
                         @csrf
                         @method('DELETE')
