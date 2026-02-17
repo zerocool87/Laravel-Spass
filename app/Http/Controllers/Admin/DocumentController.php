@@ -145,7 +145,7 @@ class DocumentController extends Controller
         return redirect()->route('admin.documents.index')->with('success', 'Document supprimé.');
     }
 
-    public function download(Document $document): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function download(Document $document): \Symfony\Component\HttpFoundation\BinaryFileResponse|\Symfony\Component\HttpFoundation\StreamedResponse
     {
         abort_unless($document->isAccessibleBy(auth()->user()), 403);
 

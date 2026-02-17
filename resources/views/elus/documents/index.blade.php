@@ -165,7 +165,7 @@
                                             <div class="flex items-center gap-2 flex-shrink-0">
                                                 <button
                                                     type="button"
-                                                    onclick="window.openDocument({embed: '{{ route('documents.embed', $doc) }}', info: '{{ route('documents.info', $doc) }}', download: '{{ route('documents.download', $doc) }}', title: '{{ addslashes($doc->title) }}'})"
+                                                    onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})"
                                                     class="inline-flex items-center px-4 py-2 border border-[#faa21b] rounded-lg text-sm font-medium text-[#faa21b] hover:bg-[#faa21b]/10 transition-colors">
                                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>

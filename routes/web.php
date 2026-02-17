@@ -29,6 +29,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
         Route::patch('/{document}', [\App\Http\Controllers\Admin\DocumentController::class, 'update'])->name('update');
         Route::delete('/{document}', [\App\Http\Controllers\Admin\DocumentController::class, 'destroy'])->name('destroy');
     });
+
+    Route::prefix('instances')->name('instances.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\InstanceController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\InstanceController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\InstanceController::class, 'store'])->name('store');
+        Route::get('/{instance}', [\App\Http\Controllers\Admin\InstanceController::class, 'show'])->name('show');
+        Route::get('/{instance}/edit', [\App\Http\Controllers\Admin\InstanceController::class, 'edit'])->name('edit');
+        Route::put('/{instance}', [\App\Http\Controllers\Admin\InstanceController::class, 'update'])->name('update');
+        Route::delete('/{instance}', [\App\Http\Controllers\Admin\InstanceController::class, 'destroy'])->name('destroy');
+        Route::delete('/{instance}/force', [\App\Http\Controllers\Admin\InstanceController::class, 'forceDestroy'])->name('force-destroy');
+    });
 });
 
 // Public/Authenticated routes for documents (download, embed, info & library)
