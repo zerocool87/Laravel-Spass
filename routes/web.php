@@ -40,6 +40,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
         Route::delete('/{instance}', [\App\Http\Controllers\Admin\InstanceController::class, 'destroy'])->name('destroy');
         Route::delete('/{instance}/force', [\App\Http\Controllers\Admin\InstanceController::class, 'forceDestroy'])->name('force-destroy');
     });
+
+    Route::prefix('reunions')->name('reunions.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ReunionController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\ReunionController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\ReunionController::class, 'store'])->name('store');
+        Route::get('/{reunion}/edit', [\App\Http\Controllers\Admin\ReunionController::class, 'edit'])->name('edit');
+        Route::put('/{reunion}', [\App\Http\Controllers\Admin\ReunionController::class, 'update'])->name('update');
+        Route::delete('/{reunion}', [\App\Http\Controllers\Admin\ReunionController::class, 'destroy'])->name('destroy');
+    });
 });
 
 // Public/Authenticated routes for documents (download, embed, info & library)

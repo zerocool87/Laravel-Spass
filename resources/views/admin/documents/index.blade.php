@@ -2,7 +2,7 @@
     <x-slot name="header">
         <x-elus-header
             title="{{ __('Gestion des documents') }}"
-            subtitle="{{ __('Administration de la bibliotheque') }}"
+            subtitle="{{ __('Administration de la bibliothèque') }}"
             icon="📄"
             :backRoute="route('elus.dashboard')"
             :backLabel="__('Retour au tableau de bord')"
@@ -27,9 +27,12 @@
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-900">{{ __('Documents') }}</h2>
-                        <p class="text-sm text-gray-500">{{ __('Gerez, editez et supprimez les documents') }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Gérez, éditez et supprimez les documents') }}</p>
                     </div>
                     <a href="{{ route('admin.documents.create') }}" class="inline-flex items-center justify-center px-5 py-2.5 bg-[#faa21b] text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#faa21b] transition">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
                         {{ __('Nouveau document') }}
                     </a>
                 </div>
@@ -50,7 +53,7 @@
                         </div>
                         <div class="lg:col-span-3">
                             <select id="category" name="category" class="w-full rounded-lg border-gray-200 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]" x-on:change="$refs.filterForm.submit()">
-                                <option value="">{{ __('Toutes les categories') }}</option>
+                                <option value="">{{ __('Toutes les catégories') }}</option>
                                 @foreach(config('documents.categories', []) as $cat)
                                     <option value="{{ $cat }}" {{ $category === $cat ? 'selected' : '' }}>{{ $cat }}</option>
                                 @endforeach
@@ -77,27 +80,27 @@
                                 <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-gray-700">{{ __('Recherche') }}: {{ $search }}</span>
                             @endif
                             @if($category)
-                                <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-gray-700">{{ __('Categorie') }}: {{ $category }}</span>
+                                <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-gray-700">{{ __('Catégorie') }}: {{ $category }}</span>
                             @endif
                             @if($visibility)
-                                <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-gray-700">{{ __('Acces') }}: {{ $visibility === 'public' ? __('Public') : __('Prive') }}</span>
+                                <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-gray-700">{{ __('Accès') }}: {{ $visibility === 'public' ? __('Public') : __('Privé') }}</span>
                             @endif
                             <a href="{{ route('admin.documents.index') }}" class="inline-flex items-center gap-1 rounded-full border border-gray-200 px-2.5 py-1 text-gray-700 hover:border-[#faa21b]/40 hover:text-[#b36b00] transition">
-                                {{ __('Reinitialiser') }}
+                                {{ __('Réinitialiser') }}
                             </a>
                         </div>
                     @endif
                 </form>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 overflow-hidden">
+                <div class="px-6 py-4 border-b border-[#faa21b]/10 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h3 class="text-base font-semibold text-gray-900">{{ __('Liste des documents') }}</h3>
                         <p class="text-sm text-gray-500" aria-live="polite">{{ __('Total') }}: {{ $documents->total() }}</p>
                     </div>
                     <div class="text-xs text-gray-500">
-                        {{ __('Derniere mise a jour') }}: {{ now()->format('d/m/Y H:i') }}
+                        {{ __('Dernière mise à jour') }}: {{ now()->format('d/m/Y H:i') }}
                     </div>
                 </div>
 
@@ -108,37 +111,37 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                         </div>
-                        <p class="font-semibold text-gray-700">{{ __('Aucun document trouve') }}</p>
-                        <p class="text-sm text-gray-500">{{ __('Essayez de modifier les filtres ou creez un document.') }}</p>
+                        <p class="font-semibold text-gray-700">{{ __('Aucun document trouvé') }}</p>
+                        <p class="text-sm text-gray-500">{{ __('Essayez de modifier les filtres ou créez un document.') }}</p>
                     </div>
                 @else
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                        <table class="min-w-full divide-y divide-[#faa21b]/10">
+                            <thead class="bg-[#faa21b]/5">
                                 <tr>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Titre') }}
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('Categorie') }}
+                                        {{ __('Catégorie') }}
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('Date de creation') }}
+                                        {{ __('Date de création') }}
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Auteur') }}
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('Visibilite') }}
+                                        {{ __('Visibilité') }}
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Actions') }}
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="bg-white divide-y divide-[#faa21b]/10">
                                 @foreach($documents as $doc)
-                                    <tr class="hover:bg-gray-50 transition-colors">
+                                    <tr class="hover:bg-[#faa21b]/5 transition-colors">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             <div class="flex items-center gap-3">
                                                 <x-category-icon :document="$doc" size="w-8 h-8" />
@@ -165,7 +168,7 @@
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v10m0 0l3-3m-3 3l-3-3m6 7H9a2 2 0 01-2-2v-1m10 3a2 2 0 002-2v-1"></path>
                                                     </svg>
-                                                    {{ __('Telecharger') }}
+                                                    {{ __('Télécharger') }}
                                                 </a>
                                                 <a href="{{ route('admin.documents.edit', $doc) }}" class="inline-flex items-center gap-1 px-3 py-1 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#faa21b] transition">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -195,7 +198,7 @@
 
             <div class="mt-6">
                 @if($documents->hasPages())
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-4 py-3">
+                    <div class="bg-white rounded-2xl shadow-sm border border-[#faa21b]/20 px-4 py-3">
                         {{ $documents->onEachSide(1)->links() }}
                     </div>
                 @endif

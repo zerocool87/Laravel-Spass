@@ -10,128 +10,138 @@
         />
     </x-slot>
 
-    <div class="py-8">
+    <div class="py-4">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8">
-                <form method="POST" action="{{ route('admin.instances.update', $instance) }}" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-6">
+                @if($errors->any())
+                    <div class="rounded-xl border border-red-200 bg-red-50 p-3 mb-5">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div class="flex-1">
+                                <p class="text-sm font-semibold text-red-900">{{ __('Veuillez corriger les erreurs suivantes :') }}</p>
+                                <ul class="mt-1.5 list-disc pl-5 text-sm text-red-800 space-y-0.5">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Compact info bar -->
+                <div class="flex flex-wrap items-center gap-x-5 gap-y-1.5 rounded-xl bg-[#faa21b]/5 border border-[#faa21b]/20 px-4 py-2.5 text-sm mb-5">
+                    <svg class="w-4 h-4 text-[#faa21b] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-gray-600"><strong class="text-gray-800">{{ __('Réunions :') }}</strong> {{ $instance->reunions()->count() }} {{ __('réunion(s)') }}</span>
+                    <span class="text-gray-300">·</span>
+                    <span class="text-gray-600"><strong class="text-gray-800">{{ __('Créée le :') }}</strong> {{ $instance->created_at->format('d/m/Y') }}</span>
+                </div>
+
+                <form id="edit-form" method="POST" action="{{ route('admin.instances.update', $instance) }}" class="space-y-5">
                     @csrf
                     @method('PUT')
 
-                    <!-- Nom -->
-                    <div>
-                        <label for="name" class="block text-sm font-semibold text-gray-900 mb-2">
-                            {{ __('Nom de l\'instance') }} <span class="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            value="{{ old('name', $instance->name) }}"
-                            required
-                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('name') border-red-300 @enderror"
-                            placeholder="{{ __('Ex: Conseil Municipal') }}"
-                        />
-                        @error('name')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <!-- Section: Informations principales -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
+                            <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ __('Informations principales') }}
+                        </h3>
+
+                        <!-- Nom -->
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ __('Nom de l\'instance') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="name" id="name" value="{{ old('name', $instance->name) }}" required
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('name') border-red-300 @enderror"
+                                placeholder="{{ __('Ex: Conseil Municipal') }}" />
+                            @error('name')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Type et Territoire -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
+                                    {{ __('Type d\'instance') }} <span class="text-red-500">*</span>
+                                </label>
+                                <select name="type" id="type" required
+                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('type') border-red-300 @enderror">
+                                    <option value="">{{ __('Sélectionnez un type') }}</option>
+                                    @foreach($types as $key => $label)
+                                        <option value="{{ $key }}" {{ old('type', $instance->type) === $key ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('type')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="territory" class="block text-sm font-medium text-gray-700 mb-1">
+                                    {{ __('Territoire') }}
+                                </label>
+                                <input type="text" name="territory" id="territory" value="{{ old('territory', $instance->territory) }}"
+                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('territory') border-red-300 @enderror"
+                                    placeholder="{{ __('Ex: Commune de Paris') }}" />
+                                @error('territory')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ __('Description') }}
+                            </label>
+                            <textarea name="description" id="description" rows="2"
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('description') border-red-300 @enderror"
+                                placeholder="{{ __('Décrivez le rôle et les objectifs de cette instance...') }}"
+                            >{{ old('description', $instance->description) }}</textarea>
+                            @error('description')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
-                    <!-- Type -->
-                    <div>
-                        <label for="type" class="block text-sm font-semibold text-gray-900 mb-2">
-                            {{ __('Type d\'instance') }} <span class="text-red-500">*</span>
-                        </label>
-                        <select
-                            name="type"
-                            id="type"
-                            required
-                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('type') border-red-300 @enderror"
-                        >
-                            <option value="">{{ __('Sélectionnez un type') }}</option>
-                            @foreach($types as $key => $label)
-                                <option value="{{ $key }}" {{ old('type', $instance->type) === $key ? 'selected' : '' }}>
-                                    {{ $label }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('type')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Territoire -->
-                    <div>
-                        <label for="territory" class="block text-sm font-semibold text-gray-900 mb-2">
-                            {{ __('Territoire') }}
-                        </label>
-                        <input
-                            type="text"
-                            name="territory"
-                            id="territory"
-                            value="{{ old('territory', $instance->territory) }}"
-                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('territory') border-red-300 @enderror"
-                            placeholder="{{ __('Ex: Commune de Paris') }}"
-                        />
-                        @error('territory')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Description -->
-                    <div>
-                        <label for="description" class="block text-sm font-semibold text-gray-900 mb-2">
-                            {{ __('Description') }}
-                        </label>
-                        <textarea
-                            name="description"
-                            id="description"
-                            rows="4"
-                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('description') border-red-300 @enderror"
-                            placeholder="{{ __('Décrivez le rôle et les objectifs de cette instance...') }}"
-                        >{{ old('description', $instance->description) }}</textarea>
-                        @error('description')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Membres -->
-                    <div x-data="membersManager()">
-                        <label class="block text-sm font-semibold text-gray-900 mb-2">
+                    <!-- Section: Membres -->
+                    <div class="space-y-4" x-data="membersManager()">
+                        <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
+                            <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
                             {{ __('Membres') }}
-                        </label>
-                        <p class="text-sm text-gray-600 mb-3">
-                            {{ __('Ajoutez les membres de cette instance') }}
-                        </p>
+                        </h3>
 
-                        <div class="space-y-2 mb-3">
+                        <div class="space-y-2">
                             <template x-for="(member, index) in members" :key="index">
                                 <div class="flex gap-2">
-                                    <input
-                                        type="text"
-                                        :name="'members[' + index + ']'"
-                                        x-model="members[index]"
+                                    <input type="text" :name="'members[' + index + ']'" x-model="members[index]"
                                         class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]"
-                                        :placeholder="__('Nom du membre')"
-                                    />
-                                    <button
-                                        type="button"
-                                        @click="removeMember(index)"
-                                        class="px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition"
-                                    >
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        :placeholder="__('Nom du membre')" />
+                                    <button type="button" @click="removeMember(index)"
+                                        class="px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
                                     </button>
                                 </div>
                             </template>
                         </div>
 
-                        <button
-                            type="button"
-                            @click="addMember()"
-                            class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-200 transition"
-                        >
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button type="button" @click="addMember()"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#b36b00] hover:bg-[#faa21b]/10 rounded-lg transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
                             {{ __('Ajouter un membre') }}
@@ -141,71 +151,43 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                </form>
 
-                    <!-- Informations supplémentaires -->
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <div class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <div class="flex-1">
-                                <h4 class="text-sm font-semibold text-blue-900 mb-1">{{ __('Informations') }}</h4>
-                                <p class="text-sm text-blue-800">
-                                    {{ __('Cette instance contient') }} <strong>{{ $instance->reunions()->count() }}</strong> {{ __('réunion(s)') }}.
-                                </p>
-                                <p class="text-sm text-blue-800 mt-1">
-                                    {{ __('Créée le') }} {{ $instance->created_at->format('d/m/Y à H:i') }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="flex items-center justify-between pt-6 border-t border-gray-200">
-                        <div>
-                            @if($instance->reunions()->count() === 0)
-                                <form
-                                    method="POST"
-                                    action="{{ route('admin.instances.destroy', $instance) }}"
-                                    onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer cette instance ?') }}')"
-                                >
-                                    @csrf
-                                    @method('DELETE')
-                                    <button
-                                        type="submit"
-                                        class="px-6 py-2.5 bg-red-50 text-red-700 rounded-xl font-semibold text-sm hover:bg-red-100 transition"
-                                    >
-                                        {{ __('Supprimer l\'instance') }}
-                                    </button>
-                                </form>
-                            @else
-                                <button
-                                    type="button"
-                                    disabled
-                                    class="px-6 py-2.5 bg-gray-100 text-gray-400 rounded-xl font-semibold text-sm cursor-not-allowed"
-                                    title="{{ __('Impossible de supprimer une instance avec des réunions') }}"
-                                >
+                <!-- Actions (outside form to avoid nesting) -->
+                <div class="flex items-center justify-between pt-5 mt-5 border-t border-gray-200">
+                    <div>
+                        @if($instance->reunions()->count() === 0)
+                            <form method="POST" action="{{ route('admin.instances.destroy', $instance) }}" onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer cette instance ?') }}')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
                                     {{ __('Supprimer l\'instance') }}
                                 </button>
-                            @endif
-                        </div>
-
-                        <div class="flex items-center gap-4">
-                            <a
-                                href="{{ route('admin.instances.index') }}"
-                                class="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition"
-                            >
-                                {{ __('Annuler') }}
-                            </a>
-                            <button
-                                type="submit"
-                                class="px-6 py-2.5 bg-[#faa21b] text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#faa21b] transition"
-                            >
-                                {{ __('Mettre à jour') }}
+                            </form>
+                        @else
+                            <button type="button" disabled class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-400 cursor-not-allowed" title="{{ __('Impossible de supprimer une instance avec des réunions') }}">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                                {{ __('Supprimer l\'instance') }}
                             </button>
-                        </div>
+                        @endif
                     </div>
-                </form>
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('admin.instances.index') }}" class="px-5 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition">
+                            {{ __('Annuler') }}
+                        </a>
+                        <button type="submit" form="edit-form" class="inline-flex items-center gap-2 px-5 py-2 bg-[#faa21b] text-white rounded-lg font-semibold text-sm shadow-md hover:shadow-lg hover:bg-[#e8941a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#faa21b] transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            {{ __('Enregistrer les modifications') }}
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
