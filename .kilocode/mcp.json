@@ -1,1 +1,1 @@
-{"mcpServers":{"laravel-boost":{"command":"php","args":["artisan","boost:mcp"],"alwaysAllow":["application-info","last-error"]},"context7":{"command":"npx","args":["-y","@upstash/context7-mcp"],"env":{"DEFAULT_MINIMUM_TOKENS":""}}}}
+{"mcpServers":{"laravel-boost":{"command":"php","args":["artisan","boost:mcp"],"alwaysAllow":["application-info","last-error","list-artisan-commands"]},"context7":{"command":"npx","args":["-y","@upstash/context7-mcp"],"env":{"DEFAULT_MINIMUM_TOKENS":""}}}}
