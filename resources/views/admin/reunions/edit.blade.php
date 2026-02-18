@@ -10,11 +10,11 @@
         />
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8">
+    <div class="py-4">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-5">
                 @if($errors->any())
-                    <div class="rounded-xl border border-red-200 bg-red-50 p-4 mb-6">
+                    <div class="rounded-xl border border-red-200 bg-red-50 p-3 mb-4">
                         <div class="flex items-start gap-3">
                             <svg class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -31,8 +31,7 @@
                     </div>
                 @endif
 
-                <!-- Compact info bar -->
-                <div class="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl bg-[#faa21b]/5 border border-[#faa21b]/20 px-5 py-3 text-sm mb-6">
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-[#faa21b]/5 border border-[#faa21b]/20 px-4 py-2 text-sm mb-4">
                     <svg class="w-4 h-4 text-[#faa21b] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
@@ -47,11 +46,9 @@
                     @csrf
                     @method('PUT')
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Left column: Informations + Planification -->
-                        <div class="space-y-6">
-                            <!-- Section: Informations principales -->
-                            <div class="space-y-5">
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                        <div class="space-y-4">
+                            <div class="space-y-4">
                                 <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                                     <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -59,7 +56,6 @@
                                     {{ __('Informations principales') }}
                                 </h3>
 
-                                <!-- Titre -->
                                 <div>
                                     <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
                                         {{ __('Titre') }} <span class="text-red-500">*</span>
@@ -72,7 +68,6 @@
                                     @enderror
                                 </div>
 
-                                <!-- Instance et Statut -->
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label for="instance_id" class="block text-sm font-medium text-gray-700 mb-1">
@@ -108,10 +103,22 @@
                                         @enderror
                                     </div>
                                 </div>
+
+                                <div>
+                                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1">
+                                        {{ __('Lieu') }}
+                                    </label>
+                                    <input type="text" name="location" id="location" value="{{ old('location', $reunion->location) }}"
+                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('location') border-red-300 @enderror"
+                                        placeholder="{{ __('Ex: Salle du Conseil') }}" />
+                                    @error('location')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
-                            <!-- Section: Planification -->
-                            <div class="space-y-5">
+                            <div class="space-y-4">
+                                <div class="space-y-4">
                                 <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                                     <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -119,8 +126,7 @@
                                     {{ __('Planification') }}
                                 </h3>
 
-                                 <!-- Date, Heure de début, Heure de fin et Fuseau horaire -->
-                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label for="date" class="block text-sm font-medium text-gray-700 mb-1">
                                             {{ __('Date') }} <span class="text-red-500">*</span>
@@ -131,6 +137,9 @@
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label for="start_time" class="block text-sm font-medium text-gray-700 mb-1">
                                             {{ __('Heure de début') }} <span class="text-red-500">*</span>
@@ -141,8 +150,6 @@
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
-                                </div>
-                                 <div class="grid grid-cols-2 gap-4 mt-4">
                                     <div>
                                         <label for="end_time" class="block text-sm font-medium text-gray-700 mb-1">
                                             {{ __('Heure de fin') }} <span class="text-red-500">*</span>
@@ -154,37 +161,23 @@
                                         @enderror
                                     </div>
                                 </div>
-                                    <div>
-                                        <label for="location" class="block text-sm font-medium text-gray-700 mb-1">
-                                            {{ __('Lieu') }}
-                                        </label>
-                                        <input type="text" name="location" id="location" value="{{ old('location', $reunion->location) }}"
-                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('location') border-red-300 @enderror"
-                                            placeholder="{{ __('Ex: Salle du Conseil') }}" />
-                                        @error('location')
-                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
+                            </div>
 
-                                <!-- Description -->
-                                <div>
-                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
-                                        {{ __('Description') }}
-                                    </label>
-                                    <textarea name="description" id="description" rows="3"
-                                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('description') border-red-300 @enderror"
-                                        placeholder="{{ __('Objet de la réunion, contexte...') }}"
-                                    >{{ old('description', $reunion->description) }}</textarea>
-                                    @error('description')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                            <div>
+                                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                                    {{ __('Description') }}
+                                </label>
+                                <textarea name="description" id="description" rows="3"
+                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('description') border-red-300 @enderror"
+                                    placeholder="{{ __('Objet de la réunion, contexte...') }}"
+                                >{{ old('description', $reunion->description) }}</textarea>
+                                @error('description')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
-                        <!-- Right column: Contenu de la réunion -->
-                        <div class="space-y-5">
+                        <div class="space-y-4">
                             <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2 pb-2 border-b border-[#faa21b]/20">
                                 <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -192,12 +185,11 @@
                                 {{ __('Contenu de la réunion') }}
                             </h3>
 
-                            <!-- Ordre du jour -->
                             <div>
                                 <label for="ordre_du_jour" class="block text-sm font-medium text-gray-700 mb-1">
                                     {{ __('Ordre du jour') }}
                                 </label>
-                                <textarea name="ordre_du_jour" id="ordre_du_jour" rows="5"
+                                <textarea name="ordre_du_jour" id="ordre_du_jour" rows="4"
                                     class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('ordre_du_jour') border-red-300 @enderror"
                                     placeholder="{{ __('1. Approbation du procès-verbal') }}&#10;{{ __('2. Questions diverses') }}"
                                 >{{ old('ordre_du_jour', $reunion->ordre_du_jour) }}</textarea>
@@ -206,12 +198,11 @@
                                 @enderror
                             </div>
 
-                            <!-- Compte rendu -->
                             <div>
                                 <label for="compte_rendu" class="block text-sm font-medium text-gray-700 mb-1">
                                     {{ __('Compte rendu') }}
                                 </label>
-                                <textarea name="compte_rendu" id="compte_rendu" rows="5"
+                                <textarea name="compte_rendu" id="compte_rendu" rows="4"
                                     class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('compte_rendu') border-red-300 @enderror"
                                     placeholder="{{ __('Rédigez le compte rendu de la réunion...') }}"
                                 >{{ old('compte_rendu', $reunion->compte_rendu) }}</textarea>
@@ -220,12 +211,11 @@
                                 @enderror
                             </div>
 
-                            <!-- Participants -->
                             <div>
                                 <label for="participants" class="block text-sm font-medium text-gray-700 mb-1">
                                     {{ __('Participants') }}
                                 </label>
-                                <textarea name="participants_text" id="participants" rows="3"
+                                <textarea name="participants_text" id="participants" rows="2"
                                     class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('participants_text') border-red-300 @enderror"
                                     placeholder="{{ __('Un participant par ligne') }}"
                                 >{{ old('participants_text', is_array($reunion->participants) ? implode("\n", $reunion->participants) : '') }}</textarea>
@@ -238,8 +228,7 @@
                     </div>
                 </form>
 
-                <!-- Actions (outside form to avoid nesting) -->
-                <div class="flex items-center justify-between pt-6 mt-6 border-t border-gray-200">
+                <div class="flex items-center justify-between pt-4 mt-4 border-t border-gray-200">
                     <form method="POST" action="{{ route('admin.reunions.destroy', $reunion) }}" onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer cette réunion ? Cette action est irréversible.') }}')">
                         @csrf
                         @method('DELETE')
