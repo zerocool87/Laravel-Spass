@@ -19,7 +19,7 @@
             <p class="text-sm font-semibold text-yellow-900">{{ __('Créneaux alternatifs suggérés :') }}</p>
             <ul class="mt-2 list-disc pl-5 text-sm text-yellow-800 space-y-1">
                 @foreach(session('alternative_slots') as $slot)
-                    <li>{{ $slot['start'] }} - {{ $slot['end'] }} ({{ $slot['timezone'] }})</li>
+                    <li>{{ $slot['start'] }} - {{ $slot['end'] }}</li>
                 @endforeach
             </ul>
         </div>
@@ -150,30 +150,6 @@
                 class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('end_time') border-red-300 @enderror"
             />
             @error('end_time')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div>
-            <label for="timezone" class="block text-sm font-semibold text-gray-900 mb-2">
-                {{ __('Fuseau horaire') }}
-            </label>
-            <select
-                name="timezone"
-                id="timezone"
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('timezone') border-red-300 @enderror"
-            >
-                <option value="Europe/Paris" {{ old('timezone', $isEdit ? $reunion->timezone : 'Europe/Paris') == 'Europe/Paris' ? 'selected' : '' }}>
-                    {{ __('Europe/Paris (UTC+1/UTC+2)') }}
-                </option>
-                <option value="UTC" {{ old('timezone', $isEdit ? $reunion->timezone : 'Europe/Paris') == 'UTC' ? 'selected' : '' }}>
-                    {{ __('UTC') }}
-                </option>
-                <option value="America/New_York" {{ old('timezone', $isEdit ? $reunion->timezone : 'Europe/Paris') == 'America/New_York' ? 'selected' : '' }}>
-                    {{ __('America/New_York (UTC-5/UTC-4)') }}
-                </option>
-            </select>
-            @error('timezone')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>

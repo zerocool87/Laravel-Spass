@@ -21,21 +21,24 @@ class DashboardUpcomingReunionsTest extends TestCase
         $planifieeReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion planifiée',
-            'date' => now()->addDays(1),
+            'start_time' => now()->addDays(1)->setTime(9, 0),
+            'end_time' => now()->addDays(1)->setTime(11, 0),
             'status' => 'planifiee',
         ]);
 
         $confirmeeReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion confirmée',
-            'date' => now()->addDays(2),
+            'start_time' => now()->addDays(2)->setTime(9, 0),
+            'end_time' => now()->addDays(2)->setTime(11, 0),
             'status' => 'confirmee',
         ]);
 
         $termineeReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion terminée',
-            'date' => now()->addDays(3),
+            'start_time' => now()->addDays(3)->setTime(9, 0),
+            'end_time' => now()->addDays(3)->setTime(11, 0),
             'status' => 'terminee',
         ]);
 
@@ -58,7 +61,8 @@ class DashboardUpcomingReunionsTest extends TestCase
             Reunion::factory()->create([
                 'instance_id' => $instance->id,
                 'title' => 'Réunion '.$i,
-                'date' => now()->addDays($i),
+                'start_time' => now()->addDays($i)->setTime(9, 0),
+                'end_time' => now()->addDays($i)->setTime(11, 0),
                 'status' => 'planifiee',
             ]);
         }

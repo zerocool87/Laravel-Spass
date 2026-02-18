@@ -40,26 +40,42 @@
                             @enderror
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
-                                <label for="date" class="block text-sm font-medium text-gray-700">{{ __('Date et heure') }} *</label>
-                                <input type="datetime-local" name="date" id="date" value="{{ old('date') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                <label for="date" class="block text-sm font-medium text-gray-700">{{ __('Date') }} *</label>
+                                <input type="date" name="date" id="date" value="{{ old('date') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                                 @error('date')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <div>
-                                <label for="status" class="block text-sm font-medium text-gray-700">{{ __('Statut') }} *</label>
-                                <select name="status" id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
-                                    @foreach($statuses as $key => $label)
-                                        <option value="{{ $key }}" {{ old('status', 'planifiee') == $key ? 'selected' : '' }}>{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                                @error('status')
+                                <label for="start_time" class="block text-sm font-medium text-gray-700">{{ __('Heure de début') }} *</label>
+                                <input type="time" name="start_time" id="start_time" value="{{ old('start_time', '09:00') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                @error('start_time')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
+
+                            <div>
+                                <label for="end_time" class="block text-sm font-medium text-gray-700">{{ __('Heure de fin') }} *</label>
+                                <input type="time" name="end_time" id="end_time" value="{{ old('end_time', '11:00') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                @error('end_time')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <label for="status" class="block text-sm font-medium text-gray-700">{{ __('Statut') }} *</label>
+                            <select name="status" id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                @foreach($statuses as $key => $label)
+                                    <option value="{{ $key }}" {{ old('status', 'planifiee') == $key ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                            @error('status')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>

@@ -30,10 +30,10 @@ class ReunionController extends Controller
 
         // Filter by date range
         if ($request->filled('from_date')) {
-            $query->where('date', '>=', $request->from_date);
+            $query->where('start_time', '>=', $request->from_date);
         }
         if ($request->filled('to_date')) {
-            $query->where('date', '<=', $request->to_date);
+            $query->where('end_time', '<=', $request->to_date);
         }
 
         // Search
@@ -44,7 +44,7 @@ class ReunionController extends Controller
             });
         }
 
-        $reunions = $query->orderBy('date', 'desc')->paginate(15);
+        $reunions = $query->orderBy('start_time', 'desc')->paginate(15);
         $instances = Instance::orderBy('name')->get();
         $statuses = Reunion::STATUSES;
 
@@ -75,7 +75,6 @@ class ReunionController extends Controller
             'date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
-            'timezone' => 'required|timezone',
             'location' => 'nullable|string|max:255',
             'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
             'ordre_du_jour' => 'nullable|string',
@@ -91,9 +90,9 @@ class ReunionController extends Controller
 
         $validated['participants'] = array_values($participants);
 
-        // Combine date with time and timezone
-        $startDateTime = $validated['date'] . ' ' . $validated['start_time'];
-        $endDateTime = $validated['date'] . ' ' . $validated['end_time'];
+        // Combine date with time
+        $startDateTime = $validated['date'].' '.$validated['start_time'];
+        $endDateTime = $validated['date'].' '.$validated['end_time'];
 
         $validated['start_time'] = $startDateTime;
         $validated['end_time'] = $endDateTime;
@@ -104,8 +103,7 @@ class ReunionController extends Controller
         $conflicts = $this->checkForConflicts(
             $validated['instance_id'],
             $startDateTime,
-            $endDateTime,
-            $validated['timezone']
+            $endDateTime
         );
 
         if ($conflicts->isNotEmpty()) {
@@ -113,13 +111,12 @@ class ReunionController extends Controller
             $alternatives = $this->suggestAlternativeTimeSlots(
                 $validated['instance_id'],
                 $startDateTime,
-                $endDateTime,
-                $validated['timezone']
+                $endDateTime
             );
 
             return back()->withInput()
                 ->withErrors([
-                    'conflict' => __('Conflit d\'horaire détecté avec :count autre(s) réunion(s)', ['count' => $conflicts->count()])
+                    'conflict' => __('Conflit d\'horaire détecté avec :count autre(s) réunion(s)', ['count' => $conflicts->count()]),
                 ])
                 ->with('alternative_slots', $alternatives);
         }
@@ -154,7 +151,6 @@ class ReunionController extends Controller
             'date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
-            'timezone' => 'required|timezone',
             'location' => 'nullable|string|max:255',
             'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
             'ordre_du_jour' => 'nullable|string',
@@ -170,9 +166,9 @@ class ReunionController extends Controller
 
         $validated['participants'] = array_values($participants);
 
-        // Combine date with time and timezone
-        $startDateTime = $validated['date'] . ' ' . $validated['start_time'];
-        $endDateTime = $validated['date'] . ' ' . $validated['end_time'];
+        // Combine date with time
+        $startDateTime = $validated['date'].' '.$validated['start_time'];
+        $endDateTime = $validated['date'].' '.$validated['end_time'];
 
         $validated['start_time'] = $startDateTime;
         $validated['end_time'] = $endDateTime;
@@ -184,7 +180,6 @@ class ReunionController extends Controller
             $validated['instance_id'],
             $startDateTime,
             $endDateTime,
-            $validated['timezone'],
             $reunion->id
         );
 
@@ -193,13 +188,12 @@ class ReunionController extends Controller
             $alternatives = $this->suggestAlternativeTimeSlots(
                 $validated['instance_id'],
                 $startDateTime,
-                $endDateTime,
-                $validated['timezone']
+                $endDateTime
             );
 
             return back()->withInput()
                 ->withErrors([
-                    'conflict' => __('Conflit d\'horaire détecté avec :count autre(s) réunion(s)', ['count' => $conflicts->count()])
+                    'conflict' => __('Conflit d\'horaire détecté avec :count autre(s) réunion(s)', ['count' => $conflicts->count()]),
                 ])
                 ->with('alternative_slots', $alternatives);
         }
@@ -214,10 +208,10 @@ class ReunionController extends Controller
     /**
      * Check for scheduling conflicts.
      */
-    private function checkForConflicts(int $instanceId, string $startTime, string $endTime, string $timezone, int $excludeId = null): \Illuminate\Database\Eloquent\Collection
+    private function checkForConflicts(int $instanceId, string $startTime, string $endTime, ?int $excludeId = null): \Illuminate\Database\Eloquent\Collection
     {
-        $start = \Carbon\Carbon::parse($startTime, $timezone)->setTimezone('UTC');
-        $end = \Carbon\Carbon::parse($endTime, $timezone)->setTimezone('UTC');
+        $start = \Carbon\Carbon::parse($startTime)->setTimezone('UTC');
+        $end = \Carbon\Carbon::parse($endTime)->setTimezone('UTC');
 
         $query = Reunion::where('instance_id', $instanceId)
             ->where(function ($q) use ($start, $end) {
@@ -238,10 +232,10 @@ class ReunionController extends Controller
     /**
      * Suggest alternative time slots.
      */
-    private function suggestAlternativeTimeSlots(int $instanceId, string $startTime, string $endTime, string $timezone): array
+    private function suggestAlternativeTimeSlots(int $instanceId, string $startTime, string $endTime): array
     {
-        $start = \Carbon\Carbon::parse($startTime, $timezone);
-        $end = \Carbon\Carbon::parse($endTime, $timezone);
+        $start = \Carbon\Carbon::parse($startTime);
+        $end = \Carbon\Carbon::parse($endTime);
         $duration = $end->diffInMinutes($start);
 
         $alternatives = [];
@@ -256,15 +250,13 @@ class ReunionController extends Controller
             $conflicts = $this->checkForConflicts(
                 $instanceId,
                 $current->toDateTimeString(),
-                $proposedEnd->toDateTimeString(),
-                $timezone
+                $proposedEnd->toDateTimeString()
             );
 
             if ($conflicts->isEmpty()) {
                 $alternatives[] = [
                     'start' => $current->format('H:i'),
                     'end' => $proposedEnd->format('H:i'),
-                    'timezone' => $timezone
                 ];
 
                 if (count($alternatives) >= 3) {

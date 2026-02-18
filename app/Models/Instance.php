@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Instance extends Model
 {
@@ -60,9 +60,9 @@ class Instance extends Model
     public function upcomingReunions(): HasMany
     {
         return $this->reunions()
-            ->where('date', '>=', now())
+            ->where('start_time', '>=', now())
             ->whereIn('status', ['planifiee', 'confirmee'])
-            ->orderBy('date');
+            ->orderBy('start_time');
     }
 
     /**

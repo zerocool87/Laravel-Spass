@@ -30,7 +30,6 @@ class ReunionFactory extends Factory
             'description' => $this->faker->paragraph,
             'start_time' => $startTime,
             'end_time' => $endTime,
-            'timezone' => 'Europe/Paris',
             'location' => $this->faker->address,
             'status' => $this->faker->randomElement(array_keys(Reunion::STATUSES)),
             'participants' => [],

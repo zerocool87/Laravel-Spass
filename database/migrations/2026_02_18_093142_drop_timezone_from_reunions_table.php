@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('reunions', function (Blueprint $table) {
-            $table->dropColumn('timezone');
-        });
+        if (Schema::hasColumn('reunions', 'timezone')) {
+            Schema::table('reunions', function (Blueprint $table) {
+                $table->dropColumn('timezone');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('reunions', function (Blueprint $table) {
-            $table->string('timezone')->default('Europe/Paris')->after('end_time');
-        });
+        if (! Schema::hasColumn('reunions', 'timezone')) {
+            Schema::table('reunions', function (Blueprint $table) {
+                $table->string('timezone')->default('Europe/Paris')->after('end_time');
+            });
+        }
     }
 };

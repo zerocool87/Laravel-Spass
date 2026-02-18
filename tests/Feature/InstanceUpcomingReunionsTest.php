@@ -19,29 +19,33 @@ class InstanceUpcomingReunionsTest extends TestCase
         $planifieeReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion planifiée',
-            'date' => now()->addDays(1),
-            'status' => 'planifiee'
+            'start_time' => now()->addDays(1)->setTime(9, 0),
+            'end_time' => now()->addDays(1)->setTime(11, 0),
+            'status' => 'planifiee',
         ]);
 
         $confirmeeReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion confirmée',
-            'date' => now()->addDays(2),
-            'status' => 'confirmee'
+            'start_time' => now()->addDays(2)->setTime(9, 0),
+            'end_time' => now()->addDays(2)->setTime(11, 0),
+            'status' => 'confirmee',
         ]);
 
         $termineeReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion terminée',
-            'date' => now()->addDays(3),
-            'status' => 'terminee'
+            'start_time' => now()->addDays(3)->setTime(9, 0),
+            'end_time' => now()->addDays(3)->setTime(11, 0),
+            'status' => 'terminee',
         ]);
 
         $annuleeReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion annulée',
-            'date' => now()->addDays(4),
-            'status' => 'annulee'
+            'start_time' => now()->addDays(4)->setTime(9, 0),
+            'end_time' => now()->addDays(4)->setTime(11, 0),
+            'status' => 'annulee',
         ]);
 
         // Get upcoming reunions
@@ -63,15 +67,17 @@ class InstanceUpcomingReunionsTest extends TestCase
         $futureReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion future',
-            'date' => now()->addDays(1),
-            'status' => 'planifiee'
+            'start_time' => now()->addDays(1)->setTime(9, 0),
+            'end_time' => now()->addDays(1)->setTime(11, 0),
+            'status' => 'planifiee',
         ]);
 
         $pastReunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
             'title' => 'Réunion passée',
-            'date' => now()->subDays(1),
-            'status' => 'planifiee'
+            'start_time' => now()->subDays(1)->setTime(9, 0),
+            'end_time' => now()->subDays(1)->setTime(11, 0),
+            'status' => 'planifiee',
         ]);
 
         // Get upcoming reunions

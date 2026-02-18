@@ -203,7 +203,6 @@
                     </div>
 
                     {{-- Recent Documents Widget --}}
-                    @if($latestDocuments->count() > 0)
                     <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 recent-documents-widget">
                         <div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
                             <h3 class="text-lg font-bold text-[#faa21b]">📄 {{ __('Documents récents') }}</h3>
@@ -215,7 +214,7 @@
                             </a>
                         </div>
                         <div class="divide-y divide-orange-50 max-h-[360px] overflow-y-auto">
-                            @foreach($latestDocuments as $document)
+                            @forelse($latestDocuments as $document)
                                 <a href="{{ route('documents.download', $document) }}" class="flex items-center px-6 py-3 hover:bg-orange-50/50 transition group">
                                     <div class="flex-shrink-0 p-2 rounded-lg transition">
                                         <x-category-icon :document="$document" size="w-5 h-5" />
@@ -232,10 +231,13 @@
                                         <p class="text-xs text-gray-500">{{ $document->created_at->format('d/m/Y') }}</p>
                                     </div>
                                 </a>
-                            @endforeach
+                            @empty
+                                <div class="px-6 py-8 text-center text-gray-500">
+                                    📄 {{ __('Aucun document récent') }}
+                                </div>
+                            @endforelse
                         </div>
                     </div>
-                    @endif
                 </div>
             </div>
 

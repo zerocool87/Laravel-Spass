@@ -26,7 +26,7 @@ return new class extends Migration
         // Add indexes to reunions table
         Schema::table('reunions', function (Blueprint $table) {
             $table->index(['instance_id', 'status'], 'reunions_instance_status_index');
-            $table->index('date', 'reunions_date_index');
+            $table->index(['start_time', 'end_time'], 'reunions_time_range_index');
         });
 
         // Add indexes to instances table
@@ -59,7 +59,7 @@ return new class extends Migration
 
         Schema::table('reunions', function (Blueprint $table) {
             $table->dropIndex('reunions_instance_status_index');
-            $table->dropIndex('reunions_date_index');
+            $table->dropIndex('reunions_time_range_index');
         });
 
         Schema::table('instances', function (Blueprint $table) {

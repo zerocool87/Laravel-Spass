@@ -13,6 +13,7 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     use FiltersDocuments;
+
     /**
      * Display the Espace Élus dashboard.
      */
@@ -32,9 +33,9 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Get latest documents accessible to the user (limit to 3, sorted alphabetically)
+        // Get latest documents accessible to the user (limit to 3, newest first)
         $latestDocuments = $this->getUserAccessibleDocuments($user)
-            ->orderBy('title')
+            ->latest()
             ->take(3)
             ->get();
 

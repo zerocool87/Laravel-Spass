@@ -34,10 +34,10 @@ class ReunionController extends Controller
 
         // Filter by date range
         if ($request->filled('from_date')) {
-            $query->where('date', '>=', $request->from_date);
+            $query->where('start_time', '>=', $request->from_date);
         }
         if ($request->filled('to_date')) {
-            $query->where('date', '<=', $request->to_date);
+            $query->where('end_time', '<=', $request->to_date);
         }
 
         // Search
@@ -48,7 +48,7 @@ class ReunionController extends Controller
             });
         }
 
-        $reunions = $query->orderBy('date', 'desc')->paginate(12);
+        $reunions = $query->orderBy('start_time', 'desc')->paginate(12);
         $instances = Instance::orderBy('name')->get();
         $statuses = Reunion::STATUSES;
 
@@ -81,11 +81,22 @@ class ReunionController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'location' => 'nullable|string|max:255',
             'participants' => 'nullable|array',
             'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
             'ordre_du_jour' => 'nullable|string',
         ]);
+
+        // Combine date with time
+        $startDateTime = $validated['date'].' '.$validated['start_time'];
+        $endDateTime = $validated['date'].' '.$validated['end_time'];
+
+        $validated['start_time'] = $startDateTime;
+        $validated['end_time'] = $endDateTime;
+
+        unset($validated['date']);
 
         Reunion::create($validated);
 
@@ -129,12 +140,23 @@ class ReunionController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'location' => 'nullable|string|max:255',
             'participants' => 'nullable|array',
             'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
             'ordre_du_jour' => 'nullable|string',
             'compte_rendu' => 'nullable|string',
         ]);
+
+        // Combine date with time
+        $startDateTime = $validated['date'].' '.$validated['start_time'];
+        $endDateTime = $validated['date'].' '.$validated['end_time'];
+
+        $validated['start_time'] = $startDateTime;
+        $validated['end_time'] = $endDateTime;
+
+        unset($validated['date']);
 
         $reunion->update($validated);
 
@@ -166,10 +188,10 @@ class ReunionController extends Controller
 
         // Filter by date range for calendar
         if ($request->filled('start')) {
-            $query->where('date', '>=', $request->start);
+            $query->where('start_time', '>=', $request->start);
         }
         if ($request->filled('end')) {
-            $query->where('date', '<=', $request->end);
+            $query->where('end_time', '<=', $request->end);
         }
 
         $reunions = $query->get();
@@ -178,7 +200,8 @@ class ReunionController extends Controller
             return [
                 'id' => $reunion->id,
                 'title' => $reunion->title,
-                'start' => $reunion->date ? $reunion->date->toIso8601String() : null,
+                'start' => $reunion->start_time ? $reunion->start_time->toIso8601String() : null,
+                'end' => $reunion->end_time ? $reunion->end_time->toIso8601String() : null,
                 'url' => route('elus.reunions.show', $reunion),
                 'backgroundColor' => $this->getStatusColor($reunion->status),
                 'borderColor' => $this->getStatusColor($reunion->status),
