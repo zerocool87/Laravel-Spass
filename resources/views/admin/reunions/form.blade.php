@@ -14,6 +14,17 @@
         </div>
     @endif
 
+    @if(session('alternative_slots') && $errors->has('conflict'))
+        <div class="rounded-xl border border-yellow-200 bg-yellow-50 p-4 mt-4">
+            <p class="text-sm font-semibold text-yellow-900">{{ __('Créneaux alternatifs suggérés :') }}</p>
+            <ul class="mt-2 list-disc pl-5 text-sm text-yellow-800 space-y-1">
+                @foreach(session('alternative_slots') as $slot)
+                    <li>{{ $slot['start'] }} - {{ $slot['end'] }} ({{ $slot['timezone'] }})</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
             <label for="instance_id" class="block text-sm font-semibold text-gray-900 mb-2">
@@ -94,17 +105,75 @@
 
         <div>
             <label for="date" class="block text-sm font-semibold text-gray-900 mb-2">
-                {{ __('Date et heure') }} <span class="text-red-500">*</span>
+                {{ __('Date') }} <span class="text-red-500">*</span>
             </label>
             <input
-                type="datetime-local"
+                type="date"
                 name="date"
                 id="date"
-                value="{{ old('date', $isEdit && $reunion->date ? $reunion->date->format('Y-m-d\\TH:i') : '') }}"
+                value="{{ old('date', $isEdit && $reunion->start_time ? $reunion->start_time->format('Y-m-d') : '') }}"
                 required
                 class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('date') border-red-300 @enderror"
             />
             @error('date')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div>
+            <label for="start_time" class="block text-sm font-semibold text-gray-900 mb-2">
+                {{ __('Heure de début (HH:MM)') }} <span class="text-red-500">*</span>
+            </label>
+            <input
+                type="time"
+                name="start_time"
+                id="start_time"
+                value="{{ old('start_time', $isEdit && $reunion->start_time ? $reunion->start_time->format('H:i') : '') }}"
+                required
+                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('start_time') border-red-300 @enderror"
+            />
+            @error('start_time')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div>
+            <label for="end_time" class="block text-sm font-semibold text-gray-900 mb-2">
+                {{ __('Heure de fin (HH:MM)') }} <span class="text-red-500">*</span>
+            </label>
+            <input
+                type="time"
+                name="end_time"
+                id="end_time"
+                value="{{ old('end_time', $isEdit && $reunion->end_time ? $reunion->end_time->format('H:i') : '') }}"
+                required
+                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('end_time') border-red-300 @enderror"
+            />
+            @error('end_time')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div>
+            <label for="timezone" class="block text-sm font-semibold text-gray-900 mb-2">
+                {{ __('Fuseau horaire') }}
+            </label>
+            <select
+                name="timezone"
+                id="timezone"
+                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('timezone') border-red-300 @enderror"
+            >
+                <option value="Europe/Paris" {{ old('timezone', $isEdit ? $reunion->timezone : 'Europe/Paris') == 'Europe/Paris' ? 'selected' : '' }}>
+                    {{ __('Europe/Paris (UTC+1/UTC+2)') }}
+                </option>
+                <option value="UTC" {{ old('timezone', $isEdit ? $reunion->timezone : 'Europe/Paris') == 'UTC' ? 'selected' : '' }}>
+                    {{ __('UTC') }}
+                </option>
+                <option value="America/New_York" {{ old('timezone', $isEdit ? $reunion->timezone : 'Europe/Paris') == 'America/New_York' ? 'selected' : '' }}>
+                    {{ __('America/New_York (UTC-5/UTC-4)') }}
+                </option>
+            </select>
+            @error('timezone')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>

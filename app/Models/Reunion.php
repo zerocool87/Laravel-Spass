@@ -20,7 +20,9 @@ class Reunion extends Model
         'instance_id',
         'title',
         'description',
-        'date',
+        'start_time',
+        'end_time',
+        'timezone',
         'location',
         'participants',
         'status',
@@ -37,7 +39,8 @@ class Reunion extends Model
     protected function casts(): array
     {
         return [
-            'date' => 'datetime',
+            'start_time' => 'datetime',
+            'end_time' => 'datetime',
             'participants' => 'array',
             'documents' => 'array',
         ];
@@ -83,21 +86,53 @@ class Reunion extends Model
         };
     }
 
-    /**
-     * Scope for upcoming reunions.
-     */
-    public function scopeUpcoming($query)
-    {
-        return $query->where('date', '>=', now())
-                     ->whereIn('status', ['planifiee', 'confirmee'])
-                     ->orderBy('date');
-    }
+     /**
+      * Scope for upcoming reunions.
+      */
+     public function scopeUpcoming($query)
+     {
+         return $query->where('start_time', '>=', now())
+                      ->whereIn('status', ['planifiee', 'confirmee'])
+                      ->orderBy('start_time');
+     }
 
-    /**
-     * Scope for past reunions.
-     */
-    public function scopePast($query)
-    {
-        return $query->where('date', '<', now())->orderBy('date', 'desc');
-    }
+     /**
+      * Scope for past reunions.
+      */
+     public function scopePast($query)
+     {
+         return $query->where('end_time', '<', now())->orderBy('start_time', 'desc');
+     }
+
+     /**
+      * Get start time in user's timezone.
+      */
+     public function getStartTimeAttribute($value)
+     {
+         return $value ? \Carbon\Carbon::parse($value)->timezone($this->timezone) : null;
+     }
+
+     /**
+      * Get end time in user's timezone.
+      */
+     public function getEndTimeAttribute($value)
+     {
+         return $value ? \Carbon\Carbon::parse($value)->timezone($this->timezone) : null;
+     }
+
+     /**
+      * Set start time with timezone conversion.
+      */
+     public function setStartTimeAttribute($value)
+     {
+         $this->attributes['start_time'] = $value ? \Carbon\Carbon::parse($value, $this->timezone)->setTimezone('UTC') : null;
+     }
+
+     /**
+      * Set end time with timezone conversion.
+      */
+     public function setEndTimeAttribute($value)
+     {
+         $this->attributes['end_time'] = $value ? \Carbon\Carbon::parse($value, $this->timezone)->setTimezone('UTC') : null;
+     }
 }

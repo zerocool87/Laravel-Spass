@@ -21,10 +21,16 @@ class ReunionFactory extends Factory
      */
     public function definition(): array
     {
+        $date = $this->faker->dateTimeBetween('now', '+1 month');
+        $startTime = $date->format('Y-m-d H:i:s');
+        $endTime = $date->modify('+2 hours')->format('Y-m-d H:i:s');
+
         return [
             'title' => $this->faker->sentence(4),
             'description' => $this->faker->paragraph,
-            'date' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+            'timezone' => 'Europe/Paris',
             'location' => $this->faker->address,
             'status' => $this->faker->randomElement(array_keys(Reunion::STATUSES)),
             'participants' => [],

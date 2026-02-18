@@ -73,6 +73,9 @@ class ReunionController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'timezone' => 'required|timezone',
             'location' => 'nullable|string|max:255',
             'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
             'ordre_du_jour' => 'nullable|string',
@@ -87,6 +90,39 @@ class ReunionController extends Controller
         );
 
         $validated['participants'] = array_values($participants);
+
+        // Combine date with time and timezone
+        $startDateTime = $validated['date'] . ' ' . $validated['start_time'];
+        $endDateTime = $validated['date'] . ' ' . $validated['end_time'];
+
+        $validated['start_time'] = $startDateTime;
+        $validated['end_time'] = $endDateTime;
+
+        unset($validated['date']);
+
+        // Check for scheduling conflicts
+        $conflicts = $this->checkForConflicts(
+            $validated['instance_id'],
+            $startDateTime,
+            $endDateTime,
+            $validated['timezone']
+        );
+
+        if ($conflicts->isNotEmpty()) {
+            // Generate alternative time slots
+            $alternatives = $this->suggestAlternativeTimeSlots(
+                $validated['instance_id'],
+                $startDateTime,
+                $endDateTime,
+                $validated['timezone']
+            );
+
+            return back()->withInput()
+                ->withErrors([
+                    'conflict' => __('Conflit d\'horaire détecté avec :count autre(s) réunion(s)', ['count' => $conflicts->count()])
+                ])
+                ->with('alternative_slots', $alternatives);
+        }
 
         Reunion::create($validated);
 
@@ -116,6 +152,9 @@ class ReunionController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'timezone' => 'required|timezone',
             'location' => 'nullable|string|max:255',
             'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
             'ordre_du_jour' => 'nullable|string',
@@ -131,11 +170,110 @@ class ReunionController extends Controller
 
         $validated['participants'] = array_values($participants);
 
+        // Combine date with time and timezone
+        $startDateTime = $validated['date'] . ' ' . $validated['start_time'];
+        $endDateTime = $validated['date'] . ' ' . $validated['end_time'];
+
+        $validated['start_time'] = $startDateTime;
+        $validated['end_time'] = $endDateTime;
+
+        unset($validated['date']);
+
+        // Check for scheduling conflicts (excluding current reunion)
+        $conflicts = $this->checkForConflicts(
+            $validated['instance_id'],
+            $startDateTime,
+            $endDateTime,
+            $validated['timezone'],
+            $reunion->id
+        );
+
+        if ($conflicts->isNotEmpty()) {
+            // Generate alternative time slots
+            $alternatives = $this->suggestAlternativeTimeSlots(
+                $validated['instance_id'],
+                $startDateTime,
+                $endDateTime,
+                $validated['timezone']
+            );
+
+            return back()->withInput()
+                ->withErrors([
+                    'conflict' => __('Conflit d\'horaire détecté avec :count autre(s) réunion(s)', ['count' => $conflicts->count()])
+                ])
+                ->with('alternative_slots', $alternatives);
+        }
+
         $reunion->update($validated);
 
         return redirect()
             ->route('admin.reunions.index')
             ->with('success', __('Réunion mise à jour avec succès.'));
+    }
+
+    /**
+     * Check for scheduling conflicts.
+     */
+    private function checkForConflicts(int $instanceId, string $startTime, string $endTime, string $timezone, int $excludeId = null): \Illuminate\Database\Eloquent\Collection
+    {
+        $start = \Carbon\Carbon::parse($startTime, $timezone)->setTimezone('UTC');
+        $end = \Carbon\Carbon::parse($endTime, $timezone)->setTimezone('UTC');
+
+        $query = Reunion::where('instance_id', $instanceId)
+            ->where(function ($q) use ($start, $end) {
+                // Check for overlapping time ranges
+                $q->where(function ($q2) use ($start, $end) {
+                    $q2->where('start_time', '<', $end)
+                        ->where('end_time', '>', $start);
+                });
+            });
+
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        return $query->whereIn('status', ['planifiee', 'confirmee'])->get();
+    }
+
+    /**
+     * Suggest alternative time slots.
+     */
+    private function suggestAlternativeTimeSlots(int $instanceId, string $startTime, string $endTime, string $timezone): array
+    {
+        $start = \Carbon\Carbon::parse($startTime, $timezone);
+        $end = \Carbon\Carbon::parse($endTime, $timezone);
+        $duration = $end->diffInMinutes($start);
+
+        $alternatives = [];
+        $current = $start->copy();
+
+        // Try to find 3 alternative slots
+        for ($i = 0; $i < 10; $i++) {
+            $current->addHours(2); // Try 2 hours later
+            $proposedEnd = $current->copy()->addMinutes($duration);
+
+            // Check if this slot is available
+            $conflicts = $this->checkForConflicts(
+                $instanceId,
+                $current->toDateTimeString(),
+                $proposedEnd->toDateTimeString(),
+                $timezone
+            );
+
+            if ($conflicts->isEmpty()) {
+                $alternatives[] = [
+                    'start' => $current->format('H:i'),
+                    'end' => $proposedEnd->format('H:i'),
+                    'timezone' => $timezone
+                ];
+
+                if (count($alternatives) >= 3) {
+                    break;
+                }
+            }
+        }
+
+        return $alternatives;
     }
 
     /**

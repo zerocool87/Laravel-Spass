@@ -106,18 +106,61 @@
                                     {{ __('Planification') }}
                                 </h3>
 
-                                <!-- Date et Lieu -->
+                                 <!-- Date, Heure de début, Heure de fin et Fuseau horaire -->
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label for="date" class="block text-sm font-medium text-gray-700 mb-1">
-                                            {{ __('Date et heure') }} <span class="text-red-500">*</span>
+                                            {{ __('Date') }} <span class="text-red-500">*</span>
                                         </label>
-                                        <input type="datetime-local" name="date" id="date" value="{{ old('date') }}" required
+                                        <input type="date" name="date" id="date" value="{{ old('date') }}" required
                                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('date') border-red-300 @enderror" />
                                         @error('date')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
+                                    <div>
+                                        <label for="start_time" class="block text-sm font-medium text-gray-700 mb-1">
+                                            {{ __('Heure de début') }} <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="time" name="start_time" id="start_time" value="{{ old('start_time', '09:00') }}" required
+                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('start_time') border-red-300 @enderror" />
+                                        @error('start_time')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mt-4">
+                                    <div>
+                                        <label for="end_time" class="block text-sm font-medium text-gray-700 mb-1">
+                                            {{ __('Heure de fin') }} <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="time" name="end_time" id="end_time" value="{{ old('end_time', '11:00') }}" required
+                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('end_time') border-red-300 @enderror" />
+                                        @error('end_time')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <label for="timezone" class="block text-sm font-medium text-gray-700 mb-1">
+                                            {{ __('Fuseau horaire') }}
+                                        </label>
+                                        <select name="timezone" id="timezone"
+                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('timezone') border-red-300 @enderror">
+                                            <option value="Europe/Paris" {{ old('timezone') == 'Europe/Paris' ? 'selected' : '' }}>
+                                                {{ __('Europe/Paris') }}
+                                            </option>
+                                            <option value="UTC" {{ old('timezone') == 'UTC' ? 'selected' : '' }}>
+                                                {{ __('UTC') }}
+                                            </option>
+                                            <option value="America/New_York" {{ old('timezone') == 'America/New_York' ? 'selected' : '' }}>
+                                                {{ __('America/New_York') }}
+                                            </option>
+                                        </select>
+                                        @error('timezone')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
                                     <div>
                                         <label for="location" class="block text-sm font-medium text-gray-700 mb-1">
                                             {{ __('Lieu') }}
