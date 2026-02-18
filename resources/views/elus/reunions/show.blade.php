@@ -99,11 +99,11 @@
                             </div>
                             <div>
                                 <dt class="text-sm text-gray-500">{{ __('Date') }}</dt>
-                                <dd class="text-sm font-medium text-gray-900">{{ $reunion->date->format('d/m/Y') }}</dd>
+                                <dd class="text-sm font-medium text-gray-900">{{ $reunion->start_time->format('d/m/Y') }}</dd>
                             </div>
                             <div>
                                 <dt class="text-sm text-gray-500">{{ __('Heure') }}</dt>
-                                <dd class="text-sm font-medium text-gray-900">{{ $reunion->date->format('H:i') }}</dd>
+                                <dd class="text-sm font-medium text-gray-900">{{ $reunion->start_time->format('H:i') }}</dd>
                             </div>
                             @if($reunion->location)
                             <div>

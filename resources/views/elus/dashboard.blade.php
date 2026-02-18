@@ -92,8 +92,8 @@
                                             <p class="text-xs text-gray-600 mt-1">{{ Str::limit($reunion->instance->name ?? '-', 20) }}</p>
                                         </div>
                                         <div class="text-right ml-4">
-                                            <p class="text-sm font-bold text-orange-600">{{ $reunion->date->format('d/m/Y') }}</p>
-                                            <p class="text-xs text-gray-500">{{ $reunion->date->format('H:i') }}</p>
+                                            <p class="text-sm font-bold text-orange-600">{{ $reunion->start_time->format('d/m/Y') }}</p>
+                                            <p class="text-xs text-gray-500">{{ $reunion->start_time->format('H:i') }}</p>
                                         </div>
                                     </div>
                                     @if($reunion->location)

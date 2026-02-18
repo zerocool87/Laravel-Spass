@@ -38,7 +38,7 @@
                     </svg>
                     <span class="text-gray-600"><strong class="text-gray-800">{{ __('Instance :') }}</strong> {{ $reunion->instance->name ?? __('Non définie') }}</span>
                     <span class="text-gray-300">·</span>
-                    <span class="text-gray-600"><strong class="text-gray-800">{{ __('Date :') }}</strong> {{ $reunion->date ? $reunion->date->format('d/m/Y à H:i') : __('Non définie') }}</span>
+                    <span class="text-gray-600"><strong class="text-gray-800">{{ __('Date :') }}</strong> {{ $reunion->start_time ? $reunion->start_time->format('d/m/Y à H:i') : __('Non définie') }}</span>
                     <span class="text-gray-300">·</span>
                     <span class="text-gray-600"><strong class="text-gray-800">{{ __('Créée le :') }}</strong> {{ $reunion->created_at->format('d/m/Y') }}</span>
                 </div>

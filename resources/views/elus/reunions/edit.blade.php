@@ -43,7 +43,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="date" class="block text-sm font-medium text-gray-700">{{ __('Date et heure') }} *</label>
-                                <input type="datetime-local" name="date" id="date" value="{{ old('date', $reunion->date->format('Y-m-d\TH:i')) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                <input type="datetime-local" name="date" id="date" value="{{ old('date', $reunion->start_time->format('Y-m-d\TH:i')) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                                 @error('date')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror

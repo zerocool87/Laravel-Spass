@@ -100,8 +100,8 @@
                         @forelse($reunions as $reunion)
                             <tr class="hover:bg-[#faa21b]/5 transition">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $reunion->date->format('d/m/Y') }}
-                                    <span class="text-gray-500 text-xs block">{{ $reunion->date->format('H:i') }}</span>
+                                    {{ $reunion->start_time->format('d/m/Y') }}
+                                    <span class="text-gray-500 text-xs block">{{ $reunion->start_time->format('H:i') }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-900">
                                     {{ $reunion->title }}

@@ -65,8 +65,8 @@
                                             </span>
                                         </div>
                                         <div class="text-right">
-                                            <p class="text-sm font-medium text-gray-900">{{ $reunion->date->format('d/m/Y') }}</p>
-                                            <p class="text-sm text-gray-500">{{ $reunion->date->format('H:i') }}</p>
+                                            <p class="text-sm font-medium text-gray-900">{{ $reunion->start_time->format('d/m/Y') }}</p>
+                                            <p class="text-sm text-gray-500">{{ $reunion->start_time->format('H:i') }}</p>
                                         </div>
                                     </div>
                                     @if($reunion->location)
@@ -97,7 +97,7 @@
                                             @endif
                                         </div>
                                         <div class="text-right">
-                                            <p class="text-sm text-gray-500">{{ $reunion->date->format('d/m/Y') }}</p>
+                                            <p class="text-sm text-gray-500">{{ $reunion->start_time->format('d/m/Y') }}</p>
                                         </div>
                                     </div>
                                 </a>
