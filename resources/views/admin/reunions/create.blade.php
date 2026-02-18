@@ -168,7 +168,7 @@
                                 <label for="description" class="block text-xs font-semibold text-gray-700 mb-1">
                                     {{ __('Description') }}
                                 </label>
-                                <textarea name="description" id="description" rows="2"
+                                <textarea name="description" id="description" rows="4"
                                     class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('description') border-red-300 @enderror"
                                     placeholder="{{ __('Objet de la réunion, contexte...') }}"
                                 >{{ old('description') }}</textarea>
@@ -181,7 +181,7 @@
                                 <label for="ordre_du_jour" class="block text-xs font-semibold text-gray-700 mb-1">
                                     {{ __('Ordre du jour') }}
                                 </label>
-                                <textarea name="ordre_du_jour" id="ordre_du_jour" rows="2"
+                                <textarea name="ordre_du_jour" id="ordre_du_jour" rows="5"
                                     class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('ordre_du_jour') border-red-300 @enderror"
                                     placeholder="{{ __('1. Approbation du procès-verbal') }}&#10;{{ __('2. Questions diverses') }}"
                                 >{{ old('ordre_du_jour') }}</textarea>
@@ -194,7 +194,7 @@
                                 <label for="compte_rendu" class="block text-xs font-semibold text-gray-700 mb-1">
                                     {{ __('Compte rendu') }}
                                 </label>
-                                <textarea name="compte_rendu" id="compte_rendu" rows="2"
+                                <textarea name="compte_rendu" id="compte_rendu" rows="5"
                                     class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('compte_rendu') border-red-300 @enderror"
                                     placeholder="{{ __('Rédigez le compte rendu de la réunion...') }}"
                                 >{{ old('compte_rendu') }}</textarea>
