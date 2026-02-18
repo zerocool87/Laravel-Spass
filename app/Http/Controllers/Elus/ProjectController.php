@@ -5,20 +5,31 @@ namespace App\Http\Controllers\Elus;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
 use App\Models\Project;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
     use RequiresAdmin;
+
+    private function communes(): array
+    {
+        $list = config('options.communes_haute_vienne', []);
+        sort($list, SORT_STRING | SORT_FLAG_CASE);
+
+        return $list;
+    }
+
     /**
      * Display a listing of the projects.
      */
     public function index(Request $request): View
     {
-        $query = Project::query();
+        $baseQuery = Project::query()->visibleToUser($request->user());
+        $query = clone $baseQuery;
 
         // Filter by type
         if ($request->filled('type')) {
@@ -38,8 +49,8 @@ class ProjectController extends Controller
         // Search
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                $q->where('title', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -49,9 +60,9 @@ class ProjectController extends Controller
 
         // Statistics
         $stats = [
-            'total' => Project::count(),
-            'active' => Project::active()->count(),
-            'total_budget' => Project::active()->sum('budget'),
+            'total' => (clone $baseQuery)->count(),
+            'active' => (clone $baseQuery)->active()->count(),
+            'total_budget' => (clone $baseQuery)->active()->sum('budget'),
         ];
 
         return view('elus.projects.index', compact('projects', 'types', 'statuses', 'stats'));
@@ -66,7 +77,9 @@ class ProjectController extends Controller
 
         $types = Project::TYPES;
         $statuses = Project::STATUSES;
-        return view('elus.projects.create', compact('types', 'statuses'));
+        $communes = $this->communes();
+
+        return view('elus.projects.create', compact('types', 'statuses', 'communes'));
     }
 
     /**
@@ -79,8 +92,9 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'type' => 'required|string|in:' . implode(',', array_keys(Project::TYPES)),
-            'status' => 'required|string|in:' . implode(',', array_keys(Project::STATUSES)),
+            'type' => 'required|string|in:'.implode(',', array_keys(Project::TYPES)),
+            'status' => 'required|string|in:'.implode(',', array_keys(Project::STATUSES)),
+            'commune' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
             'territories' => 'nullable|array',
             'budget' => 'nullable|numeric|min:0',
             'start_date' => 'nullable|date',
@@ -100,6 +114,12 @@ class ProjectController extends Controller
      */
     public function show(Project $project): View
     {
+        abort_unless(
+            Project::query()->visibleToUser(request()->user())->whereKey($project->getKey())->exists(),
+            403,
+            __('Vous n\'avez pas accès à ce projet.')
+        );
+
         return view('elus.projects.show', compact('project'));
     }
 
@@ -112,7 +132,9 @@ class ProjectController extends Controller
 
         $types = Project::TYPES;
         $statuses = Project::STATUSES;
-        return view('elus.projects.edit', compact('project', 'types', 'statuses'));
+        $communes = $this->communes();
+
+        return view('elus.projects.edit', compact('project', 'types', 'statuses', 'communes'));
     }
 
     /**
@@ -125,8 +147,9 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'type' => 'required|string|in:' . implode(',', array_keys(Project::TYPES)),
-            'status' => 'required|string|in:' . implode(',', array_keys(Project::STATUSES)),
+            'type' => 'required|string|in:'.implode(',', array_keys(Project::TYPES)),
+            'status' => 'required|string|in:'.implode(',', array_keys(Project::STATUSES)),
+            'commune' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
             'territories' => 'nullable|array',
             'budget' => 'nullable|numeric|min:0',
             'start_date' => 'nullable|date',
@@ -160,7 +183,9 @@ class ProjectController extends Controller
      */
     public function geojson(Request $request): JsonResponse
     {
-        $projects = Project::active()
+        $projects = Project::query()
+            ->visibleToUser($request->user())
+            ->active()
             ->whereNotNull('geodata')
             ->get();
 

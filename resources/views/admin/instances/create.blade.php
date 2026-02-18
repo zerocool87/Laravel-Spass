@@ -79,9 +79,15 @@
                                 <label for="territory" class="block text-sm font-medium text-gray-700 mb-1">
                                     {{ __('Territoire') }}
                                 </label>
-                                <input type="text" name="territory" id="territory" value="{{ old('territory') }}"
-                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('territory') border-red-300 @enderror"
-                                    placeholder="{{ __('Ex: Commune de Paris') }}" />
+                                <select name="territory" id="territory"
+                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('territory') border-red-300 @enderror">
+                                    <option value="">{{ __('Sélectionner une commune') }}</option>
+                                    @foreach($communes as $commune)
+                                        <option value="{{ $commune }}" {{ old('territory') === $commune ? 'selected' : '' }}>
+                                            {{ $commune }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 @error('territory')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror

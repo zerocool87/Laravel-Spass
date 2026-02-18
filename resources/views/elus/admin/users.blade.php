@@ -202,7 +202,12 @@
 
                             <div>
                                 <label for="modal-commune" class="block text-sm font-medium text-gray-700">{{ __('Commune') }}</label>
-                                <input type="text" name="commune" id="modal-commune" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                <select name="commune" id="modal-commune" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                    <option value="">{{ __('Sélectionner une commune') }}</option>
+                                    @foreach($communes as $commune)
+                                        <option value="{{ $commune }}" {{ old('commune') === $commune ? 'selected' : '' }}>{{ $commune }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,6 +21,7 @@ class Project extends Model
         'description',
         'type',
         'status',
+        'commune',
         'territories',
         'budget',
         'start_date',
@@ -106,13 +108,13 @@ class Project extends Model
      */
     public function getFormattedBudgetAttribute(): string
     {
-        return number_format((float) $this->budget, 2, ',', ' ') . ' €';
+        return number_format((float) $this->budget, 2, ',', ' ').' €';
     }
 
     /**
      * Scope for active projects.
      */
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->whereIn('status', ['planifie', 'en_cours']);
     }
@@ -120,8 +122,24 @@ class Project extends Model
     /**
      * Scope for projects in a specific territory.
      */
-    public function scopeInTerritory($query, string $territory)
+    public function scopeInTerritory(Builder $query, string $territory): Builder
     {
         return $query->whereJsonContains('territories', $territory);
+    }
+
+    /**
+     * Scope for projects visible to a user based on commune.
+     */
+    public function scopeVisibleToUser(Builder $query, User $user): Builder
+    {
+        if ($user->isAdmin()) {
+            return $query;
+        }
+
+        if (blank($user->commune)) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->where('commune', $user->commune);
     }
 }

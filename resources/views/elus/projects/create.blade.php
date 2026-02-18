@@ -53,6 +53,19 @@
                         </div>
 
                         <div>
+                            <label for="commune" class="block text-sm font-medium text-gray-700">{{ __('Commune') }}</label>
+                            <select name="commune" id="commune" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                <option value="">{{ __('Sélectionner une commune') }}</option>
+                                @foreach($communes as $commune)
+                                    <option value="{{ $commune }}" {{ old('commune') === $commune ? 'selected' : '' }}>{{ $commune }}</option>
+                                @endforeach
+                            </select>
+                            @error('commune')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
                             <label for="description" class="block text-sm font-medium text-gray-700">{{ __('Description') }}</label>
                             <textarea name="description" id="description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">{{ old('description') }}</textarea>
                             @error('description')

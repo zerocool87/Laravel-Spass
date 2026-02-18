@@ -5,13 +5,23 @@ namespace App\Http\Controllers\Elus;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
 use App\Models\Instance;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class InstanceController extends Controller
 {
     use RequiresAdmin;
+
+    private function communes(): array
+    {
+        $list = config('options.communes_haute_vienne', []);
+        sort($list, SORT_STRING | SORT_FLAG_CASE);
+
+        return $list;
+    }
+
     /**
      * Display a listing of the instances.
      */
@@ -32,8 +42,8 @@ class InstanceController extends Controller
         // Search
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                $q->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -51,6 +61,7 @@ class InstanceController extends Controller
         $this->requireAdmin();
 
         $types = Instance::TYPES;
+
         return view('elus.instances.create', compact('types'));
     }
 
@@ -63,9 +74,9 @@ class InstanceController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:' . implode(',', array_keys(Instance::TYPES)),
+            'type' => 'required|string|in:'.implode(',', array_keys(Instance::TYPES)),
             'description' => 'nullable|string',
-            'territory' => 'nullable|string|max:255',
+            'territory' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
             'members' => 'nullable|array',
         ]);
 
@@ -99,7 +110,9 @@ class InstanceController extends Controller
         $this->requireAdmin();
 
         $types = Instance::TYPES;
-        return view('elus.instances.edit', compact('instance', 'types'));
+        $communes = $this->communes();
+
+        return view('elus.instances.edit', compact('instance', 'types', 'communes'));
     }
 
     /**
@@ -111,9 +124,9 @@ class InstanceController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:' . implode(',', array_keys(Instance::TYPES)),
+            'type' => 'required|string|in:'.implode(',', array_keys(Instance::TYPES)),
             'description' => 'nullable|string',
-            'territory' => 'nullable|string|max:255',
+            'territory' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
             'members' => 'nullable|array',
         ]);
 

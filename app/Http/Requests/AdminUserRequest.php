@@ -19,7 +19,7 @@ class AdminUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'fonction' => ['nullable', 'string', 'max:255'],
-            'commune' => ['nullable', 'string', 'max:255'],
+            'commune' => ['nullable', 'string', 'max:255', Rule::in(config('options.communes_haute_vienne', []))],
         ];
 
         if ($this->isMethod('post')) {

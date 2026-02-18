@@ -20,6 +20,7 @@ class DashboardController extends Controller
     public function index(Request $request): View
     {
         $user = $request->user();
+        $projectsQuery = Project::query()->visibleToUser($user);
 
         // Get upcoming reunions (next 5)
         $upcomingReunions = Reunion::with('instance')
@@ -28,7 +29,8 @@ class DashboardController extends Controller
             ->get();
 
         // Get active projects
-        $activeProjects = Project::active()
+        $activeProjects = (clone $projectsQuery)
+            ->active()
             ->orderBy('updated_at', 'desc')
             ->take(5)
             ->get();
@@ -47,12 +49,12 @@ class DashboardController extends Controller
 
         // Statistics
         $stats = [
-            'total_projects' => Project::count(),
-            'active_projects' => Project::active()->count(),
+            'total_projects' => (clone $projectsQuery)->count(),
+            'active_projects' => (clone $projectsQuery)->active()->count(),
             'total_reunions' => Reunion::count(),
             'upcoming_reunions' => Reunion::upcoming()->count(),
             'total_instances' => Instance::count(),
-            'total_budget' => Project::active()->sum('budget'),
+            'total_budget' => (clone $projectsQuery)->active()->sum('budget'),
             'total_documents' => $this->getUserAccessibleDocuments($user)->count(),
         ];
 

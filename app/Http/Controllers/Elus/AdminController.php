@@ -9,10 +9,19 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AdminController extends Controller
 {
+    private function communes(): array
+    {
+        $list = config('options.communes_haute_vienne', []);
+        sort($list, SORT_STRING | SORT_FLAG_CASE);
+
+        return $list;
+    }
+
     /**
      * Display the admin dashboard for Espace Élus.
      */
@@ -59,7 +68,9 @@ class AdminController extends Controller
 
         $users = $query->orderBy('name')->paginate(20);
 
-        return view('elus.admin.users', compact('users'));
+        $communes = $this->communes();
+
+        return view('elus.admin.users', compact('users', 'communes'));
     }
 
     /**
@@ -83,7 +94,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'fonction' => 'nullable|string|max:255',
-            'commune' => 'nullable|string|max:255',
+            'commune' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
         ]);
 
         // Generate a secure temporary password
@@ -95,7 +106,7 @@ class AdminController extends Controller
             'password' => Hash::make($tempPassword),
             'is_elu' => true,
             'fonction' => $validated['fonction'] ?? null,
-            'commune' => $validated['commune'] ?? 'SEHV',
+            'commune' => $validated['commune'] ?? null,
         ]);
 
         return redirect()

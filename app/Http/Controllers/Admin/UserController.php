@@ -37,7 +37,7 @@ class UserController extends Controller
         $data['is_admin'] = $request->boolean('is_admin');
         $data['is_elu'] = $request->boolean('is_elu');
         $data['fonction'] = $request->input('fonction');
-        $data['commune'] = $request->input('commune') ?: 'SEHV';
+        $data['commune'] = $request->input('commune');
 
         $user->update($data);
 

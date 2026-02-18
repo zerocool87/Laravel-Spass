@@ -5,12 +5,21 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Instance;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class InstanceController extends Controller
 {
+    private function communes(): array
+    {
+        $list = config('options.communes_haute_vienne', []);
+        sort($list, SORT_STRING | SORT_FLAG_CASE);
+
+        return $list;
+    }
+
     /**
      * Display a listing of the instances.
      */
@@ -31,8 +40,8 @@ class InstanceController extends Controller
         // Search
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                $q->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -57,8 +66,9 @@ class InstanceController extends Controller
         $users = User::where('is_elu', true)
             ->orderBy('name')
             ->get();
+        $communes = $this->communes();
 
-        return view('admin.instances.create', compact('types', 'users'));
+        return view('admin.instances.create', compact('types', 'users', 'communes'));
     }
 
     /**
@@ -68,9 +78,9 @@ class InstanceController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:' . implode(',', array_keys(Instance::TYPES)),
+            'type' => 'required|string|in:'.implode(',', array_keys(Instance::TYPES)),
             'description' => 'nullable|string',
-            'territory' => 'nullable|string|max:255',
+            'territory' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
             'members' => 'nullable|array',
             'members.*' => 'string',
         ]);
@@ -110,8 +120,9 @@ class InstanceController extends Controller
         $users = User::where('is_elu', true)
             ->orderBy('name')
             ->get();
+        $communes = $this->communes();
 
-        return view('admin.instances.edit', compact('instance', 'types', 'users'));
+        return view('admin.instances.edit', compact('instance', 'types', 'users', 'communes'));
     }
 
     /**
@@ -121,9 +132,9 @@ class InstanceController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:' . implode(',', array_keys(Instance::TYPES)),
+            'type' => 'required|string|in:'.implode(',', array_keys(Instance::TYPES)),
             'description' => 'nullable|string',
-            'territory' => 'nullable|string|max:255',
+            'territory' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
             'members' => 'nullable|array',
             'members.*' => 'string',
         ]);
