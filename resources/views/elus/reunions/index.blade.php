@@ -53,13 +53,6 @@
                 <x-widget-header
                     title="📅 {{ __('Les 2 prochaines réunions à venir') }}"
                 >
-                    <x-slot name="actions">
-                        @can('admin')
-                        <a href="{{ route('elus.reunions.create') }}" class="inline-flex items-center px-3 py-1 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-[#faa21b] hover:bg-[#e89315] transition shadow-sm">
-                            + {{ __('Nouvelle réunion') }}
-                        </a>
-                        @endcan
-                    </x-slot>
                 </x-widget-header>
                 <div class="divide-y divide-[#faa21b]/20">
                     @forelse($reunions as $reunion)
@@ -95,13 +88,6 @@
                             </svg>
                             <h3 class="widget-empty-title">{{ __('Aucune réunion') }}</h3>
                             <p class="widget-empty-description">{{ __('Commencez par planifier une nouvelle réunion.') }}</p>
-                            @can('admin')
-                            <div class="mt-6">
-                                <a href="{{ route('elus.reunions.create') }}" class="btn-primary-orange">
-                                    + {{ __('Nouvelle réunion') }}
-                                </a>
-                            </div>
-                            @endcan
                         </div>
                     @endforelse
                 </div>

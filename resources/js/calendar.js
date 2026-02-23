@@ -181,6 +181,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (info.jsEvent && typeof info.jsEvent.preventDefault === 'function') info.jsEvent.preventDefault();
                     } catch (err) { }
 
+                    // Reunion calendar minimal modal: only instance, schedule and subject
+                    const eventProps = info.event.extendedProps || {};
+                    const hasReunionData = typeof eventProps.instance === 'string' && eventProps.instance.length > 0;
+                    if (hasReunionData && typeof window.openReunionDetailModal === 'function') {
+                        window.openReunionDetailModal({
+                            subject: info.event.title || '',
+                            instance: eventProps.instance || '',
+                            start: info.event.start || info.event.startStr || null,
+                            end: info.event.end || info.event.endStr || null,
+                        }, info.jsEvent && info.jsEvent.currentTarget ? info.jsEvent.currentTarget : null);
+
+                        return;
+                    }
+
                     // open modal via a global helper that will fetch event details via JSON
                     if (typeof window.openEventDetailModal === 'function') {
                         window.openEventDetailModal(info.event.id, info.event.url, info.jsEvent && info.jsEvent.currentTarget ? info.jsEvent.currentTarget : null);

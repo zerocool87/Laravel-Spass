@@ -2,6 +2,54 @@
 (function(){
     const SELECTOR = 'body';
 
+    function formatDateTime(value){
+        if (!value) {
+            return '—';
+        }
+
+        const date = value instanceof Date ? value : new Date(value);
+        if (Number.isNaN(date.getTime())) {
+            return '—';
+        }
+
+        return date.toLocaleString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        });
+    }
+
+    function renderMinimalReunion(bodyEl, footerEl, reunion){
+        const subject = reunion?.subject || '—';
+        const instanceName = reunion?.instance || '—';
+        const startLabel = formatDateTime(reunion?.start);
+        const endLabel = formatDateTime(reunion?.end);
+
+        bodyEl.innerHTML = `
+            <div class="space-y-4 text-sm text-gray-700">
+                <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Sujet</p>
+                    <p class="mt-1 text-base font-semibold text-gray-900">${subject}</p>
+                </div>
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div class="rounded-lg border border-gray-200 bg-white p-3">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Instance</p>
+                        <p class="mt-1 font-medium text-gray-900">${instanceName}</p>
+                    </div>
+                    <div class="rounded-lg border border-gray-200 bg-white p-3">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Horaires</p>
+                        <p class="mt-1 font-medium text-gray-900">${startLabel} → ${endLabel}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        footerEl.innerHTML = '';
+    }
+
     function createModalIfMissing(){
         if (document.getElementById('event-detail-modal')) return;
         const wrapper = document.createElement('div');
@@ -12,9 +60,9 @@
         wrapper.setAttribute('aria-hidden','true');
         wrapper.innerHTML = `
             <div class="fixed inset-0 bg-black/50" data-modal-backdrop></div>
-            <div class="bg-white rounded-lg shadow-lg max-w-3xl w-full mx-auto overflow-hidden">
+            <div class="bg-white rounded-lg shadow-lg max-w-xl w-full mx-auto overflow-hidden">
                 <div class="flex items-start justify-between p-4 border-b">
-                    <h2 id="event-detail-title" class="text-xl font-semibold text-gray-900">&nbsp;</h2>
+                    <h2 id="event-detail-title" class="text-lg font-semibold text-gray-900">&nbsp;</h2>
                     <button type="button" data-modal-close class="ml-4 text-gray-500 hover:text-gray-700">Fermer</button>
                 </div>
                 <div id="event-detail-body" class="p-4 max-h-[70vh] overflow-auto text-gray-800"></div>
@@ -180,6 +228,22 @@
         if (typeof id !== 'undefined') {
             return fetchAndShow(id, '/events/'+encodeURIComponent(id), trigger);
         }
+    };
+
+    window.openReunionDetailModal = function(reunion, trigger){
+        createModalIfMissing();
+        const modal = document.getElementById('event-detail-modal');
+        if (!modal) {
+            return;
+        }
+
+        const titleEl = modal.querySelector('#event-detail-title');
+        const bodyEl = modal.querySelector('#event-detail-body');
+        const footerEl = modal.querySelector('#event-detail-footer');
+
+        titleEl.textContent = 'Détails de la réunion';
+        renderMinimalReunion(bodyEl, footerEl, reunion || {});
+        openModal(trigger || null);
     };
 
     // allow programmatic close
