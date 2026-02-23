@@ -30,18 +30,18 @@
 
         bodyEl.innerHTML = `
             <div class="space-y-4 text-sm text-gray-700">
-                <div class="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Sujet</p>
-                    <p class="mt-1 text-base font-semibold text-gray-900">${subject}</p>
+                <div class="rounded-xl border border-[#faa21b]/20 bg-gradient-to-br from-[#fff9ec] to-white p-4 shadow-sm">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider text-[#b36b00]">Sujet</p>
+                    <p class="mt-1.5 text-base font-semibold leading-6 text-gray-900">${subject}</p>
                 </div>
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <div class="rounded-lg border border-gray-200 bg-white p-3">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Instance</p>
-                        <p class="mt-1 font-medium text-gray-900">${instanceName}</p>
+                    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Instance</p>
+                        <p class="mt-1.5 font-medium leading-6 text-gray-900">${instanceName}</p>
                     </div>
-                    <div class="rounded-lg border border-gray-200 bg-white p-3">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Horaires</p>
-                        <p class="mt-1 font-medium text-gray-900">${startLabel} → ${endLabel}</p>
+                    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Horaires</p>
+                        <p class="mt-1.5 font-medium leading-6 text-gray-900">${startLabel} → ${endLabel}</p>
                     </div>
                 </div>
             </div>
@@ -54,19 +54,19 @@
         if (document.getElementById('event-detail-modal')) return;
         const wrapper = document.createElement('div');
         wrapper.id = 'event-detail-modal';
-        wrapper.className = 'fixed inset-0 z-50 hidden items-center justify-center p-4';
+        wrapper.className = 'fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6';
         wrapper.setAttribute('role','dialog');
         wrapper.setAttribute('aria-modal','true');
         wrapper.setAttribute('aria-hidden','true');
         wrapper.innerHTML = `
-            <div class="fixed inset-0 bg-black/50" data-modal-backdrop></div>
-            <div class="bg-white rounded-lg shadow-lg max-w-xl w-full mx-auto overflow-hidden">
-                <div class="flex items-start justify-between p-4 border-b">
-                    <h2 id="event-detail-title" class="text-lg font-semibold text-gray-900">&nbsp;</h2>
-                    <button type="button" data-modal-close class="ml-4 text-gray-500 hover:text-gray-700">Fermer</button>
+            <div class="fixed inset-0 bg-gray-900/55 backdrop-blur-[1px]" data-modal-backdrop></div>
+            <div class="relative bg-white rounded-2xl shadow-2xl ring-1 ring-black/5 max-w-xl w-full mx-auto overflow-hidden">
+                <div class="flex items-start justify-between gap-3 border-b border-[#faa21b]/15 bg-[#fff9ec] px-5 py-4">
+                    <h2 id="event-detail-title" class="text-base sm:text-lg font-semibold text-gray-900">&nbsp;</h2>
+                    <button type="button" data-modal-close class="inline-flex items-center rounded-md border border-[#faa21b]/30 bg-white px-2.5 py-1 text-xs font-semibold text-[#b36b00] hover:bg-[#fff3da] transition">Fermer</button>
                 </div>
-                <div id="event-detail-body" class="p-4 max-h-[70vh] overflow-auto text-gray-800"></div>
-                <div id="event-detail-footer" class="p-4 border-t text-sm text-gray-600"></div>
+                <div id="event-detail-body" class="max-h-[70vh] overflow-auto p-5 text-gray-800"></div>
+                <div id="event-detail-footer" class="border-t border-gray-100 px-5 py-3 text-sm text-gray-600"></div>
             </div>
         `;
         document.body.appendChild(wrapper);
@@ -142,7 +142,7 @@
 
         // show loading
         titleEl.textContent = '...';
-        bodyEl.innerHTML = '<div class="py-12 text-center text-gray-500">Chargement…</div>';
+        bodyEl.innerHTML = '<div class="py-12 text-center text-sm font-medium text-gray-500">Chargement…</div>';
         footerEl.innerHTML = '';
 
         openModal(trigger);
@@ -212,7 +212,7 @@
             }
 
         } catch (err) {
-            bodyEl.innerHTML = '<div class="py-12 text-center text-red-500">Erreur lors du chargement de l\'événement.</div>';
+            bodyEl.innerHTML = '<div class="rounded-xl border border-red-200 bg-red-50 p-4 text-center text-sm font-medium text-red-600">Erreur lors du chargement de l\'événement.</div>';
             titleEl.textContent = 'Erreur';
             footerEl.innerHTML = '';
             console.warn('[event-modal] failed to load event', err);
