@@ -41,6 +41,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
         Route::delete('/{instance}/force', [\App\Http\Controllers\Admin\InstanceController::class, 'forceDestroy'])->name('force-destroy');
     });
 
+    Route::prefix('projects')->name('projects.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ProjectController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\ProjectController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\ProjectController::class, 'store'])->name('store');
+        Route::get('/{project}', [\App\Http\Controllers\Admin\ProjectController::class, 'show'])->name('show');
+        Route::get('/{project}/edit', [\App\Http\Controllers\Admin\ProjectController::class, 'edit'])->name('edit');
+        Route::put('/{project}', [\App\Http\Controllers\Admin\ProjectController::class, 'update'])->name('update');
+        Route::delete('/{project}', [\App\Http\Controllers\Admin\ProjectController::class, 'destroy'])->name('destroy');
+    });
+
     Route::prefix('reunions')->name('reunions.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\ReunionController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\ReunionController::class, 'create'])->name('create');
