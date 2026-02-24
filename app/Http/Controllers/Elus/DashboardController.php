@@ -20,7 +20,6 @@ class DashboardController extends Controller
     public function index(Request $request): View
     {
         $user = $request->user();
-        $projectsQuery = Project::query()->visibleToUser($user);
 
         // Get upcoming reunions (next 5)
         $upcomingReunions = Reunion::with('instance')
@@ -29,7 +28,8 @@ class DashboardController extends Controller
             ->get();
 
         // Get active projects
-        $activeProjects = (clone $projectsQuery)
+        $activeProjects = Project::query()
+            ->visibleToUser($user)
             ->active()
             ->orderBy('updated_at', 'desc')
             ->take(5)
@@ -48,14 +48,19 @@ class DashboardController extends Controller
             ->get();
 
         // Statistics
+        $totalProjectsCount = Project::query()->visibleToUser($user)->count();
+        $activeProjectsCount = Project::query()->visibleToUser($user)->active()->count();
+        $activeBudgetSum = Project::query()->visibleToUser($user)->active()->sum('budget');
+        $totalDocumentsCount = $this->getUserAccessibleDocuments($user)->count();
+
         $stats = [
-            'total_projects' => (clone $projectsQuery)->count(),
-            'active_projects' => (clone $projectsQuery)->active()->count(),
+            'total_projects' => $totalProjectsCount,
+            'active_projects' => $activeProjectsCount,
             'total_reunions' => Reunion::count(),
             'upcoming_reunions' => Reunion::upcoming()->count(),
             'total_instances' => Instance::count(),
-            'total_budget' => (clone $projectsQuery)->active()->sum('budget'),
-            'total_documents' => $this->getUserAccessibleDocuments($user)->count(),
+            'total_budget' => $activeBudgetSum,
+            'total_documents' => $totalDocumentsCount,
         ];
 
         return view('elus.dashboard', compact(

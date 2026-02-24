@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
@@ -145,7 +146,7 @@ class DocumentController extends Controller
         return redirect()->route('admin.documents.index')->with('success', 'Document supprimé.');
     }
 
-    public function download(Document $document): \Symfony\Component\HttpFoundation\BinaryFileResponse|\Symfony\Component\HttpFoundation\StreamedResponse
+    public function download(Document $document): BinaryFileResponse|StreamedResponse
     {
         abort_unless($document->isAccessibleBy(auth()->user()), 403);
 

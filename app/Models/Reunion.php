@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -88,7 +89,7 @@ class Reunion extends Model
     /**
      * Scope for upcoming reunions.
      */
-    public function scopeUpcoming($query)
+    public function scopeUpcoming(Builder $query): Builder
     {
         return $query->where('start_time', '>=', now())
             ->whereIn('status', ['planifiee', 'confirmee'])
@@ -98,7 +99,7 @@ class Reunion extends Model
     /**
      * Scope for past reunions.
      */
-    public function scopePast($query)
+    public function scopePast(Builder $query): Builder
     {
         return $query->where('end_time', '<', now())->orderBy('start_time', 'desc');
     }
@@ -106,7 +107,7 @@ class Reunion extends Model
     /**
      * Get start time.
      */
-    public function getStartTimeAttribute($value)
+    public function getStartTimeAttribute($value): ?\Carbon\Carbon
     {
         return $value ? \Carbon\Carbon::parse($value) : null;
     }
@@ -114,7 +115,7 @@ class Reunion extends Model
     /**
      * Get end time.
      */
-    public function getEndTimeAttribute($value)
+    public function getEndTimeAttribute($value): ?\Carbon\Carbon
     {
         return $value ? \Carbon\Carbon::parse($value) : null;
     }

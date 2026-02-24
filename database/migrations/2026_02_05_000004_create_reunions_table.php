@@ -17,8 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->dateTime('start_time');
-        $table->dateTime('end_time');
-        $table->string('timezone')->default('Europe/Paris');
+            $table->dateTime('end_time');
             $table->string('location')->nullable();
             $table->json('participants')->nullable();
             $table->string('status')->default('planifiee'); // planifiee, confirmee, terminee, annulee
