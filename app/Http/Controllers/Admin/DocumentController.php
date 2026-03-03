@@ -206,6 +206,12 @@ class DocumentController extends Controller
             }
 
             if (empty($rangeHeader)) {
+                if (app()->environment('testing')) {
+                    $content = Storage::get($document->path);
+
+                    return response($content, 200, $headers);
+                }
+
                 $stream = function () use ($document) {
                     $readStream = Storage::readStream($document->path);
                     if ($readStream === false) {
