@@ -23,14 +23,11 @@ class Document extends Model
     ];
 
     /**
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'visible_to_all' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'visible_to_all' => 'boolean',
+    ];
 
     public function users(): BelongsToMany
     {

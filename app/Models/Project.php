@@ -34,20 +34,17 @@ class Project extends Model
     /**
      * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'territories' => 'array',
-            'indicators' => 'array',
-            'documents' => 'array',
-            'geodata' => 'array',
-            'budget' => 'decimal:2',
-            'start_date' => 'date',
-            'end_date' => 'date',
-        ];
-    }
+    protected $casts = [
+        'territories' => 'array',
+        'indicators' => 'array',
+        'documents' => 'array',
+        'geodata' => 'array',
+        'budget' => 'decimal:2',
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
 
     /**
      * Types de projets disponibles.

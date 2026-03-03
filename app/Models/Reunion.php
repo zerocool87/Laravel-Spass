@@ -34,17 +34,14 @@ class Reunion extends Model
     /**
      * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'start_time' => 'datetime',
-            'end_time' => 'datetime',
-            'participants' => 'array',
-            'documents' => 'array',
-        ];
-    }
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+        'participants' => 'array',
+        'documents' => 'array',
+    ];
 
     /**
      * Statuts de réunions disponibles.
