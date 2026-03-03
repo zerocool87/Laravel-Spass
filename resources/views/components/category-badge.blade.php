@@ -9,6 +9,10 @@
         $infoColor = $colors[$category] ?? 'bg-gray-400';
         $icon = $icons[$category] ?? '';
 
+        // Sanitize icon HTML: strip scripts and inline event handlers
+        $safeIcon = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $icon);
+        $safeIcon = preg_replace('/\s+on[a-z]+\s*=\s*(".*?"|\'.*?\'|[^\s>]+)/i', '', $safeIcon);
+
         // Forcera une couleur de texte foncée sur les couleurs claires, sinon blanc
         // Use a simple contrast check for accessibility
         $lightBg = preg_match('/amber-|yellow-|lime-|sky-|cyan-/', $infoColor);
@@ -20,8 +24,8 @@
     @endphp
 
     <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold {{ $infoColor }} {{ $textClass }} {{ $borderClass }} {{ $shadowClass }}" aria-label="{{ __($category) }}">
-        @if(!empty($icon))
-            <span class="-ml-1 mr-2">{!! $icon !!}</span>
+        @if(!empty($safeIcon))
+            <span class="-ml-1 mr-2">{!! $safeIcon !!}</span>
         @endif
         <span>{{ __($category) }}</span>
     </span>
