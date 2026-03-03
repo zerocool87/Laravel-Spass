@@ -8,7 +8,7 @@ metadata:
   category: development
   source:
     repository: https://github.com/vercel-labs/agent-skills
-    path: skills/claude.ai/web-design-guidelines
+    path: docs/skills/.kilocode/skills/web-design-guidelines/SKILL.md
 ---
 
 # Web Interface Guidelines

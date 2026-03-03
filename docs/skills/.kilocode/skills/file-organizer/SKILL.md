@@ -5,7 +5,7 @@ metadata:
   category: productivity-organization
   source:
     repository: 'https://github.com/ComposioHQ/awesome-claude-skills'
-    path: file-organizer
+    path: docs/skills/.kilocode/skills/file-organizer/SKILL.md
 ---
 
 # File Organizer
