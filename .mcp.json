@@ -2,7 +2,10 @@
   "mcpServers": {
     "laravel-boost": {
       "command": "php",
-      "args": ["artisan", "boost:mcp"],
+      "args": [
+        "artisan",
+        "boost:mcp"
+      ],
       "alwaysAllow": [
         "browser-logs",
         "database-connections",
@@ -21,8 +24,14 @@
       ]
     },
     "context7": {
-      "command": "php",
-      "args": ["artisan", "context7:mcp"],
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {
+        "DEFAULT_MINIMUM_TOKENS": "\"\""
+      },
       "alwaysAllow": [
         "browser-logs",
         "database-connections",
