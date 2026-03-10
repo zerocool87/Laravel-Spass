@@ -14,6 +14,13 @@ Fournir une plateforme mobile et web pour les élus et l'administration du SDEEG
 
 ---
 
+## Changements récents (10/03/2026)
+
+- Dashboard: correction d'alignement des widgets (réunions, actualités, instances, documents). Les 4 widgets sont maintenant enfants directs de la grille CSS 2×2 pour garantir une hauteur égale par rangée.
+- UI: réduction des paddings et des espacements (stats cards, en-têtes de widgets, lignes de tables) pour assurer l'affichage entier sur un écran HD.
+- Frontend: recompilation des assets Tailwind/Vite (`npm run build`) afin d'inclure les nouvelles classes utilitaires.
+
+
 ## Périmètre fonctionnel complet (8 modules)
 
 ### 01 — Authentification
@@ -133,6 +140,8 @@ Application SDEEG
 ---
 
 ## Backlog technique priorisé
+
+- UI Dashboard: alignement des widgets, réduction des espacements, recompilation des assets — ✅ Complété (10/03/2026)
 
 1. **Sécurité**
    - Journal des actions sensibles (vote, pouvoir, inscription)
