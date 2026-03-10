@@ -6,17 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ActualiteRequest;
 use App\Models\Actualite;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ActualiteController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $actualites = Actualite::with('creator')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $search = $request->input('q', '');
+        $status = $request->input('status', '');
 
-        return view('admin.actualites.index', compact('actualites'));
+        $actualites = Actualite::with('creator')
+            ->when($search, fn ($q) => $q->where('title', 'like', "%{$search}%"))
+            ->when($status === 'published', fn ($q) => $q->where('is_published', true))
+            ->when($status === 'draft', fn ($q) => $q->where('is_published', false))
+            ->orderBy('created_at', 'desc')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('admin.actualites.index', compact('actualites', 'search', 'status'));
     }
 
     public function create(): View

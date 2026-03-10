@@ -12,7 +12,9 @@
 
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8">
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8"
+                 x-data="{ charCount: {{ old('content') ? "'" . strlen(old('content')) . "'" : 0 }}, titleCount: {{ old('title') ? "'" . strlen(old('title')) . "'" : 0 }} }">
+
                 <form action="{{ route('admin.actualites.store') }}" method="POST" class="space-y-6">
                     @csrf
 
@@ -35,10 +37,14 @@
                     @endif
 
                     <div>
-                        <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ __('Titre') }} <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" name="title" id="title" value="{{ old('title') }}" required
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="title" class="block text-sm font-medium text-gray-700">
+                                {{ __('Titre') }} <span class="text-red-500">*</span>
+                            </label>
+                            <span class="text-xs text-gray-400" x-text="titleCount + '/255'"></span>
+                        </div>
+                        <input type="text" name="title" id="title" value="{{ old('title') }}" required maxlength="255"
+                            x-on:input="titleCount = $el.value.length"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('title') border-red-300 @enderror"
                             placeholder="{{ __('Ex: Résultats du comité syndical') }}" />
                         @error('title')
@@ -47,10 +53,14 @@
                     </div>
 
                     <div>
-                        <label for="content" class="block text-sm font-medium text-gray-700 mb-1">
-                            {{ __('Contenu') }} <span class="text-red-500">*</span>
-                        </label>
-                        <textarea name="content" id="content" rows="10" required
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="content" class="block text-sm font-medium text-gray-700">
+                                {{ __('Contenu') }} <span class="text-red-500">*</span>
+                            </label>
+                            <span class="text-xs text-gray-400" x-text="charCount + ' ' + '{{ __('caractères') }}'"></span>
+                        </div>
+                        <textarea name="content" id="content" rows="12" required
+                            x-on:input="charCount = $el.value.length"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('content') border-red-300 @enderror"
                             placeholder="{{ __('Rédigez le contenu de l\'actualité…') }}">{{ old('content') }}</textarea>
                         @error('content')
@@ -58,21 +68,31 @@
                         @enderror
                     </div>
 
-                    <div class="flex items-center gap-3">
-                        <input type="hidden" name="is_published" value="0" />
-                        <input type="checkbox" name="is_published" id="is_published" value="1"
-                            class="rounded border-gray-300 text-[#faa21b] focus:ring-[#faa21b]"
-                            {{ old('is_published') ? 'checked' : '' }} />
-                        <label for="is_published" class="text-sm font-medium text-gray-700">
-                            {{ __('Publier immédiatement') }}
-                        </label>
+                    <div class="rounded-xl border border-[#faa21b]/20 bg-[#faa21b]/5 p-4">
+                        <div class="flex items-center gap-3">
+                            <input type="hidden" name="is_published" value="0" />
+                            <input type="checkbox" name="is_published" id="is_published" value="1"
+                                class="rounded border-gray-300 text-[#faa21b] focus:ring-[#faa21b] w-4 h-4"
+                                {{ old('is_published') ? 'checked' : '' }} />
+                            <div>
+                                <label for="is_published" class="text-sm font-semibold text-gray-800 cursor-pointer">
+                                    {{ __('Publier immédiatement') }}
+                                </label>
+                                <p class="text-xs text-gray-500 mt-0.5">{{ __('L\'actualité sera visible par tous les élus.') }}</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="flex gap-3 pt-2">
-                        <button type="submit" class="inline-flex items-center justify-center px-6 py-2.5 bg-[#faa21b] text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#faa21b] transition">
+                    <div class="flex gap-3 pt-2 border-t border-gray-100">
+                        <button type="submit"
+                            class="inline-flex items-center justify-center px-6 py-2.5 bg-[#faa21b] text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#faa21b] transition">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
                             {{ __('Enregistrer') }}
                         </button>
-                        <a href="{{ route('admin.actualites.index') }}" class="inline-flex items-center justify-center px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
+                        <a href="{{ route('admin.actualites.index') }}"
+                           class="inline-flex items-center justify-center px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-200 transition">
                             {{ __('Annuler') }}
                         </a>
                     </div>

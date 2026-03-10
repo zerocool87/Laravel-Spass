@@ -137,6 +137,21 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </a>
+
+                        <a href="{{ route('admin.actualites.index') }}" class="flex items-center p-3 border-2 border-[#faa21b]/20 rounded-xl hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
+                            <div class="p-2 bg-[#faa21b]/10 rounded-lg group-hover:bg-[#faa21b]/20 transition">
+                                <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2zM14 4v4h4M8 13h8M8 17h4"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <p class="font-semibold text-gray-900 group-hover:text-[#faa21b] transition">{{ __('Gestion des actualités') }}</p>
+                                <p class="text-sm text-gray-500">{{ __('Publier et gérer les actualités des élus') }}</p>
+                            </div>
+                            <svg class="w-5 h-5 text-[#faa21b]/40 ml-auto group-hover:text-[#faa21b] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
                     </div>
                 </div>
 
