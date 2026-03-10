@@ -1,107 +1,184 @@
-# Laravel-Spass — Plan Produit Optimisé
+# Laravel-Spass — Plan Produit (mis à jour 10/03/2026)
 
 ## Objectif
 
-Fournir une plateforme fiable pour les élus et l'administration, centrée sur la gestion des documents, des réunions et des décisions.
+Fournir une plateforme mobile et web pour les élus et l'administration du SDEEG, centrée sur l'information institutionnelle, la gestion des événements, la consultation/vote, et la communication personnalisée.
 
 ## Contexte technique réel
 
-- Framework: Laravel 12
+- Framework: Laravel 12 / PHP 8.4
 - Frontend: Tailwind CSS v3 + Alpine.js + FullCalendar
 - Tests: PHPUnit 11
 - Qualité: Laravel Pint
+- Cible: application web responsive (PC Windows) + mobile (Android/iOS)
 
-## Périmètre actuel (déjà en place)
+---
 
-- Authentification + rôles (admin / élu)
-- Gestion documentaire (upload, consultation, bibliothèque)
-- Événements et calendrier
-- Réunions (liste, calendrier, détail)
-- Espace collaboratif élus
+## Périmètre fonctionnel complet (8 modules)
 
-## Priorités produit (MVP)
+### 01 — Authentification
+- Login / mot de passe (identifiant reçu par SMS ou à l'accueil du comité syndical)
+- Accès web (ordinateur Windows) et mobile (Android Samsung, iOS Apple)
+- Rôles : admin / élu
 
-### P0 — Essentiel
+### 02 — Actualités
+- Publications au fil de l'eau (actualités brèves, divers sujets)
+- Flux d'actualités paginé et triable, consultation pour les élus connectés
 
-1. Fiabiliser les parcours critiques
-   - Créer / modifier / consulter réunion
-   - Publier et retrouver un document
-2. Clarifier les permissions
-   - Vérification stricte des accès admin vs élu
-3. Stabiliser UX calendrier
-   - Modales lisibles, navigation simple, état vide explicite
-4. Renforcer la base de tests
-   - Tests feature sur parcours clés
+### 03 — Événements
+- Visualiser les événements et instances (comité syndical, bureaux, commissions)
+- Inscription à un événement (si non faite par mail)
+- Accès aux documents de la réunion (ordre du jour, rapport, etc.)
+- Accès aux badges (ex. Forum des Énergies)
+- Donner un pouvoir → notification mail + in-app au porteur de pouvoir
 
-### P1 — Forte valeur
+### 04 — Agenda
+- Vue calendrier d'ensemble
+- 3 types d'événements (légende distincte) :
+  - Événements organisés par le SDEEG
+  - Événements auxquels le SDEEG participe
+  - Événements organisés par les partenaires du SDEEG
 
-1. Recherche documentaire améliorée (filtres + pertinence)
-2. Notifications utiles (documents publiés, réunion approchante)
-3. Tableau de bord élus orienté action (prochaines réunions, documents récents)
+### 05 — Consultations
+- 3 types de consultations :
+  - **Rapport** : vote électronique
+  - **PCRS** : répondre à un questionnaire
+  - **Avis** : recueillir les avis des élus/agents sur une action du SDEEG
 
-### P2 — À planifier
+### 06 — Mes Interlocuteurs
+- Liste des agents SDEEG dédiés à la commune de l'élu connecté
+- Coordonnées (téléphone, email, poste)
 
+### 07 — Commissions
+- Accès au compte-rendu de chaque commission
+- Accès à la liste des élus de chaque commission
+
+### 08 — Messagerie
+- Historique des messages personnels transmis par le SDEEG à l'élu
+
+---
+
+## État d'avancement par module
+
+| Module | Statut |
+|---|---|
+| 01 Authentification | ✅ En place (rôles admin/élu) |
+| 02 Actualités | 🔴 À créer |
+| 03 Événements | 🟡 Partiel — inscription, badge, délégation de pouvoir manquants |
+| 04 Agenda | 🟡 Partiel — 3 types d'événements non différenciés |
+| 05 Consultations | 🔴 À créer |
+| 06 Mes Interlocuteurs | 🔴 À créer |
+| 07 Commissions | 🟡 Partiel — comptes-rendus et listes membres manquants |
+| 08 Messagerie | 🔴 À créer |
+
+---
+
+## Priorités produit révisées
+
+### P0 — Fondations (déjà en place, à fiabiliser)
+1. Authentification robuste (login SMS, sessions sécurisées)
+2. Événements + Agenda (parcours calendrier stable, 3 types d'événements)
+3. Documents liés aux réunions (ordre du jour, rapport)
+
+### P1 — Modules manquants à fort impact
+1. **Actualités** — flux de publications
+2. **Consultations** — vote électronique + questionnaires + avis
+3. **Commissions** — comptes-rendus + listes membres
+4. **Pouvoir** — délégation de vote + notification porteur
+
+### P2 — Modules à forte valeur ajoutée UX
+1. **Mes Interlocuteurs** — fiches agents dédiés à la commune
+2. **Messagerie** — historique des messages SDEEG
+3. **Badges** — accès et affichage badge événement
+
+### P3 — Améliorations futures
 1. 2FA
 2. Versioning documentaire avancé
-3. Reporting financier enrichi
-4. Outils collaboratifs avancés
+3. Reporting financier
+4. Push notifications mobile
+
+---
 
 ## Architecture fonctionnelle cible
 
 ```
-Espace Élus
-├── Tableau de bord
-├── Réunions
+Application SDEEG
+├── Authentification
+│   ├── Login (identifiant/mdp reçu par SMS)
+│   └── Rôles (admin / élu)
+├── Actualités
+│   └── Flux publications au fil de l'eau
+├── Événements
+│   ├── Liste & détail
+│   ├── Inscription
+│   ├── Documents (ordre du jour, rapport)
+│   ├── Badges
+│   └── Délégation de pouvoir
+├── Agenda
 │   ├── Calendrier
-│   ├── Liste
-│   └── Détail
-├── Documents
-│   ├── Bibliothèque
-│   ├── Catégories
-│   └── Recherche
-├── Projets
-└── Collaboration
+│   └── 3 types (SDEEG / Participation / Partenaires)
+├── Consultations
+│   ├── Vote électronique (Rapport)
+│   ├── Questionnaire (PCRS)
+│   └── Avis élus/agents
+├── Mes Interlocuteurs
+│   └── Agents dédiés + coordonnées
+├── Commissions
+│   ├── Comptes-rendus
+│   └── Liste élus par commission
+└── Messagerie
+    └── Historique messages SDEEG
 ```
+
+---
 
 ## Backlog technique priorisé
 
-1. Sécurité
-   - Journal des actions sensibles
-   - Validation renforcée des uploads
-2. Performance
-   - Optimisation des requêtes et eager loading
-   - Caching ciblé sur listes et widgets
-3. Qualité
-   - Couverture de tests sur modules Réunions et Documents
-   - Standardisation des formulaires via Form Requests
+1. **Sécurité**
+   - Journal des actions sensibles (vote, pouvoir, inscription)
+   - Validation renforcée des uploads (documents réunion, badges)
+2. **Nouvelles migrations / modèles**
+   - `actualites`, `consultations`, `votes`, `questionnaires`, `interlocuteurs`, `messages`
+3. **Notifications**
+   - Mail + in-app : réception d'un pouvoir, rappel événement
+4. **Performance**
+   - Eager loading sur modules Événements et Commissions
+   - Caching sur listes Actualités et Interlocuteurs
+5. **Qualité**
+   - Tests feature sur les 4 nouveaux modules
+   - Form Requests pour Consultations et Inscription événement
 
-## Plan d'exécution (6 semaines)
+---
 
-### Sprint 1 (S1-S2)
+## Plan d'exécution révisé (8 semaines)
 
-- Stabilisation Réunions (UI + permissions + tests)
-- Nettoyage parcours documents les plus utilisés
+### Sprint 1 (S1-S2) — Stabilisation + Actualités
+- Fiabiliser Authentification et Événements existants
+- Créer module Actualités (modèle, CRUD admin, vue élu)
+- Différencier les 3 types d'événements dans l'Agenda
 
-### Sprint 2 (S3-S4)
+### Sprint 2 (S3-S4) — Événements enrichis + Commissions
+- Inscription à un événement
+- Délégation de pouvoir + notification mail/in-app
+- Module Commissions (comptes-rendus + membres)
 
-- Recherche documentaire améliorée
-- Notifications de base
+### Sprint 3 (S5-S6) — Consultations
+- Vote électronique (Rapport)
+- Questionnaire PCRS
+- Recueil d'avis élus/agents
 
-### Sprint 3 (S5-S6)
+### Sprint 4 (S7-S8) — Messagerie + Interlocuteurs + Badges
+- Module Messagerie (historique messages)
+- Module Mes Interlocuteurs (agents dédiés)
+- Badges événements
+- Tests, performance, pint, polish
 
-- Dashboard élus orienté priorités
-- Durcissement sécurité + revue de perf
+---
 
 ## Indicateurs de succès
 
-1. 95% des actions principales en moins de 3 clics
-2. Temps de réponse < 2 secondes sur les écrans clés
-3. 0 régression critique sur Réunions/Documents
-4. Adoption active des élus > 80%
-
-## Prochaines actions immédiates
-
-1. Valider ce plan MVP avec les parties prenantes
-2. Geler le scope du Sprint 1
-3. Écrire les tests manquants sur les parcours P0
-4. Lancer un suivi hebdomadaire des métriques
+1. Les 8 modules accessibles et fonctionnels
+2. 95 % des actions principales en moins de 3 clics
+3. Temps de réponse < 2 s sur les écrans clés
+4. 0 régression critique sur Événements/Documents/Authentification
+5. Couverture de tests > 80 % sur les nouveaux modules
