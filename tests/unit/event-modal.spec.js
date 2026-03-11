@@ -9,10 +9,8 @@ const modalScript = fs.readFileSync(path.resolve('./resources/js/event-detail-mo
 describe('event detail modal', () => {
   beforeEach(() => {
     document.body.innerHTML = ''
-    // execute script to register functions
-    const script = document.createElement('script')
-    script.textContent = modalScript
-    document.body.appendChild(script)
+    // execute script to register functions on window
+    eval(modalScript) // eslint-disable-line no-eval
   })
 
   it('opens and closes the modal and returns focus', async () => {
@@ -22,8 +20,13 @@ describe('event detail modal', () => {
 
     expect(window.openEventDetailModal).toBeDefined()
 
-    // stub fetch
-    global.fetch = async () => ({ ok: true, json: async () => ({ title: 'T', description: 'D', start_at: null, end_at: null, attachments: [] }) })
+    // stub fetch — mimic a real Response (JSON) so headers.get works
+    const eventData = { title: 'T', description: 'D', start_at: null, end_at: null, attachments: [] }
+    global.fetch = async () => ({
+      ok: true,
+      headers: { get: (name) => (name.toLowerCase() === 'content-type' ? 'application/json' : null) },
+      json: async () => eventData,
+    })
 
     await window.openEventDetailModal(1, '/events/1', btn)
 

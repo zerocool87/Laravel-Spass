@@ -9,16 +9,7 @@
             :badge="$instance->type_label"
             badgeColor="bg-[#faa21b]/15 text-[#b36b00]"
         >
-            <x-slot name="actions">
-                @can('admin')
-                <a href="{{ route('elus.reunions.create', ['instance_id' => $instance->id]) }}" class="inline-flex items-center px-4 py-2 bg-[#faa21b] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[#e89315] transition">
-                    + {{ __('Planifier une réunion') }}
-                </a>
-                <a href="{{ route('elus.instances.edit', $instance) }}" class="inline-flex items-center px-4 py-2 border border-white/30 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-white/10 transition">
-                    {{ __('Modifier') }}
-                </a>
-                @endcan
-            </x-slot>
+
         </x-elus-header>
     </x-slot>
 

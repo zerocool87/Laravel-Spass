@@ -23,16 +23,13 @@ class Event extends Model
     ];
 
     /**
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'start_at' => 'datetime',
-            'end_at' => 'datetime',
-            'is_all_day' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+        'is_all_day' => 'boolean',
+    ];
 
     public function creator(): BelongsTo
     {

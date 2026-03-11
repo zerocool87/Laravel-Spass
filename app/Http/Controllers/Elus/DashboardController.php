@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\FiltersDocuments;
+use App\Models\Actualite;
 use App\Models\Instance;
 use App\Models\Project;
 use App\Models\Reunion;
@@ -47,6 +48,13 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
+        // Get latest published actualités (limit to 3)
+        $latestActualites = Actualite::with('creator')
+            ->where('is_published', true)
+            ->latest('published_at')
+            ->take(3)
+            ->get();
+
         // Statistics
         $totalProjectsCount = Project::query()->visibleToUser($user)->count();
         $activeProjectsCount = Project::query()->visibleToUser($user)->active()->count();
@@ -67,6 +75,7 @@ class DashboardController extends Controller
             'upcomingReunions',
             'activeProjects',
             'latestDocuments',
+            'latestActualites',
             'instances',
             'stats'
         ));

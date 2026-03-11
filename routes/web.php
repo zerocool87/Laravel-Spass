@@ -59,6 +59,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
         Route::put('/{reunion}', [\App\Http\Controllers\Admin\ReunionController::class, 'update'])->name('update');
         Route::delete('/{reunion}', [\App\Http\Controllers\Admin\ReunionController::class, 'destroy'])->name('destroy');
     });
+
+    Route::prefix('actualites')->name('actualites.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ActualiteController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\ActualiteController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\ActualiteController::class, 'store'])->name('store');
+        Route::get('/{actualite}/edit', [\App\Http\Controllers\Admin\ActualiteController::class, 'edit'])->name('edit');
+        Route::patch('/{actualite}', [\App\Http\Controllers\Admin\ActualiteController::class, 'update'])->name('update');
+        Route::delete('/{actualite}', [\App\Http\Controllers\Admin\ActualiteController::class, 'destroy'])->name('destroy');
+    });
 });
 
 // Public/Authenticated routes for documents (download, embed, info & library)
@@ -105,6 +114,10 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
 
     // Collaborative messaging
     Route::get('/collab', [\App\Http\Controllers\Elus\CollabController::class, 'index'])->name('collab.index');
+
+    // Actualités
+    Route::get('/actualites', [\App\Http\Controllers\Elus\ActualiteController::class, 'index'])->name('actualites.index');
+    Route::get('/actualites/{actualite}', [\App\Http\Controllers\Elus\ActualiteController::class, 'show'])->name('actualites.show');
     Route::post('/collab', [\App\Http\Controllers\Elus\CollabController::class, 'storeConversation'])->name('collab.store');
     Route::get('/collab/{conversation}', [\App\Http\Controllers\Elus\CollabController::class, 'show'])->name('collab.show');
     Route::post('/collab/{conversation}/messages', [\App\Http\Controllers\Elus\CollabController::class, 'storeMessage'])->name('collab.messages.store');

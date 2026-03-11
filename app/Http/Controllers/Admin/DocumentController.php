@@ -150,7 +150,15 @@ class DocumentController extends Controller
     {
         abort_unless($document->isAccessibleBy(auth()->user()), 403);
 
-        return Storage::download($document->path, $document->original_name ?? basename($document->path));
+        $raw = $document->original_name ?? basename($document->path);
+        // strip control characters and limit length
+        $filename = preg_replace('/[\\x00-\\x1F\\x7F]+/', '', (string) $raw);
+        $filename = trim($filename) ?: basename($document->path);
+        if (mb_strlen($filename) > 200) {
+            $filename = mb_substr($filename, 0, 200);
+        }
+
+        return Storage::download($document->path, $filename);
     }
 
     public function info(Document $document): JsonResponse
@@ -169,22 +177,75 @@ class DocumentController extends Controller
     {
         abort_unless($document->isAccessibleBy(auth()->user()), 403);
 
+        $mime = $document->getMimeType() ?: 'application/octet-stream';
+
+        // sanitize filename for headers
+        $raw = $document->original_name ?: basename($document->path);
+        $filename = preg_replace('/[\\x00-\\x1F\\x7F]+/', '', (string) $raw);
+        $filename = trim($filename) ?: basename($document->path);
+        if (mb_strlen($filename) > 200) {
+            $filename = mb_substr($filename, 0, 200);
+        }
+        $safeQuoted = str_replace(['\\', '"'], ['\\\\', '\\"'], $filename);
+        $disposition = 'inline; filename="'.$safeQuoted.'"; filename*=UTF-8\'\''.rawurlencode($filename);
+
+        $rangeHeader = request()->header('Range');
+
+        // Prefer streaming via Storage (supports local and remote disks)
+        if (Storage::exists($document->path)) {
+            $size = Storage::size($document->path) ?: null;
+
+            $headers = [
+                'Content-Type' => $mime,
+                'Content-Disposition' => $disposition,
+                'Accept-Ranges' => 'bytes',
+            ];
+            if ($size !== null) {
+                $filesize = (int) $size;
+                $headers['Content-Length'] = (string) $filesize;
+            }
+
+            if (empty($rangeHeader)) {
+                if (app()->environment('testing')) {
+                    $content = Storage::get($document->path);
+
+                    return response($content, 200, $headers);
+                }
+
+                $stream = function () use ($document) {
+                    $readStream = Storage::readStream($document->path);
+                    if ($readStream === false) {
+                        abort(404);
+                    }
+                    try {
+                        while (! feof($readStream)) {
+                            echo fread($readStream, 8192);
+                            flush();
+                        }
+                    } finally {
+                        if (is_resource($readStream)) {
+                            fclose($readStream);
+                        }
+                    }
+                };
+
+                return new StreamedResponse($stream, 200, $headers);
+            }
+
+            // If Range header present, fall back to local file handling for partial responses.
+        }
+
         $path = $document->getFullPath();
         if (! $path || ! file_exists($path)) {
             abort(404);
         }
 
-        $mime = $document->getMimeType() ?: 'application/octet-stream';
-        $filename = $document->original_name ?: basename($document->path);
         $filesize = filesize($path);
-
         $headers = [
             'Content-Type' => $mime,
-            'Content-Disposition' => 'inline; filename="'.$filename.'"',
+            'Content-Disposition' => $disposition,
             'Accept-Ranges' => 'bytes',
         ];
-
-        $rangeHeader = request()->header('Range');
 
         if (empty($rangeHeader)) {
             return $this->respondFullFile($path, $filesize, $headers);
@@ -202,12 +263,20 @@ class DocumentController extends Controller
         }
 
         $stream = function () use ($path) {
-            $fp = fopen($path, 'rb');
-            while (! feof($fp)) {
-                echo fread($fp, 8192);
-                flush();
+            $fp = @fopen($path, 'rb');
+            if ($fp === false) {
+                abort(404);
             }
-            fclose($fp);
+            try {
+                while (! feof($fp)) {
+                    echo fread($fp, 8192);
+                    flush();
+                }
+            } finally {
+                if (is_resource($fp)) {
+                    fclose($fp);
+                }
+            }
         };
 
         return new StreamedResponse($stream, 200, $headers);
@@ -240,26 +309,45 @@ class DocumentController extends Controller
         $headers['Content-Length'] = (string) $length;
 
         if (app()->environment('testing')) {
-            $fp = fopen($path, 'rb');
-            fseek($fp, $start);
-            $content = fread($fp, $length);
-            fclose($fp);
+            $fp = @fopen($path, 'rb');
+            if ($fp === false) {
+                abort(404);
+            }
+            try {
+                fseek($fp, $start);
+                $content = fread($fp, $length);
+            } finally {
+                if (is_resource($fp)) {
+                    fclose($fp);
+                }
+            }
 
             return response($content, 206, $headers);
         }
 
         $stream = function () use ($path, $start, $length) {
-            $fp = fopen($path, 'rb');
-            fseek($fp, $start);
-            $remaining = $length;
-            while ($remaining > 0 && ! feof($fp)) {
-                $read = min(8192, $remaining);
-                $data = fread($fp, $read);
-                echo $data;
-                flush();
-                $remaining -= strlen($data);
+            $fp = @fopen($path, 'rb');
+            if ($fp === false) {
+                abort(404);
             }
-            fclose($fp);
+            try {
+                fseek($fp, $start);
+                $remaining = $length;
+                while ($remaining > 0 && ! feof($fp)) {
+                    $read = min(8192, $remaining);
+                    $data = fread($fp, $read);
+                    if ($data === false) {
+                        break;
+                    }
+                    echo $data;
+                    flush();
+                    $remaining -= strlen($data);
+                }
+            } finally {
+                if (is_resource($fp)) {
+                    fclose($fp);
+                }
+            }
         };
 
         return new StreamedResponse($stream, 206, $headers);
