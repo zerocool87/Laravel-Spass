@@ -12,9 +12,14 @@ Ce dossier regroupe les points d’entrée documentation du projet.
 ## Organisation recommandée
 
 - `README.md` (racine): onboarding et commandes utiles.
-- `docs/features/roadmap.md`: vision produit, MVP, roadmap d’exécution.
-- `CLAUDE.md` (racine): conventions obligatoires de développement.
+- `docs/features/roadmap.md`: vision produit, état d'avancement, roadmap d'exécution.
+- `CLAUDE.md` (racine): conventions obligatoires de développement (Laravel Boost).
 - `docs/README.md`: index rapide et navigation.
+
+## État d'avancement (11/03/2026)
+
+Modules opérationnels: Authentification, Actualités, Événements/Agenda (partiel), Instances, Projets, Réunions, Documents, Collab inter-élus.
+Modules à créer: Consultations, Mes Interlocuteurs, Messagerie SDEEG→Élu, Badges, Délégation de pouvoir.
 
 ## Notes
 

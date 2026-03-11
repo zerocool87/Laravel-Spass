@@ -1,4 +1,4 @@
-# Laravel-Spass — Plan Produit (mis à jour 10/03/2026)
+# Laravel-Spass — Plan Produit (mis à jour 11/03/2026)
 
 ## Objectif
 
@@ -13,6 +13,11 @@ Fournir une plateforme mobile et web pour les élus et l'administration du SDEEG
 - Cible: application web responsive (PC Windows) + mobile (Android/iOS)
 
 ---
+
+## Changements récents (11/03/2026)
+
+- Module Actualités créé (migration, modèle, CRUD admin complet, vue liste + détail pour les élus).
+- Messagerie collaborative (Collab) entre élus disponible : conversations, messages, interface dédiée.
 
 ## Changements récents (10/03/2026)
 
@@ -70,13 +75,14 @@ Fournir une plateforme mobile et web pour les élus et l'administration du SDEEG
 | Module | Statut |
 |---|---|
 | 01 Authentification | ✅ En place (rôles admin/élu) |
-| 02 Actualités | 🔴 À créer |
+| 02 Actualités | ✅ En place — CRUD admin + vue liste/détail élus |
 | 03 Événements | 🟡 Partiel — inscription, badge, délégation de pouvoir manquants |
 | 04 Agenda | 🟡 Partiel — 3 types d'événements non différenciés |
 | 05 Consultations | 🔴 À créer |
 | 06 Mes Interlocuteurs | 🔴 À créer |
-| 07 Commissions | 🟡 Partiel — comptes-rendus et listes membres manquants |
-| 08 Messagerie | 🔴 À créer |
+| 07 Commissions | 🟡 Partiel — CRUD Instances en place ; comptes-rendus et listes membres manquants |
+| 08 Messagerie SDEEG→Élu | 🔴 À créer |
+| —  Collab inter-élus | ✅ En place — conversations + messages entre élus |
 
 ---
 
@@ -86,12 +92,13 @@ Fournir une plateforme mobile et web pour les élus et l'administration du SDEEG
 1. Authentification robuste (login SMS, sessions sécurisées)
 2. Événements + Agenda (parcours calendrier stable, 3 types d'événements)
 3. Documents liés aux réunions (ordre du jour, rapport)
+4. Actualités (flux de publications — opérationnel)
+5. Messagerie collaborative inter-élus (Collab — opérationnel)
 
 ### P1 — Modules manquants à fort impact
-1. **Actualités** — flux de publications
-2. **Consultations** — vote électronique + questionnaires + avis
-3. **Commissions** — comptes-rendus + listes membres
-4. **Pouvoir** — délégation de vote + notification porteur
+1. **Consultations** — vote électronique + questionnaires + avis
+2. **Commissions** — comptes-rendus + listes membres (Instances partiellement en place)
+3. **Pouvoir** — délégation de vote + notification porteur
 
 ### P2 — Modules à forte valeur ajoutée UX
 1. **Mes Interlocuteurs** — fiches agents dédiés à la commune
@@ -142,6 +149,8 @@ Application SDEEG
 ## Backlog technique priorisé
 
 - UI Dashboard: alignement des widgets, réduction des espacements, recompilation des assets — ✅ Complété (10/03/2026)
+- Module Actualités: migration, modèle, CRUD admin, vue élus — ✅ Complété (10-11/03/2026)
+- Messagerie collaborative inter-élus (Collab): conversations + messages — ✅ Complété
 
 1. **Sécurité**
    - Journal des actions sensibles (vote, pouvoir, inscription)
@@ -161,10 +170,10 @@ Application SDEEG
 
 ## Plan d'exécution révisé (8 semaines)
 
-### Sprint 1 (S1-S2) — Stabilisation + Actualités
-- Fiabiliser Authentification et Événements existants
-- Créer module Actualités (modèle, CRUD admin, vue élu)
-- Différencier les 3 types d'événements dans l'Agenda
+### Sprint 1 (S1-S2) — Stabilisation + Actualités ✅ Terminé
+- ✅ Fiabiliser Authentification et Événements existants
+- ✅ Créer module Actualités (modèle, CRUD admin, vue élu)
+- 🟡 Différencier les 3 types d'événements dans l'Agenda (à finaliser)
 
 ### Sprint 2 (S3-S4) — Événements enrichis + Commissions
 - Inscription à un événement

@@ -40,7 +40,10 @@ Plateforme Laravel 12 pour la gestion documentaire, le suivi des événements/r�
 ## Modules principaux
 
 - Authentification et rôles (admin / élu)
+- Actualités (flux de publications, CRUD admin)
 - Gestion documentaire (upload, consultation, bibliothèque)
-- Événements et calendrier
-- Réunions (liste, calendrier, fiche)
-- Espace collaboratif élus
+- Événements et calendrier (FullCalendar, 3 types)
+- Réunions (liste, calendrier, fiche, JSON feed)
+- Instances (Comités, Bureaux, Commissions — CRUD complet)
+- Projets (CRUD + GeoJSON)
+- Messagerie collaborative inter-élus (Collab : conversations + messages)
