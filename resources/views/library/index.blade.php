@@ -9,12 +9,6 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="glass p-4">
-                @php
-                    $documents = \App\Models\Document::latest()->get();
-                    $documentsByCategory = $documents->groupBy(function ($d) { return $d->category ?: 'Uncategorized'; });
-                    $allCategories = array_keys($documentsByCategory->toArray());
-                @endphp
-
                 <div class="mb-6 flex flex-wrap gap-2">
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
