@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Fournir une plateforme mobile et web pour les élus et l'administration du SDEEG, centrée sur l'information institutionnelle, la gestion des événements, la consultation/vote, et la communication personnalisée.
+Fournir une plateforme mobile et web pour les élus et l'administration , centrée sur l'information institutionnelle, la gestion des événements, la consultation/vote, et la communication personnalisée.
 
 ## Contexte technique réel
 
@@ -81,7 +81,7 @@ Fournir une plateforme mobile et web pour les élus et l'administration du SDEEG
 | 05 Consultations | 🔴 À créer |
 | 06 Mes Interlocuteurs | 🔴 À créer |
 | 07 Commissions | 🟡 Partiel — CRUD Instances en place ; comptes-rendus et listes membres manquants |
-| 08 Messagerie SDEEG→Élu | 🔴 À créer |
+| 08 Messagerie Élu | 🔴 À créer |
 | —  Collab inter-élus | ✅ En place — conversations + messages entre élus |
 
 ---
@@ -116,7 +116,7 @@ Fournir une plateforme mobile et web pour les élus et l'administration du SDEEG
 ## Architecture fonctionnelle cible
 
 ```
-Application SDEEG
+Application 
 ├── Authentification
 │   ├── Login (identifiant/mdp reçu par SMS)
 │   └── Rôles (admin / élu)
