@@ -2,7 +2,7 @@
     <x-slot name="header">
         <x-elus-header
             title="{{ __('Actualités') }}"
-            subtitle="{{ __('Les dernières nouvelles du SDEEG') }}"
+            subtitle="{{ __('Revenez bientôt pour les dernières nouvelles du SEHV.') }}"
             icon="📰"
             :backRoute="route('elus.dashboard')"
             :backLabel="__('Retour au tableau de bord')"
@@ -88,7 +88,7 @@
                             {{ __('Aucune actualité pour le moment.') }}
                         @endif
                     </p>
-                    <p class="text-sm text-gray-400 mt-1">{{ __('Revenez bientôt pour les dernières nouvelles du SDEEG.') }}</p>
+                    <p class="text-sm text-gray-400 mt-1">{{ __('Revenez bientôt pour les dernières nouvelles du SEHV.') }}</p>
                 </div>
             @endforelse
 
