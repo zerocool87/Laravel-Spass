@@ -84,14 +84,13 @@
             </div>
 
             <!-- Liste des réunions -->
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 overflow-x-auto">
                 <table class="min-w-full divide-y divide-[#faa21b]/10">
                     <thead class="bg-[#faa21b]/5">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instance</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lieu</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -111,9 +110,6 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $reunion->instance->name ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ $reunion->location ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $reunion->status_color }}">
@@ -143,7 +139,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                <td colspan="5" class="px-6 py-8 text-center text-gray-500">
                                     Aucune réunion trouvée.
                                 </td>
                             </tr>
