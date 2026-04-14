@@ -17,9 +17,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             \Database\Seeders\AdminUserSeeder::class,
             \Database\Seeders\InstanceSeeder::class,
+            \Database\Seeders\ReunionDemoSeeder::class,
             \Database\Seeders\ElusDemoSeeder::class,
             \Database\Seeders\EventDemoSeeder::class,
             \Database\Seeders\DocumentDemoSeeder::class,
+            \Database\Seeders\ActualiteDemoSeeder::class,
             \Database\Seeders\ConversationSeeder::class,
             \Database\Seeders\MessageSeeder::class,
         ]);
