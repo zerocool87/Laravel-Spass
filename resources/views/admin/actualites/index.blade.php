@@ -2,7 +2,7 @@
     <x-slot name="header">
         <x-elus-header
             title="{{ __('Gestion des actualités') }}"
-            subtitle="{{ __('Publiez et gérez les actualités du SDEEG') }}"
+            subtitle="{{ __('Publiez et gérez les actualités du SEHV') }}"
             icon="📰"
             :backRoute="route('elus.dashboard')"
             :backLabel="__('Retour au tableau de bord')"
