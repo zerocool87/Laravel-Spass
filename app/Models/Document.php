@@ -22,12 +22,12 @@ class Document extends Model
         'category',
     ];
 
-    /**
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'visible_to_all' => 'boolean',
-    ];
+    public function casts(): array
+    {
+        return [
+            'visible_to_all' => 'boolean',
+        ];
+    }
 
     public function users(): BelongsToMany
     {

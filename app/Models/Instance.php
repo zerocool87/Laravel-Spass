@@ -24,14 +24,12 @@ class Instance extends Model
         'territory',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'members' => 'array',
-    ];
+    public function casts(): array
+    {
+        return [
+            'members' => 'array',
+        ];
+    }
 
     /**
      * Types d'instances disponibles.
@@ -52,7 +50,7 @@ class Instance extends Model
     }
 
     /**
-     * Get the upcoming reunions.
+     * Get the upcoming reunions (scoped query).
      */
     public function upcomingReunions(): HasMany
     {

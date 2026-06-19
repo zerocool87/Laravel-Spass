@@ -5,7 +5,7 @@ return [
         'Reunion',
         'Bureau',
         'Commissions',
-        'Assemblée pleniere',
+        'Assemblée plénière',
         'Autre',
     ],
 ];

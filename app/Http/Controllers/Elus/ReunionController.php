@@ -22,33 +22,46 @@ class ReunionController extends Controller
     {
         $query = Reunion::with('instance');
 
-        // Filter by instance
-        if ($request->filled('instance_id')) {
-            $query->where('instance_id', $request->instance_id);
+        // Default: show only upcoming reunions unless a specific filter is applied
+        $hasFilters = $request->filled('instance_id')
+            || $request->filled('status')
+            || $request->filled('from_date')
+            || $request->filled('to_date')
+            || $request->filled('search');
+
+        if (! $hasFilters) {
+            $query->upcoming();
+        } else {
+            // Filter by instance
+            if ($request->filled('instance_id')) {
+                $query->where('instance_id', $request->instance_id);
+            }
+
+            // Filter by status
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            // Filter by date range
+            if ($request->filled('from_date')) {
+                $query->where('start_time', '>=', $request->from_date);
+            }
+            if ($request->filled('to_date')) {
+                $query->where('end_time', '<=', $request->to_date);
+            }
+
+            // Search
+            if ($request->filled('search')) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('title', 'like', '%'.$request->search.'%')
+                        ->orWhere('description', 'like', '%'.$request->search.'%');
+                });
+            }
+
+            $query->orderBy('start_time', 'desc');
         }
 
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Filter by date range
-        if ($request->filled('from_date')) {
-            $query->where('start_time', '>=', $request->from_date);
-        }
-        if ($request->filled('to_date')) {
-            $query->where('end_time', '<=', $request->to_date);
-        }
-
-        // Search
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%'.$request->search.'%')
-                    ->orWhere('description', 'like', '%'.$request->search.'%');
-            });
-        }
-
-        $reunions = $query->orderBy('start_time', 'desc')->paginate(12);
+        $reunions = $query->paginate(12);
         $instances = Instance::orderBy('name')->get();
         $statuses = Reunion::STATUSES;
 

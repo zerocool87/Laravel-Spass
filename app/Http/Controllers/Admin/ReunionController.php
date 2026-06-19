@@ -81,14 +81,18 @@ class ReunionController extends Controller
             'compte_rendu' => 'nullable|string',
         ]);
 
-        // Convert participants_text to array
-        $participantsText = $request->input('participants_text', '');
-        $participants = array_filter(
-            array_map('trim', explode("\n", $participantsText)),
-            fn ($p) => ! empty($p)
-        );
-
-        $validated['participants'] = array_values($participants);
+        // Normalize participants: accept array or newline-separated text
+        $participants = $request->input('participants');
+        if (is_array($participants)) {
+            $validated['participants'] = $participants;
+        } else {
+            $participantsText = $request->input('participants_text', '');
+            $participants = array_filter(
+                array_map('trim', explode("\n", $participantsText)),
+                fn ($p) => ! empty($p)
+            );
+            $validated['participants'] = array_values($participants);
+        }
 
         // Combine date with time
         $startDateTime = $validated['date'].' '.$validated['start_time'];
@@ -157,14 +161,18 @@ class ReunionController extends Controller
             'compte_rendu' => 'nullable|string',
         ]);
 
-        // Convert participants_text to array
-        $participantsText = $request->input('participants_text', '');
-        $participants = array_filter(
-            array_map('trim', explode("\n", $participantsText)),
-            fn ($p) => ! empty($p)
-        );
-
-        $validated['participants'] = array_values($participants);
+        // Normalize participants: accept array or newline-separated text
+        $participants = $request->input('participants');
+        if (is_array($participants)) {
+            $validated['participants'] = $participants;
+        } else {
+            $participantsText = $request->input('participants_text', '');
+            $participants = array_filter(
+                array_map('trim', explode("\n", $participantsText)),
+                fn ($p) => ! empty($p)
+            );
+            $validated['participants'] = array_values($participants);
+        }
 
         // Combine date with time
         $startDateTime = $validated['date'].' '.$validated['start_time'];

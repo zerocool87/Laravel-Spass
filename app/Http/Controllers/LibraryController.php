@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Elus\Concerns\FiltersDocuments;
 use App\Models\Document;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class LibraryController extends Controller
 {
-    public function index(): View
+    use FiltersDocuments;
+
+    public function index(Request $request): View
     {
-        $documents = Document::latest()->get();
+        $user = $request->user();
+
+        $documents = $user && $user->isAdmin()
+            ? Document::latest()->get()
+            : $this->getUserAccessibleDocuments($user)->latest()->get();
 
         $documentsByCategory = $documents->groupBy(
             fn (Document $d) => $d->category ?: 'Uncategorized'

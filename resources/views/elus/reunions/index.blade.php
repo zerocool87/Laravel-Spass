@@ -51,7 +51,7 @@
             {{-- Reunions List --}}
             <div class="widget-container mt-3">
                 <x-widget-header
-                    title="📅 {{ __('Les 2 prochaines réunions à venir') }}"
+                    title="📅 {{ __('Prochaines réunions à venir') }}"
                 >
                 </x-widget-header>
                 <div class="divide-y divide-[#faa21b]/20">

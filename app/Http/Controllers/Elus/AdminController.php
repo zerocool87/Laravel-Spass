@@ -111,8 +111,6 @@ class AdminController extends Controller
 
         return redirect()
             ->route('elus.admin.users')
-            ->with('temporaryPassword', $tempPassword)
-            ->with('newUserName', $user->name)
-            ->with('success', "Élu {$user->name} créé avec succès. Le mot de passe temporaire est affiché ci-dessous.");
+            ->with('success', "Élu {$user->name} créé avec succès. Mot de passe temporaire : {$tempPassword} (copiez-le maintenant, il ne sera plus affiché).");
     }
 }

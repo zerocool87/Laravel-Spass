@@ -12,7 +12,7 @@ class EventController extends Controller
 {
     public function index(): View
     {
-        $events = Event::with('creator')->where('start_at', '>=', now())->orderBy('start_at', 'asc')->paginate(20);
+        $events = Event::with('creator')->where('end_at', '>=', now())->orderBy('start_at', 'asc')->paginate(20);
 
         return view('events.index', compact('events'));
     }
@@ -71,8 +71,8 @@ class EventController extends Controller
                         });
                 });
             } catch (\Exception $e) {
-                // ignore parse errors and fall back to upcoming
-                $query->where('start_at', '>=', now());
+                report($e);
+                $query->where('end_at', '>=', now());
             }
         } else {
             $query->where('start_at', '>=', now());

@@ -170,10 +170,9 @@ class InstanceController extends Controller
      */
     public function forceDestroy(Instance $instance): RedirectResponse
     {
-        // Delete all related reunions first
-        $instance->reunions()->delete();
+        $instance->reunions()->forceDelete();
 
-        $instance->delete();
+        $instance->forceDelete();
 
         return redirect()
             ->route('admin.instances.index')

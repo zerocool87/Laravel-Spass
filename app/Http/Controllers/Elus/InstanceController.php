@@ -93,11 +93,11 @@ class InstanceController extends Controller
     public function show(Instance $instance): View
     {
         $instance->load(['reunions' => function ($query) {
-            $query->orderBy('date', 'desc');
+            $query->orderBy('start_time', 'desc');
         }]);
 
         $upcomingReunions = $instance->upcomingReunions()->take(5)->get();
-        $pastReunions = $instance->reunions()->where('date', '<', now())->orderBy('date', 'desc')->take(10)->get();
+        $pastReunions = $instance->reunions()->where('end_time', '<', now())->orderBy('start_time', 'desc')->take(10)->get();
 
         return view('elus.instances.show', compact('instance', 'upcomingReunions', 'pastReunions'));
     }

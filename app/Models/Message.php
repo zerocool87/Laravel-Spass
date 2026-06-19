@@ -18,12 +18,12 @@ class Message extends Model
         'read_at',
     ];
 
-    /**
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'read_at' => 'datetime',
-    ];
+    public function casts(): array
+    {
+        return [
+            'read_at' => 'datetime',
+        ];
+    }
 
     public function conversation(): BelongsTo
     {

@@ -38,7 +38,7 @@ class DocumentController extends Controller
             });
         }
 
-        $documents = $query->latest()->get();
+        $documents = $query->with(['creator', 'users'])->latest()->get();
         $documentsByCategory = $documents->groupBy(function ($d) {
             return $d->category ?: __('Non catégorisé');
         });

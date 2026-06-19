@@ -56,9 +56,10 @@ class DashboardController extends Controller
             ->get();
 
         // Statistics
-        $totalProjectsCount = Project::query()->visibleToUser($user)->count();
-        $activeProjectsCount = Project::query()->visibleToUser($user)->active()->count();
-        $activeBudgetSum = Project::query()->visibleToUser($user)->active()->sum('budget');
+        $baseProjectQuery = Project::query()->visibleToUser($user);
+        $totalProjectsCount = (clone $baseProjectQuery)->count();
+        $activeProjectsCount = (clone $baseProjectQuery)->active()->count();
+        $activeBudgetSum = (clone $baseProjectQuery)->active()->sum('budget');
         $totalDocumentsCount = $this->getUserAccessibleDocuments($user)->count();
 
         $stats = [

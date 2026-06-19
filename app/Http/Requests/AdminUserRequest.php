@@ -20,6 +20,8 @@ class AdminUserRequest extends FormRequest
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'fonction' => ['nullable', 'string', 'max:255'],
             'commune' => ['nullable', 'string', 'max:255', Rule::in(config('options.communes_haute_vienne', []))],
+            'is_admin' => ['boolean'],
+            'is_elu' => ['boolean'],
         ];
 
         if ($this->isMethod('post')) {

@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -80,14 +81,12 @@ class DocumentController extends Controller
             $document->users()->sync($data['assigned_users']);
 
             $users = User::whereIn('id', $data['assigned_users'])->get();
-            foreach ($users as $user) {
-                $user->notify(new DocumentActionNotification(
-                    'Nouveau document partagé avec vous',
-                    'Un document vous a été partagé : '.$document->title,
-                    'Voir le document',
-                    route('elus.documents.index'),
-                ));
-            }
+            Notification::send($users, new DocumentActionNotification(
+                'Nouveau document partagé avec vous',
+                'Un document vous a été partagé : '.$document->title,
+                'Voir le document',
+                route('elus.documents.index'),
+            ));
         }
 
         return redirect()->route('admin.documents.index')->with('success', 'Document créé.');
@@ -123,14 +122,12 @@ class DocumentController extends Controller
             $document->users()->sync($data['assigned_users']);
 
             $users = User::whereIn('id', $data['assigned_users'])->get();
-            foreach ($users as $user) {
-                $user->notify(new DocumentActionNotification(
-                    'Document mis à jour : '.$document->title,
-                    'Le document a été mis à jour : '.$document->title,
-                    'Voir le document',
-                    route('elus.documents.index'),
-                ));
-            }
+            Notification::send($users, new DocumentActionNotification(
+                'Document mis à jour : '.$document->title,
+                'Le document a été mis à jour : '.$document->title,
+                'Voir le document',
+                route('elus.documents.index'),
+            ));
         } else {
             $document->users()->detach();
         }

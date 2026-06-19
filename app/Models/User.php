@@ -39,17 +39,15 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'is_admin' => 'boolean',
-        'is_elu' => 'boolean',
-    ];
+    public function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'is_admin' => 'boolean',
+            'is_elu' => 'boolean',
+        ];
+    }
 
     /**
      * Return whether the user is an administrator.
@@ -65,6 +63,11 @@ class User extends Authenticatable
     public function isElu(): bool
     {
         return (bool) $this->is_elu;
+    }
+
+    public function documents(): BelongsToMany
+    {
+        return $this->belongsToMany(Document::class, 'document_user');
     }
 
     public function conversations(): BelongsToMany

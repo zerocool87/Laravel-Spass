@@ -31,17 +31,15 @@ class Reunion extends Model
         'documents',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
-        'participants' => 'array',
-        'documents' => 'array',
-    ];
+    public function casts(): array
+    {
+        return [
+            'start_time' => 'datetime',
+            'end_time' => 'datetime',
+            'participants' => 'array',
+            'documents' => 'array',
+        ];
+    }
 
     /**
      * Statuts de réunions disponibles.
@@ -99,22 +97,6 @@ class Reunion extends Model
     public function scopePast(Builder $query): Builder
     {
         return $query->where('end_time', '<', now())->orderBy('start_time', 'desc');
-    }
-
-    /**
-     * Get start time.
-     */
-    public function getStartTimeAttribute($value): ?\Carbon\Carbon
-    {
-        return $value ? \Carbon\Carbon::parse($value) : null;
-    }
-
-    /**
-     * Get end time.
-     */
-    public function getEndTimeAttribute($value): ?\Carbon\Carbon
-    {
-        return $value ? \Carbon\Carbon::parse($value) : null;
     }
 
     /**

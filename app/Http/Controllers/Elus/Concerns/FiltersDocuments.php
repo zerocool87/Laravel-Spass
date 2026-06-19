@@ -15,6 +15,10 @@ trait FiltersDocuments
      */
     protected function getUserAccessibleDocuments(User $user): Builder
     {
+        if ($user->isAdmin()) {
+            return Document::query();
+        }
+
         return Document::query()
             ->where(function ($q) use ($user) {
                 $q->where('visible_to_all', true)
