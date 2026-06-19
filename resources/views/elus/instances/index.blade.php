@@ -24,7 +24,7 @@
                     linkIcon="🔄"
                 />
                 <form method="GET" action="{{ route('elus.instances.index') }}" class="flex flex-wrap gap-4 mt-4">
-                    <div class="flex-1 min-w-[200px]">
+                    <div class="flex-1 min-w-[150px] sm:min-w-[200px]">
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Rechercher...') }}" class="w-full input-orange">
                     </div>
                     <div>

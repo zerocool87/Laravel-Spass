@@ -8,7 +8,7 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="glass p-4">
+            <div class="glass p-3 sm:p-4">
                 <div class="mb-6 flex flex-wrap gap-2">
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
@@ -57,23 +57,23 @@
                         <p>{{ __('Aucun document disponible.') }}</p>
                     </div>
                 @else
-                    <div class="space-y-8">
+                    <div class="space-y-4 sm:space-y-8">
                         @foreach($documentsByCategory as $cat => $docs)
                             <div id="category-{{ Str::slug($cat) }}">
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="w-full flex flex-col">
-                                        <div class="w-full h-8 mb-1 flex items-center justify-center rounded-md bg-[#faa21b]">
-                                            <div class="text-sm font-semibold text-white uppercase">{{ $cat }} <span class="text-xs text-white/80">({{ $docs->count() }})</span></div>
+                                        <div class="w-full min-h-[2rem] py-1 mb-1 flex items-center justify-center rounded-md bg-[#faa21b]">
+                                            <div class="text-xs sm:text-sm font-semibold text-white uppercase px-2 text-center">{{ $cat }} <span class="text-xs text-white/80">({{ $docs->count() }})</span></div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="space-y-2">
                                     @foreach($docs as $doc)
-                                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border-2 border-[#faa21b]/15 shadow-sm hover:bg-[#faa21b]/5 transition">
-                                            <div class="flex-1">
-                                                <div class="flex items-center gap-2">
-                                                    <div class="font-semibold text-gray-900">{{ $doc->title }}</div>
+                                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-white border-2 border-[#faa21b]/15 shadow-sm hover:bg-[#faa21b]/5 transition">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center gap-2 flex-wrap">
+                                                    <div class="font-semibold text-gray-900 truncate">{{ $doc->title }}</div>
                                                     @if($doc->visible_to_all)
                                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                                                             <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -98,7 +98,7 @@
 
                                             </div>
 
-                                            <div class="flex items-center gap-2 ml-4">
+                                            <div class="flex items-center gap-2 sm:ml-4 flex-shrink-0">
                                                 <x-secondary-button
                                                     type="button"
                                                     onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})">

@@ -43,13 +43,13 @@
             </div>
 
             {{-- Search & Filters --}}
-            <div class="bg-white rounded-xl shadow-lg mb-6 p-6 border-2 border-[#faa21b]/20">
+            <div class="bg-white rounded-xl shadow-lg mb-6 p-4 sm:p-6 border-2 border-[#faa21b]/20">
                 <form method="GET" action="{{ route('elus.documents.index') }}" class="flex flex-wrap gap-4 items-end">
-                    <div class="flex-1 min-w-[250px]">
+                    <div class="flex-1 min-w-[150px] sm:min-w-[250px]">
                         <label for="search" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Rechercher') }}</label>
                         <input type="text" id="search" name="search" value="{{ request('search') }}" placeholder="{{ __('Titre, description...') }}" class="w-full rounded-lg border-[#faa21b]/30 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                     </div>
-                    <div class="min-w-[200px]">
+                    <div class="min-w-[150px] sm:min-w-[200px]">
                         <label for="category" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Catégorie') }}</label>
                         <select id="category" name="category" class="w-full rounded-lg border-[#faa21b]/30 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                             <option value="">{{ __('Toutes les catégories') }}</option>
@@ -79,7 +79,7 @@
             </div>
 
             @if($documentsByCategory->isEmpty())
-                <div class="bg-white rounded-xl shadow-lg p-12 text-center border-2 border-[#faa21b]/20">
+                <div class="bg-white rounded-xl shadow-lg p-6 sm:p-12 text-center border-2 border-[#faa21b]/20">
                     <div class="text-gray-400 mb-4">
                         <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -89,7 +89,7 @@
                     <p class="text-gray-500">{{ __('Aucun document ne correspond à vos critères de recherche.') }}</p>
                 </div>
             @else
-                <div class="space-y-8">
+                <div class="space-y-4 sm:space-y-8">
                     @foreach($documentsByCategory as $category => $docs)
                         <div class="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-[#faa21b]/20">
                             {{-- Category Header --}}
@@ -98,7 +98,7 @@
                                 $colorClass = $categoryColors[$category] ?? 'bg-[#faa21b]';
                                 $icon = $categoryIcons[$category] ?? '📄';
                             @endphp
-                            <div class="{{ $colorClass }} px-6 py-4">
+                            <div class="{{ $colorClass }} px-4 sm:px-6 py-3 sm:py-4">
                                 <div class="flex items-center justify-between">
                                     <h3 class="text-lg font-bold text-white flex items-center">
                                         <span class="mr-2">{{ $icon }}</span>
@@ -111,8 +111,8 @@
                             {{-- Documents List --}}
                             <div class="divide-y divide-gray-200">
                                 @foreach($docs as $doc)
-                                    <div class="p-6 hover:bg-[#faa21b]/5 transition-colors">
-                                        <div class="flex items-start justify-between gap-4">
+                                    <div class="p-4 sm:p-6 hover:bg-[#faa21b]/5 transition-colors">
+                                        <div class="flex items-start justify-between gap-2 sm:gap-4">
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center gap-3 mb-2">
                                                     <h4 class="text-lg font-semibold text-gray-900">{{ $doc->title }}</h4>
@@ -138,7 +138,7 @@
                                                     <p class="text-sm text-gray-600 mb-3">{{ $doc->description }}</p>
                                                 @endif
 
-                                                <div class="flex items-center gap-4 text-xs text-gray-500">
+                                                <div class="flex items-center gap-2 sm:gap-4 text-xs text-gray-500 flex-wrap">
                                                     @if($doc->category)
                                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium" style="background-color: rgba(var(--tw-bg-opacity), 0.1); color: var(--tw-text-opacity)">
                                                             <x-category-icon :document="$doc" size="w-4 h-4" />

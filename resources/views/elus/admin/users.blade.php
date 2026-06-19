@@ -61,7 +61,7 @@
                 {{-- Filters --}}
                 <form method="GET" action="{{ route('elus.admin.users') }}" class="mt-6 border-t border-[#faa21b]/10 px-6 py-6">
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1.5fr_0.7fr_auto] items-end">
-                        <div class="min-w-[200px]">
+                        <div class="min-w-0 sm:min-w-[200px]">
                             <label for="search" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Recherche') }}</label>
                             <input id="search" type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Nom, email, commune...') }}" class="w-full rounded-lg border-gray-200 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                         </div>
@@ -87,8 +87,8 @@
             </div>
 
             {{-- Users Table --}}
-            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-x-auto">
+                <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
                         <h3 class="text-base font-semibold text-gray-900">{{ __('Liste des utilisateurs') }}</h3>
                         <p class="text-sm text-gray-500">{{ __('Mettez à jour les rôles et informations') }}</p>
@@ -100,23 +100,23 @@
                 <table class="min-w-full divide-y divide-gray-100">
                     <thead class="bg-[#faa21b]/10">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Utilisateur') }}</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Rôles') }}</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Fonction') }}</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Commune') }}</th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Actions') }}</th>
+                            <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Utilisateur') }}</th>
+                            <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Rôles') }}</th>
+                            <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Fonction') }}</th>
+                            <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Commune') }}</th>
+                            <th class="px-3 sm:px-6 py-2 sm:py-3 text-right text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-100">
                         @forelse($users as $user)
                             <tr class="hover:bg-[#faa21b]/5 transition">
-                                <td class="px-6 py-4">
+                                <td class="px-3 sm:px-6 py-2 sm:py-4">
                                     <div>
                                         <p class="font-medium text-gray-900">{{ $user->name }}</p>
-                                        <p class="text-sm text-gray-500">{{ $user->email }}</p>
+                                        <p class="text-sm text-gray-500 truncate max-w-[200px] sm:max-w-none">{{ $user->email }}</p>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-3 sm:px-6 py-2 sm:py-4">
                                     <div class="flex flex-wrap gap-1">
                                         @if($user->is_admin)
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#faa21b]/20 text-[#b36b00]">Admin</span>
@@ -129,10 +129,10 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-500">{{ $user->fonction ?? '-' }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-500">{{ $user->commune ?? '-' }}</td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
+                                <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-500">{{ $user->fonction ?? '-' }}</td>
+                                <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-500">{{ $user->commune ?? '-' }}</td>
+                                <td class="px-3 sm:px-6 py-2 sm:py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2 flex-wrap">
                                         <a href="{{ route('elus.admin.users.edit', $user) }}" class="inline-flex items-center px-3 py-1 border border-[#faa21b] rounded-full text-xs font-semibold text-[#faa21b] hover:bg-[#faa21b]/10">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>

@@ -161,7 +161,7 @@
                                             {{ $actualite->creator?->name ?? '—' }}
                                         </td>
                                         <td class="px-4 py-4">
-                                            <div class="flex items-center justify-end gap-2">
+                                            <div class="flex items-center justify-end gap-2 flex-wrap">
                                                 @if($actualite->is_published)
                                                     <a href="{{ route('elus.actualites.show', $actualite) }}"
                                                        target="_blank"

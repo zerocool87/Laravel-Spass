@@ -56,7 +56,7 @@
                 </x-widget-header>
                 <div class="divide-y divide-[#faa21b]/20">
                     @forelse($reunions as $reunion)
-                        <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-6 py-4 hover:bg-[#faa21b]/5 transition">
+                        <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-4 sm:px-6 py-3 sm:py-4 hover:bg-[#faa21b]/5 transition">
                             <div class="flex items-center justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center space-x-3">
@@ -65,7 +65,7 @@
                                         </span>
                                         <h3 class="text-sm font-medium text-gray-900">{{ $reunion->title }}</h3>
                                     </div>
-                                    <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                                    <div class="mt-1 flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm text-gray-500 flex-wrap">
                                         <span>{{ $reunion->instance->name ?? '-' }}</span>
                                         @if($reunion->location)
                                             <span>📍 {{ $reunion->location }}</span>

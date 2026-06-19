@@ -8,7 +8,7 @@ $alignmentClasses = match ($align) {
 };
 
 $width = match ($width) {
-    '48' => 'w-48',
+    '48' => 'w-48 max-w-[calc(100vw-2rem)]',
     default => $width,
 };
 @endphp

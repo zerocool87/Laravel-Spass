@@ -6,8 +6,8 @@
     'linkIcon' => '→'
 ])
 
-<div class="px-6 py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
-    <h3 class="text-lg font-bold text-[#faa21b]">
+<div class="px-4 sm:px-6 py-3 sm:py-4 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex flex-wrap items-center justify-between gap-2 rounded-t-xl">
+    <h3 class="text-base sm:text-lg font-bold text-[#faa21b]">
         @if($icon) {{ $icon }} @endif {{ $title }}
     </h3>
 

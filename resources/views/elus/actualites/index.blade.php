@@ -11,10 +11,10 @@
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-3 sm:space-y-6">
 
             {{-- Barre de recherche --}}
-            <form method="GET" action="{{ route('elus.actualites.index') }}" class="flex gap-3">
+            <form method="GET" action="{{ route('elus.actualites.index') }}" class="flex gap-2 sm:gap-3 flex-wrap">
                 <div class="flex-1 relative">
                     <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                         <svg class="w-4 h-4 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,10 +59,10 @@
                     $accent = $accentColors[$index % count($accentColors)];
                 @endphp
                 <a href="{{ route('elus.actualites.show', $actualite) }}"
-                   class="block bg-white rounded-2xl shadow-sm border border-gray-100 border-l-4 {{ $accent['border'] }} p-6 hover:shadow-md hover:border-l-4 transition-all group">
+                   class="block bg-white rounded-2xl shadow-sm border border-gray-100 border-l-4 {{ $accent['border'] }} p-4 sm:p-6 hover:shadow-md hover:border-l-4 transition-all group">
 
                     {{-- En-tête carte --}}
-                    <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-start justify-between gap-2 sm:gap-4">
                         <div class="flex-1 min-w-0">
                             {{-- Badge date --}}
                             <div class="flex items-center gap-2 mb-2">
@@ -116,7 +116,7 @@
                     @endif
                 </a>
             @empty
-                <div class="bg-white rounded-2xl shadow-sm border border-dashed border-[#faa21b]/30 p-14 text-center">
+                <div class="bg-white rounded-2xl shadow-sm border border-dashed border-[#faa21b]/30 p-6 sm:p-14 text-center">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#faa21b]/10 text-3xl mb-4">
                         📰
                     </div>

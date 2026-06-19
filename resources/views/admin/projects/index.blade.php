@@ -168,7 +168,7 @@
                                                 {{ $project->end_date?->format('d/m/Y') ?? '—' }}
                                             </td>
                                             <td class="px-6 py-4 text-right">
-                                                <div class="flex items-center justify-end gap-2">
+                                                <div class="flex items-center justify-end gap-2 flex-wrap">
                                                     <a
                                                         href="{{ route('admin.projects.show', $project) }}"
                                                         class="inline-flex items-center px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-100 transition"

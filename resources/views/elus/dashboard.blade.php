@@ -11,11 +11,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Statistics Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div class="bg-[#faa21b] rounded-xl shadow-lg p-4 text-white transform hover:scale-105 transition">
+                <div                 class="bg-[#faa21b] rounded-xl shadow-lg p-3 sm:p-4 text-white transform hover:scale-105 transition">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-xs font-medium text-white/80 mb-0.5">{{ __('Instances') }}</p>
-                            <p class="text-2xl font-bold">{{ $stats['total_instances'] }}</p>
+                                <p class="text-xl sm:text-2xl font-bold">{{ $stats['total_instances'] }}</p>
                         </div>
                         <div class="p-2 rounded-full bg-white/20">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,11 +25,11 @@
                     </div>
                 </div>
 
-                <div class="bg-[#faa21b] rounded-xl shadow-lg p-4 text-white transform hover:scale-105 transition">
+                <div                 class="bg-[#faa21b] rounded-xl shadow-lg p-3 sm:p-4 text-white transform hover:scale-105 transition">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-xs font-medium text-white/80 mb-0.5">{{ __('Projets actifs') }}</p>
-                            <p class="text-2xl font-bold">{{ $stats['active_projects'] }}</p>
+                                <p class="text-xl sm:text-2xl font-bold">{{ $stats['active_projects'] }}</p>
                         </div>
                         <div class="p-2 rounded-full bg-white/20">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,11 +39,11 @@
                     </div>
                 </div>
 
-                <div class="bg-[#faa21b] rounded-xl shadow-lg p-4 text-white transform hover:scale-105 transition">
+                <div                 class="bg-[#faa21b] rounded-xl shadow-lg p-3 sm:p-4 text-white transform hover:scale-105 transition">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-xs font-medium text-white/80 mb-0.5">{{ __('Réunions à venir') }}</p>
-                            <p class="text-2xl font-bold">{{ $stats['upcoming_reunions'] }}</p>
+                                <p class="text-xl sm:text-2xl font-bold">{{ $stats['upcoming_reunions'] }}</p>
                         </div>
                         <div class="p-2 rounded-full bg-white/20">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,11 +53,11 @@
                     </div>
                 </div>
 
-                <div class="bg-[#faa21b] rounded-xl shadow-lg p-4 text-white transform hover:scale-105 transition">
+                <div                 class="bg-[#faa21b] rounded-xl shadow-lg p-3 sm:p-4 text-white transform hover:scale-105 transition">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-xs font-medium text-white/80 mb-0.5">{{ __('Documents') }}</p>
-                            <p class="text-2xl font-bold">{{ $stats['total_documents'] }}</p>
+                                <p class="text-xl sm:text-2xl font-bold">{{ $stats['total_documents'] }}</p>
                         </div>
                         <div class="p-2 rounded-full bg-white/20">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {{-- Upcoming Reunions --}}
                 <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 flex flex-col overflow-hidden upcoming-reunions-widget">
-                    <div class="px-5 py-2.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                    <div class="px-3 sm:px-5 py-2 sm:py-2.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex flex-wrap items-center justify-between gap-2 rounded-t-xl">
                         <h3 class="text-base font-bold text-[#faa21b]">📅 {{ __('Prochaines réunions') }}</h3>
                         <a href="{{ route('elus.reunions.calendar') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Voir le calendrier') }}
@@ -89,7 +89,7 @@
                                         <p class="text-sm font-semibold text-gray-900 group-hover:text-orange-600 transition">{{ Str::limit($reunion->title, 20) }}</p>
                                         <p class="text-xs text-gray-600 mt-0.5">{{ Str::limit($reunion->instance->name ?? '-', 20) }}</p>
                                     </div>
-                                    <div class="text-right ml-4">
+                                    <div class="text-right ml-2 sm:ml-4">
                                         <p class="text-sm font-bold text-orange-600">{{ $reunion->start_time ? $reunion->start_time->format('d/m/Y') : '-' }}</p>
                                         <p class="text-xs text-gray-500">{{ $reunion->start_time ? $reunion->start_time->format('H:i') : '-' }}</p>
                                     </div>
@@ -114,7 +114,7 @@
 
                 {{-- Latest Actualités --}}
                 <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 flex flex-col overflow-hidden">
-                    <div class="px-5 py-2.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                    <div class="px-3 sm:px-5 py-2 sm:py-2.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex flex-wrap items-center justify-between gap-2 rounded-t-xl">
                         <h3 class="text-base font-bold text-[#faa21b]">📰 {{ __('Actualités') }}</h3>
                         <a href="{{ route('elus.actualites.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Toutes les actualités') }}
@@ -149,7 +149,7 @@
 
                 {{-- Instances --}}
                 <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 flex flex-col overflow-hidden instances-widget">
-                    <div class="px-5 py-2.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                    <div class="px-3 sm:px-5 py-2 sm:py-2.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex flex-wrap items-center justify-between gap-2 rounded-t-xl">
                         <h3 class="text-base font-bold text-[#faa21b]">🏛️ {{ __('Instances') }}</h3>
                         <a href="{{ route('elus.instances.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Tout voir') }}
@@ -181,7 +181,7 @@
 
                 {{-- Recent Documents Widget --}}
                 <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 flex flex-col overflow-hidden recent-documents-widget">
-                    <div class="px-5 py-2.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between rounded-t-xl">
+                    <div class="px-3 sm:px-5 py-2 sm:py-2.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex flex-wrap items-center justify-between gap-2 rounded-t-xl">
                         <h3 class="text-base font-bold text-[#faa21b]">📄 {{ __('Documents récents') }}</h3>
                         <a href="{{ route('elus.documents.index') }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Bibliothèque') }}

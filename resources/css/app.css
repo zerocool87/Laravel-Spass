@@ -23,6 +23,28 @@
   --card-shadow: 0 4px 24px rgba(16,24,40,0.12);
 }
 
+/* Mobile (max-width: 639px) Optimizations */
+@media (max-width: 639px) {
+  body > #app, .main-content {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .glass {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .widget-container {
+    border-radius: 10px;
+  }
+
+  /* Ensure tables don't clip content */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* Full HD (1920x1080) Optimizations */
 @media (min-width: 1920px) {
   :root {

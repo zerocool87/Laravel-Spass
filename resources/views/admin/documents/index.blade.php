@@ -13,7 +13,7 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             @if(session('success'))
-                <div class="bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl shadow-sm flex items-start gap-3">
+                <div class="bg-green-50 border border-green-200 text-green-800 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl shadow-sm flex items-start gap-3">
                     <div class="mt-0.5">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -23,7 +23,7 @@
                 </div>
             @endif
 
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-6">
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-4 sm:p-6">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-900">{{ __('Documents') }}</h2>
@@ -94,7 +94,7 @@
             </div>
 
             <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 overflow-hidden">
-                <div class="px-6 py-4 border-b border-[#faa21b]/10 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-[#faa21b]/10 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h3 class="text-base font-semibold text-gray-900">{{ __('Liste des documents') }}</h3>
                         <p class="text-sm text-gray-500" aria-live="polite">{{ __('Total') }}: {{ $documents->total() }}</p>
@@ -105,7 +105,7 @@
                 </div>
 
                 @if($documents->isEmpty())
-                    <div class="px-6 py-12 text-center text-gray-500">
+                    <div class="px-4 sm:px-6 py-8 sm:py-12 text-center text-gray-500">
                         <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#faa21b]/10 text-[#b36b00]">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -119,22 +119,22 @@
                         <table class="min-w-full divide-y divide-[#faa21b]/10">
                             <thead class="bg-[#faa21b]/5">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Titre') }}
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Catégorie') }}
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Date de création') }}
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Auteur') }}
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Visibilité') }}
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-3 sm:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Actions') }}
                                     </th>
                                 </tr>
@@ -142,27 +142,27 @@
                             <tbody class="bg-white divide-y divide-[#faa21b]/10">
                                 @foreach($documents as $doc)
                                     <tr class="hover:bg-[#faa21b]/5 transition-colors">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            <div class="flex items-center gap-3">
-                                                <x-category-icon :document="$doc" size="w-8 h-8" />
-                                                <span>{{ $doc->title }}</span>
+                                        <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm font-medium text-gray-900">
+                                            <div class="flex items-center gap-2 sm:gap-3">
+                                                <x-category-icon :document="$doc" size="w-6 h-6 sm:w-8 sm:h-8" />
+                                                <span class="max-w-[200px] truncate sm:max-w-none">{{ $doc->title }}</span>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $doc->category ?? __('Aucune') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $doc->created_at?->format('d/m/Y') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $doc->creator?->name ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm text-gray-500">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $doc->visible_to_all ? 'bg-emerald-100 text-emerald-800' : 'bg-orange-100 text-orange-800' }}">
                                                 {{ $doc->visible_to_all ? __('Public') : __('Prive') }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div class="flex justify-end items-center gap-2">
                                                 <a href="{{ route('documents.download', $doc) }}" class="inline-flex items-center gap-1 px-3 py-1 border border-[#faa21b]/50 rounded-lg text-xs font-semibold text-[#b36b00] hover:bg-[#faa21b]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#faa21b] transition">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
