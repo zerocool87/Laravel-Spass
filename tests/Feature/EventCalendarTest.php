@@ -14,15 +14,16 @@ class EventCalendarTest extends TestCase
     public function test_events_json_feed_returns_events()
     {
         $user = User::factory()->create();
+        $weekStart = now()->startOfWeek();
         $event = Event::factory()->create([
             'title' => 'Cal Event',
-            'start_at' => now()->addDays(1),
-            'end_at' => now()->addDays(1)->addHour(),
+            'start_at' => $weekStart->copy()->addDays(2),
+            'end_at' => $weekStart->copy()->addDays(2)->addHour(),
             'created_by' => $user->id,
         ]);
 
-        $start = now()->startOfWeek()->toIso8601String();
-        $end = now()->endOfWeek()->toIso8601String();
+        $start = $weekStart->toIso8601String();
+        $end = $weekStart->copy()->endOfWeek()->toIso8601String();
 
         $response = $this->actingAs($user)->getJson(route('events.json', ['start' => $start, 'end' => $end]));
 

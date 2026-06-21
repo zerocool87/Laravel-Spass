@@ -35,7 +35,7 @@ Plateforme Laravel 12 pour la gestion documentaire, le suivi des événements/r�
 - Index documentation: [docs/README.md](docs/README.md)
 - Plan produit et roadmap: [docs/features/roadmap.md](docs/features/roadmap.md)
 - Conventions agent/projet: [CLAUDE.md](CLAUDE.md)
-- Contexte technique complémentaire: [.mistral-context.md](.mistral-context.md)
+- Guide agent opérationnel: [AGENTS.md](AGENTS.md)
 
 ## Modules principaux
 

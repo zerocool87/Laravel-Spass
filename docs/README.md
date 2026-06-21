@@ -7,7 +7,7 @@ Ce dossier regroupe les points d’entrée documentation du projet.
 - Documentation principale projet: [features/roadmap.md](features/roadmap.md)
 - Guide de démarrage: [../README.md](../README.md)
 - Conventions et règles agent/projet: [../CLAUDE.md](../CLAUDE.md)
-- Contexte technique complémentaire: [../.mistral-context.md](../.mistral-context.md)
+- Guide agent opérationnel: [../AGENTS.md](../AGENTS.md)
 
 ## Organisation recommandée
 
