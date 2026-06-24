@@ -30,17 +30,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
         Route::delete('/{document}', [\App\Http\Controllers\Admin\DocumentController::class, 'destroy'])->name('destroy');
     });
 
-    Route::prefix('instances')->name('instances.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\InstanceController::class, 'index'])->name('index');
-        Route::get('/create', [\App\Http\Controllers\Admin\InstanceController::class, 'create'])->name('create');
-        Route::post('/', [\App\Http\Controllers\Admin\InstanceController::class, 'store'])->name('store');
-        Route::get('/{instance}', [\App\Http\Controllers\Admin\InstanceController::class, 'show'])->name('show');
-        Route::get('/{instance}/edit', [\App\Http\Controllers\Admin\InstanceController::class, 'edit'])->name('edit');
-        Route::put('/{instance}', [\App\Http\Controllers\Admin\InstanceController::class, 'update'])->name('update');
-        Route::delete('/{instance}', [\App\Http\Controllers\Admin\InstanceController::class, 'destroy'])->name('destroy');
-        Route::delete('/{instance}/force', [\App\Http\Controllers\Admin\InstanceController::class, 'forceDestroy'])->name('force-destroy');
-    });
-
     Route::prefix('projects')->name('projects.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\ProjectController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\ProjectController::class, 'create'])->name('create');
@@ -93,7 +82,7 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
     Route::get('/', [\App\Http\Controllers\Elus\DashboardController::class, 'index'])->name('dashboard');
 
     // Instances (Comités, Bureaux, Commissions)
-    Route::resource('instances', \App\Http\Controllers\Elus\InstanceController::class);
+    Route::resource('instances', \App\Http\Controllers\Elus\InstanceController::class)->only(['index', 'show']);
 
     // Projects
     Route::get('/projects/geojson', [\App\Http\Controllers\Elus\ProjectController::class, 'geojson'])->name('projects.geojson');

@@ -24,7 +24,7 @@ class EluProfile extends Model
         'probleme_delib',
         'civilite',
         'rt_ds_dt',
-        'titre',
+        'titres',
         'ordre_suppleants',
         'contact',
         'mail_personnel',
@@ -50,6 +50,7 @@ class EluProfile extends Model
             'newsletter' => 'boolean',
             'frais_route' => 'boolean',
             'rib_fourni' => 'boolean',
+            'titres' => 'array',
         ];
     }
 

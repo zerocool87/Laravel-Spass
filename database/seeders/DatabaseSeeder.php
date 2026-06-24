@@ -16,8 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             \Database\Seeders\AdminUserSeeder::class,
-            \Database\Seeders\InstanceSeeder::class,
-            \Database\Seeders\ReunionDemoSeeder::class,
             \Database\Seeders\ElusDemoSeeder::class,
             \Database\Seeders\EventDemoSeeder::class,
             \Database\Seeders\DocumentDemoSeeder::class,

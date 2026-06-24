@@ -33,8 +33,10 @@ class ReunionController extends Controller
 
         $query->where(function ($q) use ($user) {
             $q->where('visible_to_all', true);
-            if ($user->fonction) {
-                $q->orWhereJsonContains('titres', $user->fonction);
+            if ($user->titres) {
+                foreach ($user->titres as $titre) {
+                    $q->orWhereJsonContains('titres', $titre);
+                }
             }
         });
     }
@@ -138,7 +140,7 @@ class ReunionController extends Controller
         $user = request()->user();
 
         if (! $user?->isAdmin() && ! $reunion->visible_to_all) {
-            if (! $user->fonction || ! in_array($user->fonction, $reunion->titres ?? [], true)) {
+            if (empty($user->titres) || ! array_intersect($user->titres, $reunion->titres ?? [])) {
                 abort(403, __('Vous n\'avez pas accès à cette réunion.'));
             }
         }

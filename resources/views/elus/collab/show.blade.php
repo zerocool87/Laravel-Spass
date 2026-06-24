@@ -66,7 +66,7 @@
                                     <div>
                                         <p class="font-semibold text-gray-900">{{ $participant->name }}</p>
                                         <p class="text-xs text-gray-500">
-                                            {{ $participant->fonction ?? __('Elu') }}
+                                            {{ is_array($participant->titres) ? implode(', ', $participant->titres) : __('Élu') }}
                                             @if($participant->commune)
                                                 - {{ $participant->commune }}
                                             @endif

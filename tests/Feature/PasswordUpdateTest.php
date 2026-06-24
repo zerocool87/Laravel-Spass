@@ -32,7 +32,6 @@ class PasswordUpdateTest extends TestCase
             ->patch("/admin/users/{$user->id}", [
                 'name' => 'Updated Name',
                 'email' => $user->email,
-                'fonction' => 'Updated Function',
                 'commune' => 'Limoges',
                 'is_admin' => false,
                 // No password provided
@@ -55,7 +54,6 @@ class PasswordUpdateTest extends TestCase
             ->patch("/admin/users/{$user->id}", [
                 'name' => $user->name,
                 'email' => $user->email,
-                'fonction' => $user->fonction,
                 'commune' => $user->commune,
                 'is_admin' => $user->is_admin,
                 'password' => 'new-password',

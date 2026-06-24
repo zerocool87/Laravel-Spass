@@ -60,7 +60,7 @@ class Document extends Model
         if ($user->isAdmin()) {
             return true;
         }
-        if ($user->fonction && in_array($user->fonction, $this->titres ?? [], true)) {
+        if ($user->titres && $this->titres && array_intersect($user->titres, $this->titres)) {
             return true;
         }
 

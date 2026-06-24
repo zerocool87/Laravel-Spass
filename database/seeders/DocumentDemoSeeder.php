@@ -12,13 +12,12 @@ class DocumentDemoSeeder extends Seeder
     public function run(): void
     {
         $admin = User::where('email', 'admin@example.com')->first();
-        $test = User::where('email', 'test@example.com')->first();
+        $elus = User::where('is_elu', true)->get();
 
-        // ensure files exist
         Storage::disk('local')->put('documents/demo_public.txt', 'Demo public document content');
         Storage::disk('local')->put('documents/demo_restricted.txt', 'Demo restricted document content');
 
-        $doc1 = Document::create([
+        Document::create([
             'title' => 'Demo Public Document',
             'description' => 'Document public pour tous',
             'path' => 'documents/demo_public.txt',
@@ -29,15 +28,15 @@ class DocumentDemoSeeder extends Seeder
 
         $doc2 = Document::create([
             'title' => 'Demo Restricted Document',
-            'description' => 'Document attribué à test@example.com',
+            'description' => 'Document restreint pour les élus',
             'path' => 'documents/demo_restricted.txt',
             'original_name' => 'demo_restricted.txt',
             'created_by' => $admin?->id,
             'visible_to_all' => false,
         ]);
 
-        if ($test && $doc2) {
-            $doc2->users()->sync([$test->id]);
+        if ($doc2 && $elus->isNotEmpty()) {
+            $doc2->users()->sync($elus->pluck('id')->toArray());
         }
     }
 }

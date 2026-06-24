@@ -137,7 +137,7 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-500">{{ $user->fonction ?? '-' }}</td>
+                                <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-500">{{ is_array($user->titres) ? implode(', ', $user->titres) : '-' }}</td>
                                 <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-500">{{ $user->commune ?? '-' }}</td>
                                 <td class="px-3 sm:px-6 py-2 sm:py-4 text-right">
                                     <div class="flex items-center justify-end gap-2 flex-wrap">
@@ -216,13 +216,17 @@
                             </div>
 
                             <div>
-                                <label for="modal-fonction" class="block text-sm font-medium text-gray-700">{{ __('Titre / Fonction') }}</label>
-                                <select name="fonction" id="modal-fonction" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
-                                    <option value="">{{ __('-- Sélectionner --') }}</option>
-                                    <option value="Délégué suppléant" {{ old('fonction') === 'Délégué suppléant' ? 'selected' : '' }}>{{ __('Délégué suppléant') }}</option>
-                                    <option value="Délégué titulaire" {{ old('fonction') === 'Délégué titulaire' ? 'selected' : '' }}>{{ __('Délégué titulaire') }}</option>
-                                    <option value="Représentant" {{ old('fonction') === 'Représentant' ? 'selected' : '' }}>{{ __('Représentant') }}</option>
-                                </select>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Titres / Fonctions') }}</label>
+                                <div class="grid grid-cols-1 gap-1.5">
+                                    @foreach(['Président', 'Vice-président', 'Membre du bureau', 'Membre de commission', 'Représentant', 'Délégué titulaire', 'Délégué suppléant'] as $titreOption)
+                                        <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                            <input type="checkbox" name="titres[]" value="{{ $titreOption }}"
+                                                class="rounded border-gray-300 text-[#faa21b] shadow-sm focus:ring-[#faa21b]"
+                                                {{ in_array($titreOption, old('titres', [])) ? 'checked' : '' }} />
+                                            {{ $titreOption }}
+                                        </label>
+                                    @endforeach
+                                </div>
                             </div>
 
                             <div>

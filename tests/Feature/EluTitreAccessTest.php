@@ -17,31 +17,31 @@ class EluTitreAccessTest extends TestCase
 
     public function test_elu_sees_only_documents_matching_titre(): void
     {
-        $eluMaire = User::factory()->create([
+        $eluPresident = User::factory()->create([
             'is_elu' => true,
-            'fonction' => 'Maire',
+            'titres' => ['Président'],
         ]);
 
-        $eluConseiller = User::factory()->create([
+        $eluMembre = User::factory()->create([
             'is_elu' => true,
-            'fonction' => 'Conseiller municipal',
+            'titres' => ['Membre du bureau'],
         ]);
 
         Storage::fake('documents');
         $file = UploadedFile::fake()->create('doc.pdf', 100);
 
-        $docMaire = Document::create([
-            'title' => 'Document Maires',
+        $docPresident = Document::create([
+            'title' => 'Document Présidents',
             'path' => $file->store('documents'),
             'visible_to_all' => false,
-            'titres' => ['Maire'],
+            'titres' => ['Président'],
         ]);
 
-        $docConseiller = Document::create([
-            'title' => 'Document Conseillers',
+        $docMembre = Document::create([
+            'title' => 'Document Membres',
             'path' => $file->store('documents'),
             'visible_to_all' => false,
-            'titres' => ['Conseiller municipal'],
+            'titres' => ['Membre du bureau'],
         ]);
 
         $docPublic = Document::create([
@@ -50,19 +50,17 @@ class EluTitreAccessTest extends TestCase
             'visible_to_all' => true,
         ]);
 
-        // Maire sees Maire doc + public doc
-        $responseMaire = $this->actingAs($eluMaire)->get(route('elus.documents.index'));
-        $responseMaire->assertOk();
-        $responseMaire->assertSee('Document Maires');
-        $responseMaire->assertSee('Document public');
-        $responseMaire->assertDontSee('Document Conseillers');
+        $responsePresident = $this->actingAs($eluPresident)->get(route('elus.documents.index'));
+        $responsePresident->assertOk();
+        $responsePresident->assertSee('Document Présidents');
+        $responsePresident->assertSee('Document public');
+        $responsePresident->assertDontSee('Document Membres');
 
-        // Conseiller sees Conseiller doc + public doc
-        $responseConseiller = $this->actingAs($eluConseiller)->get(route('elus.documents.index'));
-        $responseConseiller->assertOk();
-        $responseConseiller->assertSee('Document Conseillers');
-        $responseConseiller->assertSee('Document public');
-        $responseConseiller->assertDontSee('Document Maires');
+        $responseMembre = $this->actingAs($eluMembre)->get(route('elus.documents.index'));
+        $responseMembre->assertOk();
+        $responseMembre->assertSee('Document Membres');
+        $responseMembre->assertSee('Document public');
+        $responseMembre->assertDontSee('Document Présidents');
     }
 
     public function test_admin_sees_all_documents(): void
@@ -73,57 +71,57 @@ class EluTitreAccessTest extends TestCase
         $file = UploadedFile::fake()->create('doc.pdf', 100);
 
         Document::create([
-            'title' => 'Document Maires',
+            'title' => 'Document Présidents',
             'path' => $file->store('documents'),
             'visible_to_all' => false,
-            'titres' => ['Maire'],
+            'titres' => ['Président'],
         ]);
 
         Document::create([
-            'title' => 'Document Conseillers',
+            'title' => 'Document Membres',
             'path' => $file->store('documents'),
             'visible_to_all' => false,
-            'titres' => ['Conseiller municipal'],
+            'titres' => ['Membre du bureau'],
         ]);
 
         $response = $this->actingAs($admin)->get(route('elus.documents.index'));
         $response->assertOk();
-        $response->assertSee('Document Maires');
-        $response->assertSee('Document Conseillers');
+        $response->assertSee('Document Présidents');
+        $response->assertSee('Document Membres');
     }
 
     public function test_elu_sees_only_reunions_matching_titre(): void
     {
         $instance = Instance::factory()->create();
 
-        $eluMaire = User::factory()->create([
+        $eluPresident = User::factory()->create([
             'is_elu' => true,
-            'fonction' => 'Maire',
+            'titres' => ['Président'],
         ]);
 
-        $eluConseiller = User::factory()->create([
+        $eluMembre = User::factory()->create([
             'is_elu' => true,
-            'fonction' => 'Conseiller municipal',
+            'titres' => ['Membre du bureau'],
         ]);
 
         Reunion::factory()->create([
             'instance_id' => $instance->id,
-            'title' => 'Réunion Maires',
+            'title' => 'Réunion Présidents',
             'start_time' => now()->addDay(),
             'end_time' => now()->addDay()->addHours(2),
             'status' => 'planifiee',
             'visible_to_all' => false,
-            'titres' => ['Maire'],
+            'titres' => ['Président'],
         ]);
 
         Reunion::factory()->create([
             'instance_id' => $instance->id,
-            'title' => 'Réunion Conseillers',
+            'title' => 'Réunion Membres',
             'start_time' => now()->addDay(),
             'end_time' => now()->addDay()->addHours(2),
             'status' => 'planifiee',
             'visible_to_all' => false,
-            'titres' => ['Conseiller municipal'],
+            'titres' => ['Membre du bureau'],
         ]);
 
         Reunion::factory()->create([
@@ -135,17 +133,17 @@ class EluTitreAccessTest extends TestCase
             'visible_to_all' => true,
         ]);
 
-        $responseMaire = $this->actingAs($eluMaire)->get(route('elus.reunions.index'));
-        $responseMaire->assertOk();
-        $responseMaire->assertSee('Réunion Maires');
-        $responseMaire->assertSee('Réunion publique');
-        $responseMaire->assertDontSee('Réunion Conseillers');
+        $responsePresident = $this->actingAs($eluPresident)->get(route('elus.reunions.index'));
+        $responsePresident->assertOk();
+        $responsePresident->assertSee('Réunion Présidents');
+        $responsePresident->assertSee('Réunion publique');
+        $responsePresident->assertDontSee('Réunion Membres');
 
-        $responseConseiller = $this->actingAs($eluConseiller)->get(route('elus.reunions.index'));
-        $responseConseiller->assertOk();
-        $responseConseiller->assertSee('Réunion Conseillers');
-        $responseConseiller->assertSee('Réunion publique');
-        $responseConseiller->assertDontSee('Réunion Maires');
+        $responseMembre = $this->actingAs($eluMembre)->get(route('elus.reunions.index'));
+        $responseMembre->assertOk();
+        $responseMembre->assertSee('Réunion Membres');
+        $responseMembre->assertSee('Réunion publique');
+        $responseMembre->assertDontSee('Réunion Présidents');
     }
 
     public function test_admin_sees_all_reunions(): void
@@ -155,28 +153,28 @@ class EluTitreAccessTest extends TestCase
 
         Reunion::factory()->create([
             'instance_id' => $instance->id,
-            'title' => 'Réunion Maires',
+            'title' => 'Réunion Présidents',
             'start_time' => now()->addDay(),
             'end_time' => now()->addDay()->addHours(2),
             'status' => 'planifiee',
             'visible_to_all' => false,
-            'titres' => ['Maire'],
+            'titres' => ['Président'],
         ]);
 
         Reunion::factory()->create([
             'instance_id' => $instance->id,
-            'title' => 'Réunion Conseillers',
+            'title' => 'Réunion Membres',
             'start_time' => now()->addDay(),
             'end_time' => now()->addDay()->addHours(2),
             'status' => 'planifiee',
             'visible_to_all' => false,
-            'titres' => ['Conseiller municipal'],
+            'titres' => ['Membre du bureau'],
         ]);
 
         $response = $this->actingAs($admin)->get(route('elus.reunions.index'));
         $response->assertOk();
-        $response->assertSee('Réunion Maires');
-        $response->assertSee('Réunion Conseillers');
+        $response->assertSee('Réunion Présidents');
+        $response->assertSee('Réunion Membres');
     }
 
     public function test_elu_access_denied_to_reunion_not_matching_titre(): void
@@ -185,17 +183,17 @@ class EluTitreAccessTest extends TestCase
 
         $elu = User::factory()->create([
             'is_elu' => true,
-            'fonction' => 'Maire',
+            'titres' => ['Président'],
         ]);
 
         $reunion = Reunion::factory()->create([
             'instance_id' => $instance->id,
-            'title' => 'Réunion Conseillers',
+            'title' => 'Réunion Membres',
             'start_time' => now()->addDay(),
             'end_time' => now()->addDay()->addHours(2),
             'status' => 'planifiee',
             'visible_to_all' => false,
-            'titres' => ['Conseiller municipal'],
+            'titres' => ['Membre du bureau'],
         ]);
 
         $response = $this->actingAs($elu)->get(route('elus.reunions.show', $reunion));

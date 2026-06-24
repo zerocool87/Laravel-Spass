@@ -138,8 +138,17 @@ class AdminController extends Controller
 
                 $nom = trim((string) ($row[8] ?? ''));
                 $prenom = trim((string) ($row[9] ?? ''));
-                $titre = trim((string) ($row[13] ?? ''));
+                $titreRaw = trim((string) ($row[13] ?? ''));
                 $commune = trim((string) ($row[22] ?? ''));
+
+                // Split multi-titres by pipe and map old values
+                $titres = array_filter(array_map('trim', explode('|', $titreRaw)));
+                $mapping = [
+                    'Maire' => 'Président',
+                    'Conseiller municipal' => 'Membre du bureau',
+                ];
+                $titres = array_map(fn ($t) => $mapping[$t] ?? $t, $titres);
+                $titres = array_values($titres);
                 $tempPassword = Str::random(16);
 
                 if ($commune !== '' && ! in_array($commune, $communes, true)) {
@@ -153,7 +162,7 @@ class AdminController extends Controller
                     'email' => $email,
                     'password' => Hash::make($tempPassword),
                     'is_elu' => true,
-                    'fonction' => $titre !== '' ? $titre : null,
+                    'titres' => $titres ?: null,
                     'commune' => $commune !== '' ? $commune : null,
                 ]);
 
@@ -169,7 +178,7 @@ class AdminController extends Controller
                     'probleme_delib' => $this->nullableString($row[7] ?? ''),
                     'civilite' => $this->nullableString($row[11] ?? ''),
                     'rt_ds_dt' => $this->nullableString($row[12] ?? ''),
-                    'titre' => $titre !== '' ? $titre : null,
+                    'titres' => $titres ?: null,
                     'ordre_suppleants' => $this->parseInt($row[14] ?? ''),
                     'contact' => $this->nullableString($row[15] ?? ''),
                     'mail_personnel' => $email,
@@ -264,10 +273,13 @@ class AdminController extends Controller
      */
     public function storeElu(Request $request): RedirectResponse
     {
+        $allowedTitres = ['Président', 'Vice-président', 'Membre du bureau', 'Membre de commission', 'Représentant', 'Délégué titulaire', 'Délégué suppléant'];
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'fonction' => ['nullable', 'string', 'max:255', Rule::in(['Délégué suppléant', 'Délégué titulaire', 'Représentant'])],
+            'titres' => ['nullable', 'array'],
+            'titres.*' => ['string', Rule::in($allowedTitres)],
             'commune' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
         ]);
 
@@ -279,13 +291,13 @@ class AdminController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($tempPassword),
             'is_elu' => true,
-            'fonction' => $validated['fonction'] ?? null,
+            'titres' => $validated['titres'] ?? [],
             'commune' => $validated['commune'] ?? null,
         ]);
 
         EluProfile::create([
             'user_id' => $user->id,
-            'titre' => $validated['fonction'] ?? null,
+            'titres' => $validated['titres'] ?? [],
         ]);
 
         return redirect()

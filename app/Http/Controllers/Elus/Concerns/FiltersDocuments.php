@@ -28,8 +28,10 @@ trait FiltersDocuments
                     ->orWhereHas('users', function ($query) use ($user) {
                         $query->where('user_id', $user->id);
                     });
-                if ($user->fonction) {
-                    $q->orWhereJsonContains('titres', $user->fonction);
+                if ($user->titres) {
+                    foreach ($user->titres as $titre) {
+                        $q->orWhereJsonContains('titres', $titre);
+                    }
                 }
             });
     }

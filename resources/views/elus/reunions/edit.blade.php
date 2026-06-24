@@ -23,7 +23,7 @@
                             <select name="instance_id" id="instance_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
                                 @foreach($instances as $instance)
                                     <option value="{{ $instance->id }}" {{ old('instance_id', $reunion->instance_id) == $instance->id ? 'selected' : '' }}>
-                                        {{ $instance->name }} ({{ $instance->type_label }})
+                                        {{ $instance->name }}
                                     </option>
                                 @endforeach
                             </select>

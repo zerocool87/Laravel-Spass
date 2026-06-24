@@ -132,7 +132,7 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex-1">
                                         <p class="text-sm font-semibold text-gray-900 group-hover:text-orange-600 transition">{{ Str::limit($instance->name, 20) }}</p>
-                                        <p class="text-xs text-gray-600 mt-0.5">{{ $instance->type_label }}</p>
+                                        <p class="text-xs text-gray-600 mt-0.5">{{ __('Commission') }}</p>
                                     </div>
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700 ml-2 flex-shrink-0">
                                         {{ $instance->reunions_count }} {{ __('réunions') }}

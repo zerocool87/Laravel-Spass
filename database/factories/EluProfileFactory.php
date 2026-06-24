@@ -20,7 +20,7 @@ class EluProfileFactory extends Factory
             'code_insee' => fake()->numerify('87###'),
             'collectivite' => 'Haute-Vienne',
             'epci_commune' => fake()->city(),
-            'titre' => 'Conseiller municipal',
+            'titres' => ['Membre de commission'],
         ];
     }
 }

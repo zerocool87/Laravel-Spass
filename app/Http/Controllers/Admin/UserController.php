@@ -34,7 +34,7 @@ class UserController extends Controller
 
         $data['is_admin'] = $request->boolean('is_admin');
         $data['is_elu'] = $request->boolean('is_elu');
-        $data['fonction'] = $request->input('fonction');
+        $data['titres'] = $request->input('titres', []);
         $data['commune'] = $request->input('commune');
 
         $user->update($data);
@@ -62,9 +62,9 @@ class UserController extends Controller
             }
         }
 
-        // Sync titre from users.fonction to elu_profiles.titre
-        if ($request->has('fonction')) {
-            $profileData['titre'] = $request->input('fonction') ?: null;
+        // Sync titres from users.titres to elu_profiles.titres
+        if ($request->has('titres')) {
+            $profileData['titres'] = $request->input('titres', []);
         }
 
         if (! empty($profileData)) {

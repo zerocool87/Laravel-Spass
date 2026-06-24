@@ -76,22 +76,22 @@ class EluCsvImportTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => 'jean.dupont@test.fr',
             'name' => 'DUPONT',
-            'nom' => 'DUPONT',
             'prenom' => 'Jean',
-            'fonction' => 'Maire',
             'is_elu' => true,
         ]);
 
         $user = User::where('email', 'jean.dupont@test.fr')->first();
         $this->assertNotNull($user);
+        $this->assertEquals(['Président'], $user->titres);
 
         $this->assertDatabaseHas('elu_profiles', [
             'user_id' => $user->id,
             'code_insee' => '87011',
-            'titre' => 'Maire',
             'civilite' => 'Monsieur',
             'epci_commune' => 'Limoges Métropole',
         ]);
+
+        $this->assertEquals(['Président'], $user->eluProfile->titres);
     }
 
     public function test_import_skips_empty_email(): void
@@ -103,8 +103,9 @@ class EluCsvImportTest extends TestCase
             '', '', '', '', '', '', '',
             '', '', '', '', '', '', '', '',
             '', '', ''];
+        $header = array_fill(0, count($data), '');
 
-        $csv = $this->createCsvContent([$data]);
+        $csv = $this->createCsvContent([$header, $data]);
         $file = UploadedFile::fake()->createWithContent('elus.csv', $csv);
 
         $response = $this->actingAs($admin)->post(route('elus.admin.users.import'), [
@@ -126,6 +127,7 @@ class EluCsvImportTest extends TestCase
             '', '', 'existing@test.fr', '', '', '', '',
             '', '', '', '', '', '', '', '',
             '', '', ''];
+        $header = array_fill(0, count($data), '');
 
         $csv = $this->createCsvContent([$data]);
         $file = UploadedFile::fake()->createWithContent('elus.csv', $csv);
@@ -146,5 +148,36 @@ class EluCsvImportTest extends TestCase
         $response = $this->actingAs($admin)->post(route('elus.admin.users.import'), []);
 
         $response->assertSessionHasErrors('csv_file');
+    }
+
+    public function test_import_maps_maire_to_president(): void
+    {
+        $admin = $this->createAdmin();
+
+        $header = ['CODE INSEE', 'COLLECTIVITE', 'EPCI/COMMUNE', 'SECTEUR', 'Nom secteur', 'DATE DELIBERATION',
+            'visa Préfecture', 'Problème DELIB', 'NOM', 'Prénom', '', 'Monsieur/Madame', 'RT/DS/DT', 'Titre',
+            'ordre suppléants', 'Contact', 'mail personnel', 'Mail 2', 'téléphone', 'Adresse1', 'Adresse2',
+            'Code postal', 'Commune', 'Profession', 'société', 'Date naissance', '', 'Newsletter', '',
+            'Frais de route', 'RIB fourni', 'Chevaux fiscaux'];
+
+        $data = ['', '', '', '', '', '',
+            '', '', 'TEST', 'Test', '', 'Monsieur', '', 'Maire|Conseiller municipal',
+            '', '', 'test.mapping@test.fr', '', '', '', '',
+            '', '', '', '', '', '', '', '',
+            '', '', ''];
+
+        $csv = $this->createCsvContent([$header, $data]);
+        $file = UploadedFile::fake()->createWithContent('elus.csv', $csv);
+
+        $response = $this->actingAs($admin)->post(route('elus.admin.users.import'), [
+            'csv_file' => $file,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $user = User::where('email', 'test.mapping@test.fr')->first();
+        $this->assertNotNull($user);
+        $this->assertEquals(['Président', 'Membre du bureau'], $user->titres);
     }
 }

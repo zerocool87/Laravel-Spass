@@ -24,11 +24,14 @@ class DocumentController extends Controller
     private function titresElus(): array
     {
         return User::where('is_elu', true)
-            ->whereNotNull('fonction')
-            ->where('fonction', '!=', '')
-            ->distinct()
-            ->orderBy('fonction')
-            ->pluck('fonction')
+            ->whereNotNull('titres')
+            ->get()
+            ->pluck('titres')
+            ->flatten()
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values()
             ->toArray();
     }
 

@@ -30,7 +30,7 @@ class User extends Authenticatable
         'password',
         'is_admin',
         'is_elu',
-        'fonction',
+        'titres',
         'commune',
     ];
 
@@ -51,6 +51,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_admin' => 'boolean',
             'is_elu' => 'boolean',
+            'titres' => 'array',
         ];
     }
 

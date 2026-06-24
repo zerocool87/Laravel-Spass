@@ -73,14 +73,19 @@
                                 <input type="text" name="prenom" id="prenom" value="{{ old('prenom', $user->prenom) }}" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] px-3 py-2">
                             </div>
                             <div>
-                                <label for="fonction" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Titre / Fonction') }}</label>
-                                <select name="fonction" id="fonction" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] px-3 py-2">
-                                    <option value="">{{ __('-- Sélectionner --') }}</option>
-                                    <option value="Délégué suppléant" {{ old('fonction', $user->fonction) === 'Délégué suppléant' ? 'selected' : '' }}>{{ __('Délégué suppléant') }}</option>
-                                    <option value="Délégué titulaire" {{ old('fonction', $user->fonction) === 'Délégué titulaire' ? 'selected' : '' }}>{{ __('Délégué titulaire') }}</option>
-                                    <option value="Représentant" {{ old('fonction', $user->fonction) === 'Représentant' ? 'selected' : '' }}>{{ __('Représentant') }}</option>
-                                </select>
-                                @error('fonction')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Titres / Fonctions') }}</label>
+                                @php $userTitres = old('titres', $user->titres ?? []); @endphp
+                                <div class="grid grid-cols-1 gap-1.5">
+                                    @foreach(['Président', 'Vice-président', 'Membre du bureau', 'Membre de commission', 'Représentant', 'Délégué titulaire', 'Délégué suppléant'] as $titreOption)
+                                        <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                            <input type="checkbox" name="titres[]" value="{{ $titreOption }}"
+                                                class="rounded border-gray-300 text-[#faa21b] shadow-sm focus:ring-[#faa21b]"
+                                                {{ in_array($titreOption, $userTitres) ? 'checked' : '' }} />
+                                            {{ $titreOption }}
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('titres')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <div>
                                 <label for="commune" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Commune') }}</label>

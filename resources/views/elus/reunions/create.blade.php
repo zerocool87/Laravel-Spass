@@ -23,7 +23,7 @@
                                 <option value="">{{ __('Sélectionner une instance') }}</option>
                                 @foreach($instances as $instance)
                                     <option value="{{ $instance->id }}" {{ old('instance_id', $selectedInstance) == $instance->id ? 'selected' : '' }}>
-                                        {{ $instance->name }} ({{ $instance->type_label }})
+                                        {{ $instance->name }}
                                     </option>
                                 @endforeach
                             </select>
