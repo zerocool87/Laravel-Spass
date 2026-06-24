@@ -1,46 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ProjectStatus;
+use App\Enums\ProjectType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
-    private ?array $communesList = null;
-
-    private function communes(): array
-    {
-        if ($this->communesList !== null) {
-            return $this->communesList;
-        }
-
-        $list = config('options.communes_haute_vienne', []);
-        sort($list, SORT_STRING | SORT_FLAG_CASE);
-
-        return $this->communesList = $list;
-    }
-
-    private function validationRules(): array
-    {
-        return [
-            'title'       => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'type'        => 'required|string|in:'.implode(',', array_keys(Project::TYPES)),
-            'status'      => 'required|string|in:'.implode(',', array_keys(Project::STATUSES)),
-            'commune'     => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
-            'territories' => 'nullable|array',
-            'budget'      => 'nullable|numeric|min:0',
-            'start_date'  => 'nullable|date',
-            'end_date'    => 'nullable|date|after_or_equal:start_date',
-            'indicators'  => 'nullable|array',
-        ];
-    }
-
     /**
      * Display a listing of the projects.
      */
@@ -72,8 +46,8 @@ class ProjectController extends Controller
         }
 
         $projects = $query->orderBy('updated_at', 'desc')->paginate(15)->withQueryString();
-        $types = Project::TYPES;
-        $statuses = Project::STATUSES;
+        $types = ProjectType::labels();
+        $statuses = ProjectStatus::labels();
         $communes = $this->communes();
 
         // Statistics are intentionally global (not scoped to the current filter)
@@ -94,8 +68,8 @@ class ProjectController extends Controller
      */
     public function create(): View
     {
-        $types = Project::TYPES;
-        $statuses = Project::STATUSES;
+        $types = ProjectType::labels();
+        $statuses = ProjectStatus::labels();
         $communes = $this->communes();
 
         return view('admin.projects.create', compact('types', 'statuses', 'communes'));
@@ -104,11 +78,9 @@ class ProjectController extends Controller
     /**
      * Store a newly created project in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(ProjectRequest $request): RedirectResponse
     {
-        $validated = $request->validate($this->validationRules());
-
-        Project::create($validated);
+        Project::create($request->validated());
 
         return redirect()
             ->route('admin.projects.index')
@@ -128,8 +100,8 @@ class ProjectController extends Controller
      */
     public function edit(Project $project): View
     {
-        $types = Project::TYPES;
-        $statuses = Project::STATUSES;
+        $types = ProjectType::labels();
+        $statuses = ProjectStatus::labels();
         $communes = $this->communes();
 
         return view('admin.projects.edit', compact('project', 'types', 'statuses', 'communes'));
@@ -138,11 +110,9 @@ class ProjectController extends Controller
     /**
      * Update the specified project in storage.
      */
-    public function update(Request $request, Project $project): RedirectResponse
+    public function update(ProjectRequest $request, Project $project): RedirectResponse
     {
-        $validated = $request->validate($this->validationRules());
-
-        $project->update($validated);
+        $project->update($request->validated());
 
         return redirect()
             ->route('admin.projects.show', $project)

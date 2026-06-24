@@ -110,13 +110,28 @@
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="pt-6">
+                            <div class="pt-6" x-data="{ visible: {{ old('visible_to_all', true) ? 'true' : 'false' }} }">
                                 <label class="flex items-center gap-3 cursor-pointer">
-                                    <input type="checkbox" name="visible_to_all" value="1"
-                                        class="rounded border-gray-300 text-[#faa21b] shadow-sm focus:ring-[#faa21b]"
-                                        {{ old('visible_to_all', true) ? 'checked' : '' }} />
-                                    <span class="text-sm font-medium text-gray-700">{{ __('Visible par tous les utilisateurs') }}</span>
+                                    <input type="checkbox" name="visible_to_all" value="1" x-model="visible"
+                                        class="rounded border-gray-300 text-[#faa21b] shadow-sm focus:ring-[#faa21b]" />
+                                    <span class="text-sm font-medium text-gray-700">{{ __('Visible par tous les élus') }}</span>
                                 </label>
+                                <div x-show="!visible" class="mt-3">
+                                    <p class="text-xs font-medium text-gray-700 mb-2">{{ __('Restreindre aux titres suivants :') }}</p>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                        @foreach($titres as $titre)
+                                            <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                                <input type="checkbox" name="titres[]" value="{{ $titre }}"
+                                                    class="rounded border-gray-300 text-[#faa21b] shadow-sm focus:ring-[#faa21b]"
+                                                    {{ in_array($titre, old('titres', [])) ? 'checked' : '' }} />
+                                                {{ $titre }}
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    @if(empty($titres))
+                                        <p class="text-xs text-gray-400">{{ __('Aucun titre disponible. Importez des élus d\'abord.') }}</p>
+                                    @endif
+                                </div>
                             </div>
                         </div>
 

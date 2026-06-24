@@ -1,25 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\InstanceRequest;
 use App\Models\Instance;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class InstanceController extends Controller
 {
-    private function communes(): array
-    {
-        $list = config('options.communes_haute_vienne', []);
-        sort($list, SORT_STRING | SORT_FLAG_CASE);
-
-        return $list;
-    }
-
     /**
      * Display a listing of the instances.
      */
@@ -74,18 +68,9 @@ class InstanceController extends Controller
     /**
      * Store a newly created instance in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(InstanceRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|in:'.implode(',', array_keys(Instance::TYPES)),
-            'description' => 'nullable|string',
-            'territory' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
-            'members' => 'nullable|array',
-            'members.*' => 'string',
-        ]);
-
-        Instance::create($validated);
+        Instance::create($request->validated());
 
         return redirect()
             ->route('admin.instances.index')
@@ -128,18 +113,9 @@ class InstanceController extends Controller
     /**
      * Update the specified instance in storage.
      */
-    public function update(Request $request, Instance $instance): RedirectResponse
+    public function update(InstanceRequest $request, Instance $instance): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|in:'.implode(',', array_keys(Instance::TYPES)),
-            'description' => 'nullable|string',
-            'territory' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
-            'members' => 'nullable|array',
-            'members.*' => 'string',
-        ]);
-
-        $instance->update($validated);
+        $instance->update($request->validated());
 
         return redirect()
             ->route('admin.instances.index')

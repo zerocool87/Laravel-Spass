@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Message extends Model
 {
@@ -15,14 +18,11 @@ class Message extends Model
         'conversation_id',
         'user_id',
         'body',
-        'read_at',
     ];
 
     public function casts(): array
     {
-        return [
-            'read_at' => 'datetime',
-        ];
+        return [];
     }
 
     public function conversation(): BelongsTo
@@ -33,5 +33,12 @@ class Message extends Model
     public function sender(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function readBy(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'message_user')
+            ->withPivot('read_at')
+            ->withTimestamps();
     }
 }

@@ -50,12 +50,20 @@
                         <h2 class="text-lg font-semibold text-gray-900">{{ __('Gestion des utilisateurs') }}</h2>
                         <p class="text-sm text-gray-500">{{ __('Filtrer, modifier et gérer les rôles') }}</p>
                     </div>
-                    <button type="button" onclick="document.getElementById('create-elu-modal').classList.remove('hidden')" class="inline-flex items-center justify-center px-5 py-2.5 bg-[#faa21b] text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        {{ __('Nouvel élu') }}
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('elus.admin.users.import.form') }}" class="inline-flex items-center justify-center px-4 py-2.5 bg-green-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            {{ __('Importer CSV') }}
+                        </a>
+                        <button type="button" onclick="document.getElementById('create-elu-modal').classList.remove('hidden')" class="inline-flex items-center justify-center px-5 py-2.5 bg-[#faa21b] text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            {{ __('Nouvel élu') }}
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Filters --}}
@@ -152,6 +160,18 @@
                                                 </button>
                                             @endif
                                         </form>
+                                        @if($user->id !== auth()->id())
+                                        <form method="POST" action="{{ route('elus.admin.users.destroy', $user) }}" onsubmit="return confirm('{{ __('Supprimer définitivement cet utilisateur ?') }}')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="inline-flex items-center px-3 py-1 border border-red-200 rounded-full text-xs font-semibold text-red-500 hover:bg-red-50">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                                {{ __('Supprimer') }}
+                                            </button>
+                                        </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -196,8 +216,13 @@
                             </div>
 
                             <div>
-                                <label for="modal-fonction" class="block text-sm font-medium text-gray-700">{{ __('Fonction') }}</label>
-                                <input type="text" name="fonction" id="modal-fonction" placeholder="{{ __('Ex: Maire, Conseiller municipal...') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                <label for="modal-fonction" class="block text-sm font-medium text-gray-700">{{ __('Titre / Fonction') }}</label>
+                                <select name="fonction" id="modal-fonction" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]">
+                                    <option value="">{{ __('-- Sélectionner --') }}</option>
+                                    <option value="Délégué suppléant" {{ old('fonction') === 'Délégué suppléant' ? 'selected' : '' }}>{{ __('Délégué suppléant') }}</option>
+                                    <option value="Délégué titulaire" {{ old('fonction') === 'Délégué titulaire' ? 'selected' : '' }}>{{ __('Délégué titulaire') }}</option>
+                                    <option value="Représentant" {{ old('fonction') === 'Représentant' ? 'selected' : '' }}>{{ __('Représentant') }}</option>
+                                </select>
                             </div>
 
                             <div>

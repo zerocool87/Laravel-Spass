@@ -12,11 +12,11 @@ export default defineConfig({
         host: '0.0.0.0',
         port: 5173,
         hmr: {
-            host: '192.168.1.14',
+            host: process.env.VITE_HMR_HOST || 'localhost',
         },
         cors: true,
         headers: {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': process.env.VITE_CORS_ORIGIN || '*',
         },
     },
 });

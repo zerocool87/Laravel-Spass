@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,12 +18,38 @@ class AdminUserRequest extends FormRequest
     {
         $rules = [
             'name' => ['required', 'string', 'max:255'],
+            'nom' => ['nullable', 'string', 'max:255'],
+            'prenom' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'fonction' => ['nullable', 'string', 'max:255'],
+            'fonction' => ['nullable', 'string', 'max:255', Rule::in(['Délégué suppléant', 'Délégué titulaire', 'Représentant'])],
             'commune' => ['nullable', 'string', 'max:255', Rule::in(config('options.communes_haute_vienne', []))],
             'is_admin' => ['boolean'],
             'is_elu' => ['boolean'],
+            'code_insee' => ['nullable', 'string', 'max:255'],
+            'civilite' => ['nullable', 'string', 'max:255'],
+            'epci_commune' => ['nullable', 'string', 'max:255'],
+            'telephone' => ['nullable', 'string', 'max:255'],
+            'adresse_1' => ['nullable', 'string', 'max:255'],
+            'adresse_2' => ['nullable', 'string', 'max:255'],
+            'code_postal' => ['nullable', 'string', 'max:255'],
+            'profession' => ['nullable', 'string', 'max:255'],
+            'societe' => ['nullable', 'string', 'max:255'],
+            'secteur' => ['nullable', 'string', 'max:255'],
+            'nom_secteur' => ['nullable', 'string', 'max:255'],
+            'rt_ds_dt' => ['nullable', 'string', 'max:255'],
+            'contact' => ['nullable', 'string', 'max:255'],
+            'mail_personnel' => ['nullable', 'email', 'max:255'],
+            'mail_2' => ['nullable', 'email', 'max:255'],
+            'date_deliberation' => ['nullable', 'date'],
+            'date_naissance' => ['nullable', 'date'],
+            'visa_prefecture' => ['nullable', 'string', 'max:255'],
+            'probleme_delib' => ['nullable', 'string'],
+            'ordre_suppleants' => ['nullable', 'integer'],
+            'newsletter' => ['boolean'],
+            'frais_route' => ['boolean'],
+            'rib_fourni' => ['boolean'],
+            'chevaux_fiscaux' => ['nullable', 'string', 'max:255'],
         ];
 
         if ($this->isMethod('post')) {

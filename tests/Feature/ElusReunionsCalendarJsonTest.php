@@ -29,6 +29,7 @@ class ElusReunionsCalendarJsonTest extends TestCase
             'start_time' => now()->addDay()->setTime(9, 30),
             'end_time' => now()->addDay()->setTime(11, 0),
             'status' => 'planifiee',
+            'visible_to_all' => true,
         ]);
 
         $response = $this->actingAs($elu)->getJson(route('elus.reunions.json'));

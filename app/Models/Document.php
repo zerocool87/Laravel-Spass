@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +21,7 @@ class Document extends Model
         'original_name',
         'created_by',
         'visible_to_all',
+        'titres',
         'category',
     ];
 
@@ -26,6 +29,7 @@ class Document extends Model
     {
         return [
             'visible_to_all' => 'boolean',
+            'titres' => 'array',
         ];
     }
 
@@ -54,6 +58,9 @@ class Document extends Model
             return true;
         }
         if ($user->isAdmin()) {
+            return true;
+        }
+        if ($user->fonction && in_array($user->fonction, $this->titres ?? [], true)) {
             return true;
         }
 

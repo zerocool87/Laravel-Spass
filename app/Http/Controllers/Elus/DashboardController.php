@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
@@ -38,6 +40,7 @@ class DashboardController extends Controller
 
         // Get latest documents accessible to the user (limit to 3, newest first)
         $latestDocuments = $this->getUserAccessibleDocuments($user)
+            ->with('creator')
             ->latest()
             ->take(3)
             ->get();
@@ -68,7 +71,7 @@ class DashboardController extends Controller
             'total_reunions' => Reunion::count(),
             'upcoming_reunions' => Reunion::upcoming()->count(),
             'total_instances' => Instance::count(),
-            'total_budget' => $activeBudgetSum,
+            'total_budget' => $activeBudgetSum ?? 0,
             'total_documents' => $totalDocumentsCount,
         ];
 

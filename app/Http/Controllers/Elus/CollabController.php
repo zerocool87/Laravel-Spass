@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreConversationRequest;
 use App\Http\Requests\StoreMessageRequest;
 use App\Models\Conversation;
-use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -25,8 +26,8 @@ class CollabController extends Controller
             ->with(['users', 'latestMessage.sender'])
             ->withCount([
                 'messages as unread_count' => fn ($query) => $query
-                    ->whereNull('read_at')
-                    ->where('user_id', '<>', $user->id),
+                    ->where('user_id', '<>', $user->id)
+                    ->whereDoesntHave('readBy', fn ($q) => $q->where('user_id', $user->id)),
             ])
             ->orderByDesc('last_message_at')
             ->orderByDesc('updated_at')
@@ -87,11 +88,26 @@ class CollabController extends Controller
 
         $conversation->load('users');
 
-        Message::query()
-            ->where('conversation_id', $conversation->id)
-            ->whereNull('read_at')
+        $unreadIds = $conversation->messages()
             ->where('user_id', '<>', $user->id)
-            ->update(['read_at' => now()]);
+            ->whereDoesntHave('readBy', fn ($query) => $query->where('user_id', $user->id))
+            ->pluck('id');
+
+        if ($unreadIds->isNotEmpty()) {
+            $now = now();
+            $pivotData = $unreadIds->mapWithKeys(fn (int $id) => [$id => ['read_at' => $now]]);
+            DB::table('message_user')->upsert(
+                $pivotData->map(fn ($data, $id) => [
+                    'message_id' => $id,
+                    'user_id' => $user->id,
+                    'read_at' => $data['read_at'],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ])->values()->toArray(),
+                ['message_id', 'user_id'],
+                ['read_at', 'updated_at'],
+            );
+        }
 
         $messages = $conversation->messages()
             ->with('sender')

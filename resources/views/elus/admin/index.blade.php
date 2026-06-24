@@ -78,6 +78,21 @@
                             </svg>
                         </a>
 
+                        <a href="{{ route('elus.admin.users.import.form') }}" class="flex items-center p-3 border-2 border-green-200 rounded-xl hover:bg-green-50 hover:border-green-400 transition group">
+                            <div class="p-2 bg-green-100 rounded-lg group-hover:bg-green-200 transition">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <p class="font-semibold text-gray-900 group-hover:text-green-700 transition">{{ __('Importer des élus (CSV)') }}</p>
+                                <p class="text-sm text-gray-500">{{ __('Import en masse depuis un fichier CSV tabulé') }}</p>
+                            </div>
+                            <svg class="w-5 h-5 text-green-400 ml-auto group-hover:text-green-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+
                         <a href="{{ route('admin.instances.index') }}" class="flex items-center p-3 border-2 border-[#faa21b]/20 rounded-xl hover:bg-[#faa21b]/5 hover:border-[#faa21b]/40 transition group">
                             <div class="p-2 bg-[#faa21b]/10 rounded-lg group-hover:bg-[#faa21b]/20 transition">
                                 <svg class="w-6 h-6 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

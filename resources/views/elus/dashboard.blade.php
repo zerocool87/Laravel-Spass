@@ -11,61 +11,29 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Statistics Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div                 class="bg-[#faa21b] rounded-xl shadow-lg p-3 sm:p-4 text-white transform hover:scale-105 transition">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-medium text-white/80 mb-0.5">{{ __('Instances') }}</p>
-                                <p class="text-xl sm:text-2xl font-bold">{{ $stats['total_instances'] }}</p>
-                        </div>
-                        <div class="p-2 rounded-full bg-white/20">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div                 class="bg-[#faa21b] rounded-xl shadow-lg p-3 sm:p-4 text-white transform hover:scale-105 transition">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-medium text-white/80 mb-0.5">{{ __('Projets actifs') }}</p>
-                                <p class="text-xl sm:text-2xl font-bold">{{ $stats['active_projects'] }}</p>
-                        </div>
-                        <div class="p-2 rounded-full bg-white/20">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div                 class="bg-[#faa21b] rounded-xl shadow-lg p-3 sm:p-4 text-white transform hover:scale-105 transition">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-medium text-white/80 mb-0.5">{{ __('Réunions à venir') }}</p>
-                                <p class="text-xl sm:text-2xl font-bold">{{ $stats['upcoming_reunions'] }}</p>
-                        </div>
-                        <div class="p-2 rounded-full bg-white/20">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div                 class="bg-[#faa21b] rounded-xl shadow-lg p-3 sm:p-4 text-white transform hover:scale-105 transition">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-medium text-white/80 mb-0.5">{{ __('Documents') }}</p>
-                                <p class="text-xl sm:text-2xl font-bold">{{ $stats['total_documents'] }}</p>
-                        </div>
-                        <div class="p-2 rounded-full bg-white/20">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+                <x-stat-card
+                    label="{{ __('Instances') }}"
+                    :value="$stats['total_instances']"
+                    icon='<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>'
+                />
+                <x-stat-card
+                    label="{{ __('Projets actifs') }}"
+                    :value="$stats['active_projects']"
+                    color="emerald"
+                    icon='<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>'
+                />
+                <x-stat-card
+                    label="{{ __('Réunions à venir') }}"
+                    :value="$stats['upcoming_reunions']"
+                    color="blue"
+                    icon='<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>'
+                />
+                <x-stat-card
+                    label="{{ __('Documents') }}"
+                    :value="$stats['total_documents']"
+                    color="purple"
+                    icon='<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>'
+                />
             </div>
 
             {{-- Main Content Grid: 2×2 direct grid children so CSS Grid controls row height --}}

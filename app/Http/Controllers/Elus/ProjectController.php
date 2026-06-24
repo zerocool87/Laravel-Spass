@@ -1,27 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Elus;
 
+use App\Enums\ProjectStatus;
+use App\Enums\ProjectType;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
+use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
     use RequiresAdmin;
-
-    private function communes(): array
-    {
-        $list = config('options.communes_haute_vienne', []);
-        sort($list, SORT_STRING | SORT_FLAG_CASE);
-
-        return $list;
-    }
 
     /**
      * Display a listing of the projects.
@@ -55,8 +51,8 @@ class ProjectController extends Controller
         }
 
         $projects = $query->orderBy('updated_at', 'desc')->paginate(12);
-        $types = Project::TYPES;
-        $statuses = Project::STATUSES;
+        $types = ProjectType::labels();
+        $statuses = ProjectStatus::labels();
 
         // Statistics
         $stats = [
@@ -75,8 +71,8 @@ class ProjectController extends Controller
     {
         $this->requireAdmin();
 
-        $types = Project::TYPES;
-        $statuses = Project::STATUSES;
+        $types = ProjectType::labels();
+        $statuses = ProjectStatus::labels();
         $communes = $this->communes();
 
         return view('elus.projects.create', compact('types', 'statuses', 'communes'));
@@ -85,24 +81,11 @@ class ProjectController extends Controller
     /**
      * Store a newly created project in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(ProjectRequest $request): RedirectResponse
     {
         $this->requireAdmin();
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'type' => 'required|string|in:'.implode(',', array_keys(Project::TYPES)),
-            'status' => 'required|string|in:'.implode(',', array_keys(Project::STATUSES)),
-            'commune' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
-            'territories' => 'nullable|array',
-            'budget' => 'nullable|numeric|min:0',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'indicators' => 'nullable|array',
-        ]);
-
-        Project::create($validated);
+        Project::create($request->validated());
 
         return redirect()
             ->route('elus.projects.index')
@@ -130,8 +113,8 @@ class ProjectController extends Controller
     {
         $this->requireAdmin();
 
-        $types = Project::TYPES;
-        $statuses = Project::STATUSES;
+        $types = ProjectType::labels();
+        $statuses = ProjectStatus::labels();
         $communes = $this->communes();
 
         return view('elus.projects.edit', compact('project', 'types', 'statuses', 'communes'));
@@ -140,24 +123,11 @@ class ProjectController extends Controller
     /**
      * Update the specified project in storage.
      */
-    public function update(Request $request, Project $project): RedirectResponse
+    public function update(ProjectRequest $request, Project $project): RedirectResponse
     {
         $this->requireAdmin();
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'type' => 'required|string|in:'.implode(',', array_keys(Project::TYPES)),
-            'status' => 'required|string|in:'.implode(',', array_keys(Project::STATUSES)),
-            'commune' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
-            'territories' => 'nullable|array',
-            'budget' => 'nullable|numeric|min:0',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'indicators' => 'nullable|array',
-        ]);
-
-        $project->update($validated);
+        $project->update($request->validated());
 
         return redirect()
             ->route('elus.projects.show', $project)

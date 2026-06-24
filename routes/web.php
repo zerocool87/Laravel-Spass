@@ -72,8 +72,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
 
 // Public/Authenticated routes for documents (download, embed, info & library)
 Route::middleware('auth')->group(function () {
-    Route::get('/documents/{document}/download', [\App\Http\Controllers\Admin\DocumentController::class, 'download'])->name('documents.download');
-    Route::get('/documents/{document}/embed', [\App\Http\Controllers\Admin\DocumentController::class, 'embed'])->name('documents.embed');
+    Route::get('/documents/{document}/download', [\App\Http\Controllers\Admin\DocumentController::class, 'download'])->name('documents.download')->middleware('throttle:30,1');
+    Route::get('/documents/{document}/embed', [\App\Http\Controllers\Admin\DocumentController::class, 'embed'])->name('documents.embed')->middleware('throttle:60,1');
     Route::get('/documents/{document}/info', [\App\Http\Controllers\Admin\DocumentController::class, 'info'])->name('documents.info');
 
     // Events (publicly viewable for authenticated users)
@@ -127,9 +127,12 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
         Route::get('/', [\App\Http\Controllers\Elus\AdminController::class, 'index'])->name('index');
         Route::get('/users', [\App\Http\Controllers\Elus\AdminController::class, 'users'])->name('users');
         Route::post('/users', [\App\Http\Controllers\Elus\AdminController::class, 'storeElu'])->name('users.store');
+        Route::get('/users/import', [\App\Http\Controllers\Elus\AdminController::class, 'importForm'])->name('users.import.form');
+        Route::post('/users/import', [\App\Http\Controllers\Elus\AdminController::class, 'importCsv'])->name('users.import');
         Route::patch('/users/{user}/toggle-elu', [\App\Http\Controllers\Elus\AdminController::class, 'toggleElu'])->name('users.toggle-elu');
         Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
         Route::patch('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [\App\Http\Controllers\Elus\AdminController::class, 'destroy'])->name('users.destroy');
     });
 });
 

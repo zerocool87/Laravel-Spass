@@ -42,6 +42,7 @@
                 <form method="GET" action="{{ route('admin.documents.index') }}" class="mt-6 border-t border-[#faa21b]/10 pt-6" x-data="{}" x-ref="filterForm">
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-end">
                         <div class="lg:col-span-5">
+                            <label for="search" class="sr-only">{{ __('Rechercher') }}</label>
                             <input
                                 id="search"
                                 name="q"
@@ -52,6 +53,7 @@
                             />
                         </div>
                         <div class="lg:col-span-3">
+                            <label for="category" class="sr-only">{{ __('Catégorie') }}</label>
                             <select id="category" name="category" class="w-full rounded-lg border-gray-200 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]" x-on:change="$refs.filterForm.submit()">
                                 <option value="">{{ __('Toutes les catégories') }}</option>
                                 @foreach(config('documents.categories', []) as $cat)
@@ -60,10 +62,11 @@
                             </select>
                         </div>
                         <div class="lg:col-span-3">
+                            <label for="visibility" class="sr-only">{{ __('Visibilité') }}</label>
                             <select id="visibility" name="visibility" class="w-full rounded-lg border-gray-200 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]" x-on:change="$refs.filterForm.submit()">
                                 <option value="">{{ __('Tous') }}</option>
                                 <option value="public" {{ $visibility === 'public' ? 'selected' : '' }}>{{ __('Public') }}</option>
-                                <option value="private" {{ $visibility === 'private' ? 'selected' : '' }}>{{ __('Prive') }}</option>
+                                <option value="private" {{ $visibility === 'private' ? 'selected' : '' }}>{{ __('Privé') }}</option>
                             </select>
                         </div>
                         <div class="lg:col-span-1 flex gap-2">
@@ -159,7 +162,7 @@
                                         </td>
                                         <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm text-gray-500">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $doc->visible_to_all ? 'bg-emerald-100 text-emerald-800' : 'bg-orange-100 text-orange-800' }}">
-                                                {{ $doc->visible_to_all ? __('Public') : __('Prive') }}
+                                                {{ $doc->visible_to_all ? __('Public') : __('Privé') }}
                                             </span>
                                         </td>
                                         <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-right text-sm font-medium">

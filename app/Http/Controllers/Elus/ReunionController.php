@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Elus;
 
+use App\Enums\ReunionStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
+use App\Http\Requests\StoreReunionRequest;
+use App\Http\Requests\UpdateReunionRequest;
 use App\Models\Instance;
 use App\Models\Reunion;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +19,25 @@ use Illuminate\View\View;
 class ReunionController extends Controller
 {
     use RequiresAdmin;
+
+    /**
+     * Apply titre access scope for non-admin élus.
+     */
+    private function scopeByTitres($query): void
+    {
+        $user = request()->user();
+
+        if (! $user || $user->isAdmin()) {
+            return;
+        }
+
+        $query->where(function ($q) use ($user) {
+            $q->where('visible_to_all', true);
+            if ($user->fonction) {
+                $q->orWhereJsonContains('titres', $user->fonction);
+            }
+        });
+    }
 
     /**
      * Display a listing of the reunions.
@@ -61,9 +85,11 @@ class ReunionController extends Controller
             $query->orderBy('start_time', 'desc');
         }
 
+        $this->scopeByTitres($query);
+
         $reunions = $query->paginate(12);
         $instances = Instance::orderBy('name')->get();
-        $statuses = Reunion::STATUSES;
+        $statuses = ReunionStatus::labels();
 
         return view('elus.reunions.index', compact('reunions', 'instances', 'statuses'));
     }
@@ -76,7 +102,7 @@ class ReunionController extends Controller
         $this->requireAdmin();
 
         $instances = Instance::orderBy('name')->get();
-        $statuses = Reunion::STATUSES;
+        $statuses = ReunionStatus::labels();
         $selectedInstance = $request->instance_id;
 
         return view('elus.reunions.create', compact('instances', 'statuses', 'selectedInstance'));
@@ -85,29 +111,15 @@ class ReunionController extends Controller
     /**
      * Store a newly created reunion in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreReunionRequest $request): RedirectResponse
     {
         $this->requireAdmin();
 
-        $validated = $request->validate([
-            'instance_id' => 'required|exists:instances,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'location' => 'nullable|string|max:255',
-            'participants' => 'nullable|array',
-            'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
-            'ordre_du_jour' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         // Combine date with time
-        $startDateTime = $validated['date'].' '.$validated['start_time'];
-        $endDateTime = $validated['date'].' '.$validated['end_time'];
-
-        $validated['start_time'] = $startDateTime;
-        $validated['end_time'] = $endDateTime;
+        $validated['start_time'] = $validated['date'].' '.$validated['start_time'];
+        $validated['end_time'] = $validated['date'].' '.$validated['end_time'];
 
         unset($validated['date']);
 
@@ -123,6 +135,14 @@ class ReunionController extends Controller
      */
     public function show(Reunion $reunion): View
     {
+        $user = request()->user();
+
+        if (! $user?->isAdmin() && ! $reunion->visible_to_all) {
+            if (! $user->fonction || ! in_array($user->fonction, $reunion->titres ?? [], true)) {
+                abort(403, __('Vous n\'avez pas accès à cette réunion.'));
+            }
+        }
+
         $reunion->load('instance');
 
         return view('elus.reunions.show', compact('reunion'));
@@ -136,7 +156,7 @@ class ReunionController extends Controller
         $this->requireAdmin();
 
         $instances = Instance::orderBy('name')->get();
-        $statuses = Reunion::STATUSES;
+        $statuses = ReunionStatus::labels();
 
         return view('elus.reunions.edit', compact('reunion', 'instances', 'statuses'));
     }
@@ -144,30 +164,15 @@ class ReunionController extends Controller
     /**
      * Update the specified reunion in storage.
      */
-    public function update(Request $request, Reunion $reunion): RedirectResponse
+    public function update(UpdateReunionRequest $request, Reunion $reunion): RedirectResponse
     {
         $this->requireAdmin();
 
-        $validated = $request->validate([
-            'instance_id' => 'required|exists:instances,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'location' => 'nullable|string|max:255',
-            'participants' => 'nullable|array',
-            'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
-            'ordre_du_jour' => 'nullable|string',
-            'compte_rendu' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         // Combine date with time
-        $startDateTime = $validated['date'].' '.$validated['start_time'];
-        $endDateTime = $validated['date'].' '.$validated['end_time'];
-
-        $validated['start_time'] = $startDateTime;
-        $validated['end_time'] = $endDateTime;
+        $validated['start_time'] = $validated['date'].' '.$validated['start_time'];
+        $validated['end_time'] = $validated['date'].' '.$validated['end_time'];
 
         unset($validated['date']);
 
@@ -198,6 +203,8 @@ class ReunionController extends Controller
     public function json(Request $request): JsonResponse
     {
         $query = Reunion::with('instance');
+
+        $this->scopeByTitres($query);
 
         // Filter by date range for calendar
         if ($request->filled('start')) {
@@ -230,17 +237,11 @@ class ReunionController extends Controller
     }
 
     /**
-     * Get the color for a status.
+     * Get the hex color for a status.
      */
     private function getStatusColor(string $status): string
     {
-        return match ($status) {
-            'planifiee' => '#3b82f6',
-            'confirmee' => '#22c55e',
-            'terminee' => '#6b7280',
-            'annulee' => '#ef4444',
-            default => '#6b7280',
-        };
+        return ReunionStatus::tryFrom($status)?->hexColor() ?? '#6b7280';
     }
 
     /**

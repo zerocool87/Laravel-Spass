@@ -8,8 +8,23 @@
     'activeSection' => null,
     'badge' => null,
     'badgeColor' => null,
-    'actions' => null
+    'actions' => null,
 ])
+
+@php
+    $navItems = [
+        ['route' => 'elus.instances.index', 'label' => __('Instances'), 'key' => 'instances'],
+        ['route' => 'elus.projects.index', 'label' => __('Projets'), 'key' => 'projects'],
+        ['route' => 'elus.reunions.index', 'label' => __('Réunions'), 'key' => 'reunions'],
+        ['route' => 'elus.documents.index', 'label' => __('Documents'), 'key' => 'documents'],
+        ['route' => 'elus.actualites.index', 'label' => __('Actualités'), 'key' => 'actualites'],
+        ['route' => 'elus.collab.index', 'label' => __('Collaboratif'), 'key' => 'collab', 'badge' => $collabUnreadCount ?? 0],
+    ];
+    $isActive = fn (string $key): bool => $activeSection === $key;
+    $linkClasses = fn (string $key, string $context = 'desktop'): string => $context === 'desktop'
+        ? 'px-3 py-2 text-sm '.($isActive($key) ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium').' rounded-lg transition'
+        : 'block px-4 py-2.5 text-sm '.($isActive($key) ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium').' rounded-lg transition';
+@endphp
 
 <div class="bg-[#faa21b] mx-auto px-4 py-4 sm:px-6 sm:py-5 lg:px-8 shadow-lg max-w-7xl" x-data="{ mobileOpen: false }">
     <div class="flex items-center justify-between">
@@ -39,24 +54,21 @@
         @if($showNav)
             {{-- Desktop nav (hidden on mobile) --}}
             <nav class="hidden lg:flex space-x-1 items-center flex-shrink-0">
-                <a href="{{ route('elus.instances.index') }}" class="px-3 py-2 text-sm {{ $activeSection === 'instances' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Instances') }}</a>
-                <a href="{{ route('elus.projects.index') }}" class="px-3 py-2 text-sm {{ $activeSection === 'projects' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Projets') }}</a>
-                <a href="{{ route('elus.reunions.index') }}" class="px-3 py-2 text-sm {{ $activeSection === 'reunions' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Réunions') }}</a>
-                <a href="{{ route('elus.documents.index') }}" class="px-3 py-2 text-sm {{ $activeSection === 'documents' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Documents') }}</a>
-                <a href="{{ route('elus.actualites.index') }}" class="px-3 py-2 text-sm {{ $activeSection === 'actualites' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Actualités') }}</a>
-                <a href="{{ route('elus.collab.index') }}" class="px-3 py-2 text-sm inline-flex items-center gap-1.5 {{ $activeSection === 'collab' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">
-                    <span>{{ __('Collaboratif') }}</span>
-                    @if(($collabUnreadCount ?? 0) > 0)
-                        <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-xs font-semibold bg-red-600 text-white">
-                            {{ $collabUnreadCount }}
-                        </span>
-                    @endif
-                </a>
+                @foreach($navItems as $item)
+                    <a href="{{ route($item['route']) }}" class="{{ $linkClasses($item['key']) }}">
+                        <span>{{ $item['label'] }}</span>
+                        @if(($item['badge'] ?? 0) > 0)
+                            <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-xs font-semibold bg-red-600 text-white ml-1">
+                                {{ $item['badge'] }}
+                            </span>
+                        @endif
+                    </a>
+                @endforeach
 
                 {{ $actions ?? '' }}
 
                 @can('admin')
-                    <a href="{{ route('elus.admin.index') }}" class="px-3 py-2 text-sm {{ $activeSection === 'admin' ? 'bg-white text-[#faa21b] font-bold' : 'bg-white/10 text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Administration') }}</a>
+                    <a href="{{ route('elus.admin.index') }}" class="px-3 py-2 text-sm {{ $isActive('admin') ? 'bg-white text-[#faa21b] font-bold' : 'bg-white/10 text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Administration') }}</a>
                 @endcan
 
                 <a href="{{ route('elus.dashboard') }}" class="px-3 py-2 text-sm bg-white text-[#faa21b] font-bold rounded-lg transition">{{ __('TdB') }}</a>
@@ -87,21 +99,18 @@
     {{-- Mobile slide-out nav (visible when hamburger open) --}}
     @if($showNav)
         <nav x-show="mobileOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="lg:hidden mt-3 pb-1 space-y-1" style="display: none;">
-            <a href="{{ route('elus.instances.index') }}" class="block px-4 py-2.5 text-sm {{ $activeSection === 'instances' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Instances') }}</a>
-            <a href="{{ route('elus.projects.index') }}" class="block px-4 py-2.5 text-sm {{ $activeSection === 'projects' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Projets') }}</a>
-            <a href="{{ route('elus.reunions.index') }}" class="block px-4 py-2.5 text-sm {{ $activeSection === 'reunions' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Réunions') }}</a>
-            <a href="{{ route('elus.documents.index') }}" class="block px-4 py-2.5 text-sm {{ $activeSection === 'documents' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Documents') }}</a>
-            <a href="{{ route('elus.actualites.index') }}" class="block px-4 py-2.5 text-sm {{ $activeSection === 'actualites' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Actualités') }}</a>
-            <a href="{{ route('elus.collab.index') }}" class="block px-4 py-2.5 text-sm inline-flex items-center gap-2 {{ $activeSection === 'collab' ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium' }} rounded-lg transition w-full">
-                <span>{{ __('Collaboratif') }}</span>
-                @if(($collabUnreadCount ?? 0) > 0)
-                    <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-xs font-semibold bg-red-600 text-white">
-                        {{ $collabUnreadCount }}
-                    </span>
-                @endif
-            </a>
+            @foreach($navItems as $item)
+                <a href="{{ route($item['route']) }}" class="{{ $linkClasses($item['key'], 'mobile') }}">
+                    <span>{{ $item['label'] }}</span>
+                    @if(($item['badge'] ?? 0) > 0)
+                        <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-xs font-semibold bg-red-600 text-white ml-2">
+                            {{ $item['badge'] }}
+                        </span>
+                    @endif
+                </a>
+            @endforeach
             @can('admin')
-                <a href="{{ route('elus.admin.index') }}" class="block px-4 py-2.5 text-sm {{ $activeSection === 'admin' ? 'bg-white text-[#faa21b] font-bold' : 'bg-white/10 text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Administration') }}</a>
+                <a href="{{ route('elus.admin.index') }}" class="block px-4 py-2.5 text-sm {{ $isActive('admin') ? 'bg-white text-[#faa21b] font-bold' : 'bg-white/10 text-white hover:bg-white/20 font-medium' }} rounded-lg transition">{{ __('Administration') }}</a>
             @endcan
             <a href="{{ route('elus.dashboard') }}" class="block px-4 py-2.5 text-sm bg-white text-[#faa21b] font-bold rounded-lg transition">{{ __('Tableau de bord') }}</a>
         </nav>

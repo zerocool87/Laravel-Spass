@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Elus\Concerns;
 
 use App\Models\Document;
@@ -26,6 +28,9 @@ trait FiltersDocuments
                     ->orWhereHas('users', function ($query) use ($user) {
                         $query->where('user_id', $user->id);
                     });
+                if ($user->fonction) {
+                    $q->orWhereJsonContains('titres', $user->fonction);
+                }
             });
     }
 }

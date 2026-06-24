@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Models\Message;
@@ -10,20 +12,13 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        // Define a simple gate for admin users
         Gate::define('admin', function ($user) {
             return $user->isAdmin();
         });
@@ -34,9 +29,9 @@ class AppServiceProvider extends ServiceProvider
 
             if ($user && ($user->isElu() || $user->isAdmin())) {
                 $unreadCount = Message::query()
-                    ->whereNull('read_at')
                     ->where('user_id', '<>', $user->id)
                     ->whereHas('conversation.users', fn ($query) => $query->where('users.id', $user->id))
+                    ->whereDoesntHave('readBy', fn ($query) => $query->where('user_id', $user->id))
                     ->count();
             }
 

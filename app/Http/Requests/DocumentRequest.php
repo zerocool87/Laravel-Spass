@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,8 +16,10 @@ class DocumentRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        // Ensure visible_to_all is always present as 1 or 0 (checkbox behavior)
-        $this->merge(['visible_to_all' => $this->has('visible_to_all') ? 1 : 0]);
+        $this->merge([
+            'visible_to_all' => $this->has('visible_to_all') ? 1 : 0,
+            'titres' => $this->input('titres', []),
+        ]);
     }
 
     public function rules(): array
@@ -24,7 +28,9 @@ class DocumentRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'visible_to_all' => ['required', 'boolean'],
-            'assigned_users' => ['required_if:visible_to_all,0', 'array'],
+            'titres' => ['nullable', 'array'],
+            'titres.*' => ['string', 'max:255'],
+            'assigned_users' => ['nullable', 'array'],
             'assigned_users.*' => ['exists:users,id'],
             'category' => ['nullable', 'string', Rule::in(config('documents.categories', []))],
         ];

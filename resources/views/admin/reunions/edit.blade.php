@@ -220,18 +220,46 @@
                                     {{ __('Participants') }}
                                 </label>
                                 <textarea name="participants_text" id="participants" rows="3"
-                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] @error('participants_text') border-red-300 @enderror"
+                                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b]"
                                     placeholder="{{ __('Un participant par ligne') }}"
                                 >{{ old('participants_text', is_array($reunion->participants) ? implode("\n", $reunion->participants) : '') }}</textarea>
                                 <p class="mt-1 text-xs text-gray-500">{{ __('Un nom par ligne') }}</p>
-                                @error('participants_text')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
                             </div>
                         </div>
 
                     </div>
                 </form>
+
+                <div class="mt-5 rounded-xl border border-[#faa21b]/20 p-4 space-y-3" x-data="{ visible: {{ old('visible_to_all', $reunion->visible_to_all) ? 'true' : 'false' }} }">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 rounded-lg bg-[#faa21b]/10 px-3 py-2 border border-[#faa21b]/20">
+                            <span class="h-4 w-1.5 rounded-full bg-[#faa21b]"></span>
+                            <h3 class="text-sm font-bold text-[#b36b00] uppercase tracking-wide">{{ __('Accès élus') }}</h3>
+                        </div>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="visible_to_all" value="1" x-model="visible" form="edit-form"
+                                class="rounded border-gray-300 text-[#faa21b] shadow-sm focus:ring-[#faa21b]" />
+                            <span class="text-sm font-medium text-gray-700">{{ __('Visible par tous les élus') }}</span>
+                        </label>
+                    </div>
+                    <div x-show="!visible">
+                        @if(!empty($titres))
+                        <p class="text-xs font-medium text-gray-700 mb-2">{{ __('Restreindre aux titres suivants :') }}</p>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                            @foreach($titres as $titre)
+                                <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                    <input type="checkbox" name="titres[]" value="{{ $titre }}" form="edit-form"
+                                        class="rounded border-gray-300 text-[#faa21b] shadow-sm focus:ring-[#faa21b]"
+                                        {{ in_array($titre, old('titres', $reunion->titres ?? [])) ? 'checked' : '' }} />
+                                    {{ $titre }}
+                                </label>
+                            @endforeach
+                        </div>
+                        @else
+                        <p class="text-xs text-gray-400">{{ __('Aucun titre disponible. Importez des élus d\'abord.') }}</p>
+                        @endif
+                    </div>
+                </div>
 
                 <div class="flex items-center justify-between pt-4 mt-4 border-t border-gray-200">
                     <form method="POST" action="{{ route('admin.reunions.destroy', $reunion) }}" onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer cette réunion ? Cette action est irréversible.') }}')">

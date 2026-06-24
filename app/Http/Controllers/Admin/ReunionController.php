@@ -1,16 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ReunionStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreReunionRequest;
+use App\Http\Requests\UpdateReunionRequest;
 use App\Models\Instance;
 use App\Models\Reunion;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ReunionController extends Controller
 {
+    private function titresElus(): array
+    {
+        return User::where('is_elu', true)
+            ->whereNotNull('fonction')
+            ->where('fonction', '!=', '')
+            ->distinct()
+            ->orderBy('fonction')
+            ->pluck('fonction')
+            ->toArray();
+    }
+
     /**
      * Display a listing of the reunions.
      */
@@ -46,7 +63,7 @@ class ReunionController extends Controller
 
         $reunions = $query->orderBy('start_time', 'desc')->paginate(15);
         $instances = Instance::orderBy('name')->get();
-        $statuses = Reunion::STATUSES;
+        $statuses = ReunionStatus::labels();
 
         return view('admin.reunions.index', compact('reunions', 'instances', 'statuses'));
     }
@@ -57,29 +74,23 @@ class ReunionController extends Controller
     public function create(Request $request): View
     {
         $instances = Instance::orderBy('name')->get();
-        $statuses = Reunion::STATUSES;
+        $statuses = ReunionStatus::labels();
         $selectedInstance = $request->instance_id;
+        $titres = $this->titresElus();
 
-        return view('admin.reunions.create', compact('instances', 'statuses', 'selectedInstance'));
+        return view('admin.reunions.create', compact('instances', 'statuses', 'selectedInstance', 'titres'));
     }
 
     /**
      * Store a newly created reunion in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreReunionRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'instance_id' => 'required|exists:instances,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'location' => 'nullable|string|max:255',
-            'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
-            'ordre_du_jour' => 'nullable|string',
-            'compte_rendu' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
+        $validated['visible_to_all'] = (bool) ($validated['visible_to_all'] ?? false);
+        if ($validated['visible_to_all']) {
+            $validated['titres'] = null;
+        }
 
         // Normalize participants: accept array or newline-separated text
         $participants = $request->input('participants');
@@ -138,28 +149,22 @@ class ReunionController extends Controller
     public function edit(Reunion $reunion): View
     {
         $instances = Instance::orderBy('name')->get();
-        $statuses = Reunion::STATUSES;
+        $statuses = ReunionStatus::labels();
+        $titres = $this->titresElus();
 
-        return view('admin.reunions.edit', compact('reunion', 'instances', 'statuses'));
+        return view('admin.reunions.edit', compact('reunion', 'instances', 'statuses', 'titres'));
     }
 
     /**
      * Update the specified reunion in storage.
      */
-    public function update(Request $request, Reunion $reunion): RedirectResponse
+    public function update(UpdateReunionRequest $request, Reunion $reunion): RedirectResponse
     {
-        $validated = $request->validate([
-            'instance_id' => 'required|exists:instances,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'location' => 'nullable|string|max:255',
-            'status' => 'required|string|in:'.implode(',', array_keys(Reunion::STATUSES)),
-            'ordre_du_jour' => 'nullable|string',
-            'compte_rendu' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
+        $validated['visible_to_all'] = (bool) ($validated['visible_to_all'] ?? false);
+        if ($validated['visible_to_all']) {
+            $validated['titres'] = null;
+        }
 
         // Normalize participants: accept array or newline-separated text
         $participants = $request->input('participants');

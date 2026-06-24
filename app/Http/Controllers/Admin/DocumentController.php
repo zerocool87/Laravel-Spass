@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -19,6 +21,17 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
+    private function titresElus(): array
+    {
+        return User::where('is_elu', true)
+            ->whereNotNull('fonction')
+            ->where('fonction', '!=', '')
+            ->distinct()
+            ->orderBy('fonction')
+            ->pluck('fonction')
+            ->toArray();
+    }
+
     public function index(Request $request): View
     {
         $category = $request->query('category');
@@ -56,8 +69,9 @@ class DocumentController extends Controller
     public function create(): View
     {
         $users = User::orderBy('name')->get();
+        $titres = $this->titresElus();
 
-        return view('admin.documents.create', compact('users'));
+        return view('admin.documents.create', compact('users', 'titres'));
     }
 
     public function store(DocumentRequest $request): RedirectResponse
@@ -74,6 +88,7 @@ class DocumentController extends Controller
             'original_name' => $file->getClientOriginalName(),
             'created_by' => $request->user()->id,
             'visible_to_all' => boolval($data['visible_to_all']),
+            'titres' => $data['visible_to_all'] ? null : ($data['titres'] ?? []),
             'category' => $data['category'] ?? null,
         ]);
 
@@ -96,8 +111,9 @@ class DocumentController extends Controller
     {
         $users = User::orderBy('name')->get();
         $assigned = $document->users()->pluck('users.id')->toArray();
+        $titres = $this->titresElus();
 
-        return view('admin.documents.edit', compact('document', 'users', 'assigned'));
+        return view('admin.documents.edit', compact('document', 'users', 'assigned', 'titres'));
     }
 
     public function update(DocumentRequest $request, Document $document): RedirectResponse
@@ -115,6 +131,7 @@ class DocumentController extends Controller
         $document->title = $data['title'];
         $document->description = $data['description'] ?? null;
         $document->visible_to_all = boolval($data['visible_to_all']);
+        $document->titres = $data['visible_to_all'] ? null : ($data['titres'] ?? []);
         $document->category = $data['category'] ?? null;
         $document->save();
 

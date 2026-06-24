@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
@@ -38,8 +40,8 @@ class DocumentController extends Controller
             });
         }
 
-        $documents = $query->with(['creator', 'users'])->latest()->get();
-        $documentsByCategory = $documents->groupBy(function ($d) {
+        $documents = $query->with(['creator', 'users'])->latest()->paginate(20);
+        $documentsByCategory = $documents->getCollection()->groupBy(function ($d) {
             return $d->category ?: __('Non catégorisé');
         });
 
@@ -49,7 +51,7 @@ class DocumentController extends Controller
             ->pluck('category')
             ->sort();
 
-        return view('elus.documents.index', compact('documentsByCategory', 'categories'));
+        return view('elus.documents.index', compact('documentsByCategory', 'categories', 'documents'));
     }
 
     /**

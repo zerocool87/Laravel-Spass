@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ReunionStatus;
 use App\Models\Reunion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -31,7 +32,7 @@ class ReunionFactory extends Factory
             'start_time' => $startTime,
             'end_time' => $endTime,
             'location' => $this->faker->address,
-            'status' => $this->faker->randomElement(array_keys(Reunion::STATUSES)),
+            'status' => $this->faker->randomElement(array_column(ReunionStatus::cases(), 'value')),
             'participants' => [],
             'ordre_du_jour' => $this->faker->paragraph,
             'compte_rendu' => $this->faker->paragraph,

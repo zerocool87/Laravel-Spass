@@ -1,4 +1,3 @@
-// Modal logic for admin event create
 window.openEventCreateModal = function(startDateIso) {
     if (window.CALENDAR_DEBUG) console.info('[modal] openEventCreateModal called', startDateIso);
     let el = document.getElementById('admin-event-modal');
@@ -19,22 +18,25 @@ window.openEventCreateModal = function(startDateIso) {
     try {
         el.style.display = 'flex';
         el.setAttribute('data-open', '1');
+        el.setAttribute('role', 'dialog');
+        el.setAttribute('aria-modal', 'true');
+        el.removeAttribute('aria-hidden');
     } catch (err) {
         console.warn('[modal] show failed', err);
     }
     window.dispatchEvent(new CustomEvent('admin:event-open'));
 };
 
-// Attach event listeners only once
 if (!window.__adminModalListenersAttached) {
     document.addEventListener('click', function(ev){
         const target = ev.target;
         if (!target) return;
-        if (target.matches('[data-modal-close]')) {
+        if (target.matches('[data-modal-close], #admin-event-modal .modal-backdrop')) {
             const modal = document.getElementById('admin-event-modal');
             if (modal && modal.getAttribute('data-open') === '1') {
                 modal.style.display = 'none';
                 modal.setAttribute('data-open', '0');
+                modal.setAttribute('aria-hidden', 'true');
             }
         }
     });
@@ -45,6 +47,7 @@ if (!window.__adminModalListenersAttached) {
             if (modal && modal.getAttribute('data-open') === '1') {
                 modal.style.display = 'none';
                 modal.setAttribute('data-open', '0');
+                modal.setAttribute('aria-hidden', 'true');
             }
         }
     });
@@ -55,6 +58,11 @@ if (!window.__adminModalListenersAttached) {
 document.addEventListener('DOMContentLoaded', function(){
     const form = document.getElementById('admin-event-create-form');
     if (!form) return;
+    const errorsEl = document.getElementById('admin-event-errors');
+    if (errorsEl) {
+        errorsEl.setAttribute('role', 'alert');
+        errorsEl.setAttribute('aria-live', 'polite');
+    }
     form.addEventListener('submit', async function(e){
         e.preventDefault();
         const action = form.action;
@@ -80,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 if (modal) {
                     modal.style.display = 'none';
                     modal.setAttribute('data-open', '0');
+                    modal.setAttribute('aria-hidden', 'true');
                 }
             } else if (res.status === 422) {
                 const json = await res.json();
@@ -87,7 +96,12 @@ document.addEventListener('DOMContentLoaded', function(){
                 const el = document.getElementById('admin-event-errors');
                 if (el) {
                     el.style.display = 'block';
-                    el.innerHTML = Object.values(errs).flat().map(s => '<div>'+s+'</div>').join('');
+                    el.textContent = '';
+                    for (const msg of Object.values(errs).flat()) {
+                        const div = document.createElement('div');
+                        div.textContent = msg;
+                        el.appendChild(div);
+                    }
                 }
             } else {
                 const el = document.getElementById('admin-event-errors');

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Conversation;
@@ -11,18 +13,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class MessageFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
             'conversation_id' => Conversation::factory(),
             'user_id' => User::factory(),
             'body' => $this->faker->paragraph(),
-            'read_at' => null,
         ];
     }
 }
