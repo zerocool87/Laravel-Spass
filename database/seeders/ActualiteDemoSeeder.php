@@ -54,6 +54,36 @@ class ActualiteDemoSeeder extends Seeder
                 'published_at' => now()->subMonths(1),
             ],
             [
+                'title' => 'Plan d\'urgence face aux intempéries : 40 agents mobilisés',
+                'content' => 'Suite aux épisodes de vents violents qui ont touché le département, le SEDHV a mobilisé 40 agents pour la remise en service des lignes électriques. 25 communes ont été impactées, principalement dans les secteurs de Saint-Léonard-de-Noblat et Eymoutiers. Le réseau a été rétabli à 100 % en moins de 48 heures.',
+                'published_at' => now()->subDays(3),
+            ],
+            [
+                'title' => 'Mise en service de la nouvelle chaufferie biomasse à Saint-Junien',
+                'content' => 'Le SEDHV a inauguré la chaufferie biomasse alimentant le réseau de chaleur de Saint-Junien. D\'une puissance de 2,5 MW, elle alimente 350 logements et 15 bâtiments publics. Ce projet permet d\'économiser 800 tonnes de CO₂ par an et de réduire la facture énergétique des habitants de 20 %.',
+                'published_at' => now()->subDays(10),
+            ],
+            [
+                'title' => 'Remplacement de 50 transformateurs haute-tension sur le territoire',
+                'content' => 'Le SEDHV procède au remplacement de 50 transformateurs haute-tension vieillissants sur l\'ensemble de la Haute-Vienne. Cet investissement de 1,2 M€ vise à sécuriser l\'alimentation électrique de 12 000 foyers. Les travaux s\'échelonneront jusqu\'au mois d\'octobre, par secteur, afin de limiter les coupures.',
+                'published_at' => now()->subDays(18),
+            ],
+            [
+                'title' => 'Programme « Isolation des combles » : 80 communes déjà engagées',
+                'content' => 'Lancé en début d\'année, le programme d\'isolation des combles des bâtiments communaux rencontre un vif succès. 80 communes ont déjà signé une convention avec le SEDHV pour bénéficier d\'un accompagnement technique et financier. Les premières estimations font état d\'une économie d\'énergie de 25 % en moyenne par bâtiment traité.',
+                'published_at' => now()->subDays(22),
+            ],
+            [
+                'title' => 'Participation du SEDHV au Salon des Maires du 27 mars',
+                'content' => 'Le SEDHV tiendra un stand au Salon des Maires de la Haute-Vienne le 27 mars à Limoges. Les élus pourront découvrir les dispositifs d\'accompagnement proposés par le syndicat : aide à la rénovation énergétique, conseil en mobilité électrique, éclairage public connecté, et solutions de financement via le Fonds Vert.',
+                'published_at' => now()->subDays(30),
+            ],
+            [
+                'title' => 'Lancement de la plateforme « Mes Aides Énergie » pour les citoyens',
+                'content' => 'Le SEDHV met en ligne une nouvelle plateforme numérique permettant aux Haut-Viennois de simuler leurs aides à la rénovation énergétique. Accessible à l\'adresse aides.sedhv.fr, l\'outil centralise les dispositifs MaPrimeRénov\', les certificats d\'économie d\'énergie et les aides locales. Plus de 500 simulations ont déjà été réalisées en une semaine.',
+                'published_at' => now()->subDays(35),
+            ],
+            [
                 'title' => 'Brouillon : Projet de centrale solaire sur les toits des bâtiments communaux',
                 'content' => 'Projet en cours d\'étude. La fiche technique est en attente de validation.',
                 'is_published' => false,
@@ -62,6 +92,12 @@ class ActualiteDemoSeeder extends Seeder
             [
                 'title' => 'Brouillon : Convention de cofinancement avec le Département',
                 'content' => 'Document préparatoire en vue de la signature prévue en juin.',
+                'is_published' => false,
+                'published_at' => null,
+            ],
+            [
+                'title' => 'Brouillon : Rapport annuel 2025 - volet éclairage public',
+                'content' => 'Synthèse des données en cours de consolidation avant publication.',
                 'is_published' => false,
                 'published_at' => null,
             ],
