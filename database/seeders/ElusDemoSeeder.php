@@ -20,12 +20,13 @@ class ElusDemoSeeder extends Seeder
             'email' => 'jean.dupont@example.com',
             'password' => bcrypt('password'),
             'is_elu' => true,
+            'commune' => 'Limoges',
             'titres' => ['Président', 'Membre du bureau'],
         ]);
         EluProfile::create([
             'user_id' => $elu1->id,
             'civilite' => 'Monsieur',
-            'code_insee' => '87011',
+            'code_insee' => '87085',
             'collectivite' => 'Haute-Vienne',
             'epci_commune' => 'Limoges Métropole',
             'titres' => ['Président', 'Membre du bureau'],
@@ -37,11 +38,15 @@ class ElusDemoSeeder extends Seeder
             'email' => 'marie.martin@example.com',
             'password' => bcrypt('password'),
             'is_elu' => true,
+            'commune' => 'Saint-Yrieix-la-Perche',
             'titres' => ['Vice-président', 'Membre de commission'],
         ]);
         EluProfile::create([
             'user_id' => $elu2->id,
             'civilite' => 'Madame',
+            'code_insee' => '87187',
+            'collectivite' => 'Haute-Vienne',
+            'epci_commune' => 'CC Pays de Saint-Yrieix',
             'titres' => ['Vice-président', 'Membre de commission'],
         ]);
 
@@ -51,11 +56,15 @@ class ElusDemoSeeder extends Seeder
             'email' => 'pierre.durand@example.com',
             'password' => bcrypt('password'),
             'is_elu' => true,
+            'commune' => 'Panazol',
             'titres' => ['Délégué titulaire'],
         ]);
         EluProfile::create([
             'user_id' => $elu3->id,
             'civilite' => 'Monsieur',
+            'code_insee' => '87114',
+            'collectivite' => 'Haute-Vienne',
+            'epci_commune' => 'Limoges Métropole',
             'titres' => ['Délégué titulaire'],
         ]);
 
@@ -65,11 +74,15 @@ class ElusDemoSeeder extends Seeder
             'email' => 'sophie.bernard@example.com',
             'password' => bcrypt('password'),
             'is_elu' => true,
+            'commune' => 'Couzeix',
             'titres' => ['Délégué suppléant'],
         ]);
         EluProfile::create([
             'user_id' => $elu4->id,
             'civilite' => 'Madame',
+            'code_insee' => '87050',
+            'collectivite' => 'Haute-Vienne',
+            'epci_commune' => 'Limoges Métropole',
             'titres' => ['Délégué suppléant'],
         ]);
 
@@ -79,11 +92,15 @@ class ElusDemoSeeder extends Seeder
             'email' => 'anne.leroy@example.com',
             'password' => bcrypt('password'),
             'is_elu' => true,
+            'commune' => 'Limoges',
             'titres' => ['Représentant'],
         ]);
         EluProfile::create([
             'user_id' => $elu5->id,
             'civilite' => 'Madame',
+            'code_insee' => '87085',
+            'collectivite' => 'Haute-Vienne',
+            'epci_commune' => 'Limoges Métropole',
             'titres' => ['Représentant'],
         ]);
 

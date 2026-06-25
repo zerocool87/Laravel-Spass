@@ -20,6 +20,8 @@ class AdminUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'is_admin' => true,
             'is_elu' => true,
+            'commune' => 'Limoges',
+            'titres' => ['Administrateur'],
         ]);
 
         EluProfile::create([

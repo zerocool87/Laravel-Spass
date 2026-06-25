@@ -20,8 +20,7 @@ class DatabaseSeeder extends Seeder
             \Database\Seeders\EventDemoSeeder::class,
             \Database\Seeders\DocumentDemoSeeder::class,
             \Database\Seeders\ActualiteDemoSeeder::class,
-            \Database\Seeders\ConversationSeeder::class,
-            \Database\Seeders\MessageSeeder::class,
+            \Database\Seeders\ForumDemoSeeder::class,
         ]);
     }
 }
