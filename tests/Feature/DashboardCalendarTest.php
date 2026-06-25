@@ -17,7 +17,7 @@ class DashboardCalendarTest extends TestCase
         $response = $this->actingAs($user)->get(route('elus.dashboard'));
 
         $response->assertStatus(200);
-        $response->assertSee('Espace Élus');
+        $response->assertSee('Bonjour');
         $response->assertDontSee('<div id="dashboard-calendar"', false);
     }
 }

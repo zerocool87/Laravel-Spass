@@ -242,7 +242,7 @@ class ReunionController extends Controller
             $query->where('id', '!=', $excludeId);
         }
 
-        return $query->whereIn('status', ['planifiee', 'confirmee'])->get();
+        return $query->whereIn('status', [ReunionStatus::Planifiee->value, ReunionStatus::Confirmee->value])->get();
     }
 
     /**

@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ReunionStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * @deprecated Use \App\Enums\ReunionStatus directly for new code.
- */
 class Reunion extends Model
 {
     /** @use HasFactory<\Database\Factories\ReunionFactory> */
@@ -51,18 +49,14 @@ class Reunion extends Model
         return $this->belongsTo(Instance::class);
     }
 
-    public function scopeUpcoming($query)
+    /**
+     * Scope for upcoming (future) reunions with active status.
+     */
+    public function scopeUpcoming(Builder $query): Builder
     {
         return $query
             ->where('start_time', '>=', now())
             ->whereIn('status', [ReunionStatus::Planifiee->value, ReunionStatus::Confirmee->value]);
-    }
-
-    public function scopePast($query)
-    {
-        return $query
-            ->where('start_time', '<', now())
-            ->orderBy('start_time', 'desc');
     }
 
     public function getStatusLabelAttribute(): string

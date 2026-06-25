@@ -11,6 +11,7 @@ use App\Http\Requests\StoreReunionRequest;
 use App\Http\Requests\UpdateReunionRequest;
 use App\Models\Instance;
 use App\Models\Reunion;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,11 +24,9 @@ class ReunionController extends Controller
     /**
      * Apply titre access scope for non-admin élus.
      */
-    private function scopeByTitres($query): void
+    private function scopeByTitres($query, User $user): void
     {
-        $user = request()->user();
-
-        if (! $user || $user->isAdmin()) {
+        if ($user->isAdmin()) {
             return;
         }
 
@@ -87,7 +86,7 @@ class ReunionController extends Controller
             $query->orderBy('start_time', 'desc');
         }
 
-        $this->scopeByTitres($query);
+        $this->scopeByTitres($query, $request->user());
 
         $reunions = $query->paginate(12);
         $instances = Instance::orderBy('name')->get();
@@ -206,7 +205,7 @@ class ReunionController extends Controller
     {
         $query = Reunion::with('instance');
 
-        $this->scopeByTitres($query);
+        $this->scopeByTitres($query, $request->user());
 
         // Filter by date range for calendar
         if ($request->filled('start')) {

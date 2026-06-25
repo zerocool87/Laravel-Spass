@@ -1,8 +1,20 @@
 <x-app-layout>
     <header>
+        @php
+            if (is_null($user->prenom)) {
+                $greeting = __('Bonjour') . ' 👋';
+            } else {
+                $hour = (int) now()->format('H');
+                $greeting = match (true) {
+                    $hour < 12 => __('Bonjour') . ' ' . $user->prenom . ' ☀️',
+                    $hour < 18 => __('Bon après-midi') . ' ' . $user->prenom . ' 🌤️',
+                    default    => __('Bonsoir') . ' ' . $user->prenom . ' 🌙',
+                };
+            }
+        @endphp
         <x-elus-header
-            :title="__('Espace Élus')"
-            :subtitle="__('Gouvernance et projets territoriaux')"
+            :title="$greeting"
+            subtitle="{{ __('Gouvernance et projets territoriaux') }}"
             icon="🏛️"
             activeSection="dashboard"
         />

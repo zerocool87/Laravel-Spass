@@ -18,38 +18,72 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <x-breadcrumbs :items="[['label' => __('Forum')]]" />
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2">
                     @foreach($instances as $instance)
-                        @php($instanceThreads = $threads->where('instance_id', $instance->id))
+                        @php
+                            $instanceThreads = $threads->where('instance_id', $instance->id);
+                            $instanceUnread = $instanceThreads->filter(fn ($t) => ! $t->is_read)->count();
+                        @endphp
                         @continue($instanceThreads->isEmpty())
-                        <div class="widget-container mb-6">
-                            <x-widget-header title="{{ $instance->name }}" />
+                        <div class="widget-container mb-6" x-data="{ open: false }">
+                            <button @click="open = ! open" type="button" class="w-full text-left">
+                                <div class="px-4 sm:px-6 py-4 sm:py-5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl">
+                                    <h3 class="text-lg sm:text-xl font-bold text-[#faa21b] flex items-center gap-2">
+                                        <svg
+                                            class="w-4 h-4 transition-transform duration-200"
+                                            :class="{ 'rotate-90': open }"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        >
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                        {{ $instance->name }}
+                                    </h3>
+                                    <div class="flex items-center gap-2">
+                                        @if($instanceUnread > 0)
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-red-500 text-white">
+                                                {{ $instanceUnread }} {{ __('non lu(s)') }}
+                                            </span>
+                                        @endif
+                                        <span class="text-sm text-gray-500">{{ $instanceThreads->count() }} {{ __('sujets') }}</span>
+                                    </div>
+                                </div>
+                            </button>
 
-                            <div class="divide-y divide-[#faa21b]/20">
+                            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="divide-y divide-[#faa21b]/20">
                                 @foreach($instanceThreads as $thread)
-                                    <a href="{{ route('elus.forum.show', $thread) }}" class="block px-6 py-4 hover:bg-[#faa21b]/5 transition">
+                                    <a href="{{ route('elus.forum.show', $thread) }}" class="block px-6 py-5 hover:bg-[#faa21b]/5 transition">
                                         <div class="flex items-start justify-between gap-4">
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center gap-2">
-                                                    <p class="font-semibold text-gray-900 truncate">
+                                                    <p class="font-bold text-gray-900 truncate text-base">
                                                         {{ $thread->is_pinned ? '📌 ' : '' }}{{ $thread->title }}
                                                     </p>
-                                                    @php($isUnread = ! $thread->is_read)
+                                                    @php
+                                                        $isUnread = ! $thread->is_read;
+                                                    @endphp
                                                     @if($isUnread)
-                                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-[#faa21b]/20 text-[#faa21b]">
+                                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-red-500 text-white">
                                                             {{ __('Nouveau') }}
                                                         </span>
                                                     @endif
                                                 </div>
-                                                <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-xs text-gray-500">
+                                                <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-sm text-gray-600">
                                                     <span>{{ $thread->creator->name }}</span>
+                                                    <span class="inline-flex items-center gap-1 text-xs font-medium text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
+                                                        <span>💬</span>
+                                                        <span>{{ $thread->creator->forum_posts_count }}</span>
+                                                    </span>
                                                     @if($thread->creator->commune)
                                                         <span class="text-gray-400">·</span>
                                                         <span>{{ $thread->creator->commune }}</span>
                                                     @endif
                                                     @if($thread->creator->titres)
-                                                        @php($titres = is_array($thread->creator->titres) ? $thread->creator->titres : json_decode($thread->creator->titres, true) ?? [])
+                                                        @php
+                                                            $titres = is_array($thread->creator->titres) ? $thread->creator->titres : json_decode($thread->creator->titres, true) ?? [];
+                                                        @endphp
                                                         @foreach(array_slice($titres, 0, 2) as $titre)
                                                             <span class="text-gray-400">·</span>
                                                             <span>{{ $titre }}</span>
@@ -57,7 +91,7 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="flex flex-col items-end gap-1 flex-shrink-0 text-xs text-gray-500">
+                                            <div class="flex flex-col items-end gap-1 flex-shrink-0 text-sm text-gray-500">
                                                 <span>{{ $thread->posts_count }} {{ __('messages') }}</span>
                                                 @if($thread->latestPost)
                                                     <span>{{ $thread->latestPost->created_at->diffForHumans() }}</span>
@@ -85,8 +119,7 @@
 
                 <div>
                     <div class="widget-container">
-                        <x-widget-header title="{{ __('Nouveau sujet') }}" />
-                        <a href="{{ route('elus.forum.create') }}" class="block mx-6 mb-6">
+                        <a href="{{ route('elus.forum.create') }}" class="block mx-6 my-6">
                             <button type="button" class="btn-primary-orange w-full">
                                 {{ __('Créer un sujet') }}
                             </button>

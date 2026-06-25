@@ -15,11 +15,6 @@ class Project extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'title',
         'description',
@@ -48,56 +43,16 @@ class Project extends Model
         ];
     }
 
-    /**
-     * Types de projets disponibles.
-     *
-     * @deprecated Use \App\Enums\ProjectType directly for new code.
-     *
-     * @var array<string, string>
-     */
-    public const TYPES = [
-        'infrastructure' => 'Infrastructure',
-        'energie' => 'Énergie',
-        'amenagement' => 'Aménagement',
-        'environnement' => 'Environnement',
-        'numerique' => 'Numérique',
-        'autre' => 'Autre',
-    ];
-
-    /**
-     * Statuts de projets disponibles.
-     *
-     * @deprecated Use \App\Enums\ProjectStatus directly for new code.
-     *
-     * @var array<string, string>
-     */
-    public const STATUSES = [
-        'planifie' => 'Planifié',
-        'en_cours' => 'En cours',
-        'termine' => 'Terminé',
-        'suspendu' => 'Suspendu',
-        'annule' => 'Annulé',
-    ];
-
-    /**
-     * Get the type label.
-     */
     public function getTypeLabelAttribute(): string
     {
         return ProjectType::tryFrom($this->type)?->label() ?? $this->type;
     }
 
-    /**
-     * Get the status label.
-     */
     public function getStatusLabelAttribute(): string
     {
         return ProjectStatus::tryFrom($this->status)?->label() ?? $this->status;
     }
 
-    /**
-     * Get the status color for UI.
-     */
     public function getStatusColorAttribute(): string
     {
         $color = ProjectStatus::tryFrom($this->status)?->color() ?? 'gray';
@@ -112,17 +67,11 @@ class Project extends Model
         };
     }
 
-    /**
-     * Get the formatted budget.
-     */
     public function getFormattedBudgetAttribute(): string
     {
         return number_format((float) $this->budget, 2, ',', ' ').' €';
     }
 
-    /**
-     * Scope for active projects.
-     */
     public function scopeActive(Builder $query): Builder
     {
         return $query->whereIn('status', [
@@ -131,17 +80,6 @@ class Project extends Model
         ]);
     }
 
-    /**
-     * Scope for projects in a specific territory.
-     */
-    public function scopeInTerritory(Builder $query, string $territory): Builder
-    {
-        return $query->whereJsonContains('territories', $territory);
-    }
-
-    /**
-     * Scope for projects visible to a user based on commune.
-     */
     public function scopeVisibleToUser(Builder $query, User $user): Builder
     {
         if ($user->isAdmin()) {
@@ -149,7 +87,7 @@ class Project extends Model
         }
 
         if (blank($user->commune)) {
-            return $query->whereRaw('1 = 0');
+            return $query->whereKey(0);
         }
 
         return $query->where('commune', $user->commune);

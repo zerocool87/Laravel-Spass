@@ -76,6 +76,7 @@ class DashboardController extends Controller
         ];
 
         return view('elus.dashboard', compact(
+            'user',
             'upcomingReunions',
             'activeProjects',
             'latestDocuments',

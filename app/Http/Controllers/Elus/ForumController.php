@@ -29,7 +29,11 @@ class ForumController extends Controller
             ->get();
 
         $threads = ForumThread::query()
-            ->with(['instance', 'creator', 'latestPost.author'])
+            ->with([
+                'instance',
+                'creator' => fn ($q) => $q->withCount('forumPosts'),
+                'latestPost.author',
+            ])
             ->withCount('posts')
             ->withExists([
                 'readBy as is_read' => fn ($query) => $query->where('user_id', $user->id),
@@ -86,7 +90,8 @@ class ForumController extends Controller
             return $thread;
         });
 
-        return redirect()->route('elus.forum.show', $thread);
+        return redirect()->route('elus.forum.show', $thread)
+            ->with('success', __('Sujet créé avec succès !'));
     }
 
     public function show(ForumThread $forumThread): View
@@ -97,7 +102,7 @@ class ForumController extends Controller
         $forumThread->load(['instance', 'creator', 'posts.author']);
 
         $posts = $forumThread->posts()
-            ->with('author')
+            ->with(['author' => fn ($q) => $q->withCount('forumPosts')])
             ->orderBy('created_at')
             ->paginate(30);
 
@@ -123,6 +128,7 @@ class ForumController extends Controller
             'body' => $request->validated()['body'],
         ]);
 
-        return redirect()->route('elus.forum.show', $forumThread);
+        return redirect()->route('elus.forum.show', $forumThread)
+            ->with('success', __('Réponse postée avec succès !'));
     }
 }

@@ -17,7 +17,7 @@ class AdminDashboardCalendarLinkTest extends TestCase
         $this->actingAs($admin)
             ->get(route('elus.dashboard'))
             ->assertStatus(200)
-            ->assertSee('Espace Élus')
+            ->assertSee('Bonjour')
             ->assertDontSee('<div id="dashboard-calendar"', false)
             ->assertDontSee('Create Event');
     }
@@ -29,7 +29,7 @@ class AdminDashboardCalendarLinkTest extends TestCase
         $this->actingAs($user)
             ->get(route('elus.dashboard'))
             ->assertStatus(200)
-            ->assertSee('Espace Élus')
+            ->assertSee('Bonjour')
             ->assertDontSee('<div id="dashboard-calendar"', false)
             ->assertDontSee('Create Event');
     }

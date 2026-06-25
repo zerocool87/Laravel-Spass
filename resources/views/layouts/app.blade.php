@@ -36,5 +36,48 @@
                 {{ $slot }}
             </main>
         </div>
+
+        {{-- Toast container --}}
+        <div
+            x-data
+            x-init="
+                @if(session('success'))
+                    $store.toasts.add('{{ session('success') }}', 'success');
+                @endif
+                @if(session('error'))
+                    $store.toasts.add('{{ session('error') }}', 'error');
+                @endif
+                @if(session('info'))
+                    $store.toasts.add('{{ session('info') }}', 'info');
+                @endif
+            "
+            class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"
+        >
+            <template x-for="toast in $store.toasts.items" :key="toast.id">
+                <div
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-4"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 translate-y-4"
+                    class="pointer-events-auto flex items-start gap-3 px-5 py-4 rounded-xl shadow-2xl border cursor-pointer"
+                    :class="{
+                        'bg-emerald-600 text-white border-emerald-700': toast.type === 'success',
+                        'bg-red-600 text-white border-red-700': toast.type === 'error',
+                        'bg-blue-600 text-white border-blue-700': toast.type === 'info',
+                    }"
+                    @click="$store.toasts.remove(toast.id)"
+                >
+                    <span class="text-lg flex-shrink-0 leading-none" x-text="toast.type === 'success' ? '✅' : toast.type === 'error' ? '❌' : 'ℹ️'"></span>
+                    <p class="text-sm font-semibold flex-1" x-text="toast.message"></p>
+                    <button @click.stop="$store.toasts.remove(toast.id)" class="text-white/70 hover:text-white flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </template>
+        </div>
     </body>
 </html>
