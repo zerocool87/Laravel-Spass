@@ -10,8 +10,35 @@
         />
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('elus.dashboard')], ['label' => __('Actualités')]]" />
+    </x-slot>
+
     <div class="py-8">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-3 sm:space-y-6">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-3 sm:space-y-6"
+             x-data="{
+                 items: {{ Js::from($actualites->getCollection()->map(fn ($a) => [
+                     'id' => $a->id,
+                     'title' => $a->title,
+                     'content' => $a->content,
+                     'creator' => $a->creator?->name,
+                     'published_at' => $a->published_at?->isoFormat('dddd D MMMM YYYY [à] H:mm'),
+                     'published_at_raw' => $a->published_at?->diffForHumans(),
+                     'is_current_month' => $a->published_at?->isCurrentMonth(),
+                     'year' => $a->published_at?->format('Y'),
+                 ])->values()) }},
+                 isOpen: false,
+                 selected: {},
+                 openModal(index) {
+                     this.selected = this.items[index];
+                     this.isOpen = true;
+                     document.body.classList.add('overflow-hidden');
+                 },
+                 closeModal() {
+                     this.isOpen = false;
+                     document.body.classList.remove('overflow-hidden');
+                 },
+             }">
 
             {{-- Barre de recherche --}}
             <form method="GET" action="{{ route('elus.actualites.index') }}" class="flex gap-2 sm:gap-3 flex-wrap">
@@ -58,13 +85,15 @@
                     ];
                     $accent = $accentColors[$index % count($accentColors)];
                 @endphp
-                <a href="{{ route('elus.actualites.show', $actualite) }}"
-                   class="block bg-white rounded-2xl shadow-sm border border-gray-100 border-l-4 {{ $accent['border'] }} p-4 sm:p-6 hover:shadow-md hover:border-l-4 transition-all group">
+                <div @click="openModal({{ $index }})"
+                     @keydown.enter="openModal({{ $index }})"
+                     @keydown.space.prevent="openModal({{ $index }})"
+                     role="button"
+                     tabindex="0"
+                     class="block bg-white rounded-2xl shadow-sm border border-gray-100 border-l-4 {{ $accent['border'] }} p-4 sm:p-6 hover:shadow-md hover:border-l-4 transition-all group cursor-pointer">
 
-                    {{-- En-tête carte --}}
                     <div class="flex items-start justify-between gap-2 sm:gap-4">
                         <div class="flex-1 min-w-0">
-                            {{-- Badge date --}}
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $accent['badge'] }}">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,7 +116,6 @@
                             </p>
                         </div>
 
-                        {{-- Flèche --}}
                         <div class="flex-shrink-0 mt-1">
                             <div class="w-8 h-8 rounded-full bg-gray-50 group-hover:bg-[#faa21b]/10 flex items-center justify-center transition">
                                 <svg class="w-4 h-4 text-gray-300 group-hover:text-[#faa21b] transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +125,6 @@
                         </div>
                     </div>
 
-                    {{-- Pied de carte --}}
                     @if($actualite->creator)
                         <div class="mt-4 pt-3 border-t border-gray-50 flex items-center gap-2 text-xs text-gray-400">
                             <div class="w-5 h-5 rounded-full {{ $accent['dot'] }}/20 flex items-center justify-center">
@@ -114,12 +141,10 @@
                             {{ $actualite->published_at?->diffForHumans() }}
                         </div>
                     @endif
-                </a>
+                </div>
             @empty
                 <div class="bg-white rounded-2xl shadow-sm border border-dashed border-[#faa21b]/30 p-6 sm:p-14 text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#faa21b]/10 text-3xl mb-4">
-                        📰
-                    </div>
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#faa21b]/10 text-3xl mb-4">📰</div>
                     <p class="text-gray-700 font-semibold text-base">
                         @if($search)
                             {{ __('Aucune actualité ne correspond à votre recherche.') }}
@@ -136,6 +161,73 @@
                     {{ $actualites->links() }}
                 </div>
             @endif
+
+            {{-- Modal --}}
+            <div x-show="isOpen"
+                 x-cloak
+                 x-transition.opacity.duration.200
+                 class="fixed inset-0 z-50 flex items-start justify-center pt-10 sm:pt-20 pb-10 overflow-y-auto"
+                 @click.self="closeModal"
+                 @keydown.escape.window="closeModal">
+
+                <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+                <div x-show="isOpen"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                     class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 sm:mx-6 z-10 flex flex-col max-h-[calc(100vh-8rem)]">
+
+                    <div class="absolute top-4 right-4 z-20">
+                        <button @click="closeModal" type="button"
+                                class="w-8 h-8 rounded-full bg-white/90 hover:bg-white shadow flex items-center justify-center transition"
+                                aria-label="{{ __('Fermer') }}">
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-[#faa21b] to-amber-400 px-6 py-5 flex-shrink-0 rounded-t-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white/25 flex items-center justify-center text-xl flex-shrink-0">📰</div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-bold text-white leading-snug" x-text="selected.title"></h3>
+                                <p class="text-sm text-white/80 mt-0.5" x-text="selected.published_at"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-gray-100 px-6 py-3 bg-gray-50/60 flex flex-wrap items-center gap-4 text-xs text-gray-500 flex-shrink-0">
+                        <template x-if="selected.creator">
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-5 h-5 rounded-full bg-[#faa21b]/20 flex items-center justify-center">
+                                    <svg class="w-3 h-3 text-[#b36b00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700" x-text="selected.creator"></span>
+                            </div>
+                        </template>
+                        <span x-show="selected.creator" class="text-gray-200">|</span>
+                        <div class="flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>{{ __('Publié') }} <span x-text="selected.published_at_raw"></span></span>
+                        </div>
+                        <span x-show="selected.is_current_month" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">✓ {{ __('Récent') }}</span>
+                    </div>
+
+                    <div class="px-6 py-6 overflow-y-auto">
+                        <div class="prose prose-gray max-w-none text-gray-800 leading-relaxed text-[0.9375rem] whitespace-pre-line" x-text="selected.content"></div>
+                    </div>
+
+                    <div class="px-6 py-3 border-t border-dashed border-[#faa21b]/20 bg-[#faa21b]/3 flex items-center justify-between flex-shrink-0 rounded-b-2xl">
+                        <span class="text-xs text-gray-400">SEHV · <span x-text="selected.year"></span></span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>

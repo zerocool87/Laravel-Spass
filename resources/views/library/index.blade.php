@@ -6,6 +6,10 @@
         />
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('dashboard')], ['label' => __('Bibliothèque')]]" />
+    </x-slot>
+
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="glass p-3 sm:p-4">

@@ -15,9 +15,12 @@
         />
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('elus.dashboard')], ['label' => __('Forum'), 'url' => route('elus.forum.index')], ['label' => $thread->title]]" />
+    </x-slot>
+
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <x-breadcrumbs :items="[['label' => __('Forum'), 'url' => route('elus.forum.index')], ['label' => $thread->title]]" />
 
             <div class="widget-container">
                 <div class="p-6 sm:p-8 flex flex-col gap-5">

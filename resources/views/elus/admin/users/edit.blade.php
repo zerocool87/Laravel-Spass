@@ -11,6 +11,10 @@
         />
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('elus.dashboard')], ['label' => __('Administration'), 'url' => route('elus.admin.index')], ['label' => __('Utilisateurs'), 'url' => route('elus.admin.users')], ['label' => $user->name]]" />
+    </x-slot>
+
     <div class="py-6">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl shadow-lg border border-[#faa21b]/20" x-data="{ tab: 'general' }">

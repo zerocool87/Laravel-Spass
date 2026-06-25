@@ -10,6 +10,10 @@
         />
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('elus.dashboard')], ['label' => __('Administration'), 'url' => route('elus.admin.index')], ['label' => __('Actualités'), 'url' => route('admin.actualites.index')], ['label' => __('Nouvelle')]]" />
+    </x-slot>
+
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8"

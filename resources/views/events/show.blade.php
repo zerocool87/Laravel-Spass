@@ -8,6 +8,10 @@
         />
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('dashboard')], ['label' => __('Événements'), 'url' => route('events.index')], ['label' => $event->title]]" />
+    </x-slot>
+
     <div class="py-8">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="glass p-6 rounded-xl shadow-md">

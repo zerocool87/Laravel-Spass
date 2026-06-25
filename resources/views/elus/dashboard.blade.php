@@ -14,6 +14,10 @@
         />
     </header>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil')]]" />
+    </x-slot>
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[calc(100vh-56px)] flex flex-col py-2 gap-2">
 
             {{-- 2×2 Widget Grid — fills remaining vertical space --}}

@@ -6,6 +6,10 @@
         />
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('dashboard')], ['label' => __('Événements')]]" />
+    </x-slot>
+
     {{-- Enable calendar debug to surface initialization issues on this page --}}
     <script>window.CALENDAR_DEBUG = {{ config('app.debug') ? 'true' : 'false' }};</script>
 

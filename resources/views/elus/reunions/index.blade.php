@@ -13,6 +13,10 @@
         </x-elus-header>
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('elus.dashboard')], ['label' => __('Réunions')]]" />
+    </x-slot>
+
     <div class="py-4">
         <div class="max-w-7xl mx-auto sm:px-3 lg:px-4">
             {{-- Create Reunion Button moved into widget header --}}

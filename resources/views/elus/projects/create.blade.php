@@ -10,6 +10,10 @@
         />
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('elus.dashboard')], ['label' => __('Projets'), 'url' => route('elus.projects.index')], ['label' => __('Nouveau projet')]]" />
+    </x-slot>
+
     <div class="py-8">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white rounded-lg shadow p-6">

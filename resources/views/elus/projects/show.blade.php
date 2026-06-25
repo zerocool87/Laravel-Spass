@@ -19,6 +19,10 @@
         </x-elus-header>
     </x-slot>
 
+    <x-slot name="breadcrumbs">
+        <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('elus.dashboard')], ['label' => __('Projets'), 'url' => route('elus.projects.index')], ['label' => $project->title]]" />
+    </x-slot>
+
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if(session('success'))

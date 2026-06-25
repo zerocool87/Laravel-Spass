@@ -965,5 +965,7 @@ input[type="text"], textarea, select, .input-text {
 }
 
 
+[x-cloak] { display: none !important; }
+
 /* End - clean Laravel light theme CSS */
 
