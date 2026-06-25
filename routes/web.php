@@ -101,15 +101,16 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
         Route::post('/documents', [\App\Http\Controllers\Elus\DocumentController::class, 'store'])->name('documents.store');
     });
 
-    // Collaborative messaging
-    Route::get('/collab', [\App\Http\Controllers\Elus\CollabController::class, 'index'])->name('collab.index');
+    // Forum (remplace l'ancien module Collaboratif)
+    Route::get('/forum', [\App\Http\Controllers\Elus\ForumController::class, 'index'])->name('forum.index');
+    Route::get('/forum/creer', [\App\Http\Controllers\Elus\ForumController::class, 'create'])->name('forum.create');
+    Route::post('/forum', [\App\Http\Controllers\Elus\ForumController::class, 'store'])->name('forum.store');
+    Route::get('/forum/{forum_thread}', [\App\Http\Controllers\Elus\ForumController::class, 'show'])->name('forum.show');
+    Route::post('/forum/{forum_thread}/posts', [\App\Http\Controllers\Elus\ForumController::class, 'storePost'])->name('forum.posts.store');
 
     // Actualités
     Route::get('/actualites', [\App\Http\Controllers\Elus\ActualiteController::class, 'index'])->name('actualites.index');
     Route::get('/actualites/{actualite}', [\App\Http\Controllers\Elus\ActualiteController::class, 'show'])->name('actualites.show');
-    Route::post('/collab', [\App\Http\Controllers\Elus\CollabController::class, 'storeConversation'])->name('collab.store');
-    Route::get('/collab/{conversation}', [\App\Http\Controllers\Elus\CollabController::class, 'show'])->name('collab.show');
-    Route::post('/collab/{conversation}/messages', [\App\Http\Controllers\Elus\CollabController::class, 'storeMessage'])->name('collab.messages.store');
 
     // Admin section (only for admins within Espace Élus)
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {

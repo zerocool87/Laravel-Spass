@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Models\Message;
+use App\Models\ForumThread;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
@@ -28,14 +28,13 @@ class AppServiceProvider extends ServiceProvider
             $unreadCount = 0;
 
             if ($user && ($user->isElu() || $user->isAdmin())) {
-                $unreadCount = Message::query()
-                    ->where('user_id', '<>', $user->id)
-                    ->whereHas('conversation.users', fn ($query) => $query->where('users.id', $user->id))
+                $unreadCount = ForumThread::query()
                     ->whereDoesntHave('readBy', fn ($query) => $query->where('user_id', $user->id))
+                    ->whereHas('posts')
                     ->count();
             }
 
-            $view->with('collabUnreadCount', $unreadCount);
+            $view->with('forumUnreadCount', $unreadCount);
         });
     }
 }

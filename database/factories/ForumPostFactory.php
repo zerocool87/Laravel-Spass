@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Conversation;
+use App\Models\ForumThread;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Message>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ForumPost>
  */
-class MessageFactory extends Factory
+class ForumPostFactory extends Factory
 {
     public function definition(): array
     {
         return [
-            'conversation_id' => Conversation::factory(),
+            'forum_thread_id' => ForumThread::factory(),
             'user_id' => User::factory(),
             'body' => $this->faker->paragraph(),
         ];

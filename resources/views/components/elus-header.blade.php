@@ -18,7 +18,7 @@
         ['route' => 'elus.reunions.index', 'label' => __('Réunions'), 'key' => 'reunions'],
         ['route' => 'elus.documents.index', 'label' => __('Documents'), 'key' => 'documents'],
         ['route' => 'elus.actualites.index', 'label' => __('Actualités'), 'key' => 'actualites'],
-        ['route' => 'elus.collab.index', 'label' => __('Collaboratif'), 'key' => 'collab', 'badge' => $collabUnreadCount ?? 0],
+        ['route' => 'elus.forum.index', 'label' => __('Forum'), 'key' => 'forum', 'badge' => $forumUnreadCount ?? 0],
     ];
     $isActive = fn (string $key): bool => $activeSection === $key;
     $linkClasses = fn (string $key, string $context = 'desktop'): string => $context === 'desktop'
