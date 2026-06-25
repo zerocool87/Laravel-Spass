@@ -25,7 +25,7 @@
                  items: {{ Js::from($allArticles->values()->map(fn ($a) => [
                      'id' => $a->id,
                      'title' => $a->title,
-                     'content' => $a->content,
+                      'content' => nl2br(e($a->content)),
                      'creator' => $a->creator?->name,
                      'published_at' => $a->published_at?->isoFormat('dddd D MMMM YYYY [à] H:mm'),
                      'published_at_raw' => $a->published_at?->diffForHumans(),
@@ -59,7 +59,21 @@
                     <span class="h-px flex-1 max-w-24 bg-[#faa21b]/30"></span>
                 </div>
                 <div class="mt-3 border-t-2 border-[#faa21b]/20 pt-2 flex items-center justify-between text-[11px] uppercase tracking-wider text-gray-500 font-semibold">
-                    <span>N° {{ $actualites->currentPage() }} — Page {{ $actualites->currentPage() }}</span>
+                    @if($actualites->hasPages())
+                        <nav class="inline-flex items-center gap-3 select-none">
+                            @if($actualites->onFirstPage())
+                                <span class="text-gray-300 cursor-not-allowed">{{ __('Articles précédents') }}</span>
+                            @else
+                                <a href="{{ $actualites->previousPageUrl() }}" rel="prev" class="text-[#b36b00] hover:text-[#faa21b] transition">{{ __('Articles précédents') }}</a>
+                            @endif
+                            <span class="text-gray-300 mx-1">|</span>
+                            @if($actualites->hasMorePages())
+                                <a href="{{ $actualites->nextPageUrl() }}" rel="next" class="text-[#b36b00] hover:text-[#faa21b] transition">{{ __('Articles suivants') }}</a>
+                            @else
+                                <span class="text-gray-300 cursor-not-allowed">{{ __('Articles suivants') }}</span>
+                            @endif
+                        </nav>
+                    @endif
                     <span>{{ $actualites->total() }} {{ trans_choice('article|articles', $actualites->total()) }}</span>
                 </div>
             </div>
@@ -84,7 +98,7 @@
                         À la une
                     </div>
 
-                    <h2 class="font-sans font-black text-3xl sm:text-4xl text-gray-900 group-hover:text-[#b36b00] transition leading-tight">
+                    <h2 class="font-sans font-black text-3xl sm:text-4xl text-[#faa21b] group-hover:text-[#b36b00] transition leading-tight">
                         {{ $actualite->title }}
                     </h2>
 
@@ -120,7 +134,7 @@
                          role="button"
                          tabindex="0"
                          class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 p-5 sm:p-6 group cursor-pointer transition hover:shadow-xl">
-                        <h3 class="font-sans font-bold text-xl sm:text-2xl text-gray-900 group-hover:text-[#b36b00] transition leading-tight">
+                        <h3 class="font-sans font-bold text-xl sm:text-2xl text-[#faa21b] group-hover:text-[#b36b00] transition leading-tight">
                             {{ $actualite->title }}
                         </h3>
                         <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5 text-xs text-gray-500">
@@ -145,7 +159,7 @@
                          role="button"
                          tabindex="0"
                          class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 p-5 sm:p-6 group cursor-pointer transition hover:shadow-xl">
-                        <h3 class="font-sans font-bold text-xl sm:text-2xl text-gray-900 group-hover:text-[#b36b00] transition leading-tight">
+                        <h3 class="font-sans font-bold text-xl sm:text-2xl text-[#faa21b] group-hover:text-[#b36b00] transition leading-tight">
                             {{ $actualite->title }}
                         </h3>
                         <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5 text-xs text-gray-500">
@@ -171,7 +185,7 @@
                      role="button"
                      tabindex="0"
                      class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 p-5 sm:p-6 group cursor-pointer transition hover:shadow-xl {{ $loop->first ? '' : '' }}">
-                    <h3 class="font-sans font-bold text-xl sm:text-2xl text-gray-900 group-hover:text-[#b36b00] transition leading-tight">
+                    <h3 class="font-sans font-bold text-xl sm:text-2xl text-[#faa21b] group-hover:text-[#b36b00] transition leading-tight">
                         {{ $actualite->title }}
                     </h3>
                     <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5 text-xs text-gray-500">
@@ -208,18 +222,11 @@
                 </div>
             @endforelse
 
-            {{-- Pagination --}}
-            @if($actualites->hasPages())
-                <div class="mt-8 pt-6 border-t-2 border-[#faa21b]/20">
-                    {{ $actualites->links() }}
-                </div>
-            @endif
-
             {{-- Modal article complet --}}
             <div x-show="isOpen"
                  x-cloak
                  x-transition.opacity.duration.200
-                 class="fixed inset-0 z-50 flex items-start justify-center pt-10 sm:pt-16 pb-10 overflow-y-auto"
+                 class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
                  @click.self="closeModal"
                  @keydown.escape.window="closeModal">
 
@@ -229,7 +236,7 @@
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 translate-y-4"
                      x-transition:enter-end="opacity-100 translate-y-0"
-                     class="relative bg-white w-full max-w-3xl mx-4 sm:mx-6 z-10 flex flex-col max-h-[calc(100vh-8rem)] shadow-2xl border-2 border-[#faa21b]/20 rounded-xl">
+                     class="relative bg-white w-full max-w-4xl mx-auto z-10 shadow-2xl border-2 border-[#faa21b]/20 rounded-xl">
 
                     <div class="absolute top-4 right-4 z-20">
                         <button @click="closeModal" type="button"
@@ -241,8 +248,8 @@
                         </button>
                     </div>
 
-                    <div class="overflow-y-auto p-8 sm:p-10">
-                        <h2 class="font-sans font-black text-3xl sm:text-4xl text-gray-900 leading-tight"
+                    <div class="p-8 sm:p-10">
+                        <h2 class="font-sans font-black text-3xl sm:text-4xl text-[#faa21b] leading-tight"
                             x-text="selected.title"></h2>
 
                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-3 text-sm text-gray-500 border-b-2 border-[#faa21b]/20 pb-4 mb-6">
@@ -255,11 +262,8 @@
                                   class="inline-flex items-center rounded-full bg-[#faa21b]/15 px-2 py-0.5 text-[10px] font-bold uppercase text-[#b36b00]">Nouveau</span>
                         </div>
 
-                        <div class="text-base text-gray-800 leading-relaxed columns-1 sm:columns-2 sm:gap-8"
-                             x-data="{ content: selected.content }">
-                            <div class="[&::first-letter]:float-left [&::first-letter]:text-5xl [&::first-letter]:font-sans [&::first-letter]:font-black [&::first-letter]:text-[#b36b00] [&::first-letter]:mr-3 [&::first-letter]:mt-1 [&::first-letter]:leading-none [&::first-letter]:select-none"
-                                 x-text="content"></div>
-                        </div>
+                        <div class="text-base text-gray-800 leading-relaxed"
+                             x-html="selected.content"></div>
 
                         <div class="mt-8 pt-4 border-t-2 border-[#faa21b]/20 flex items-center justify-between text-xs text-gray-400">
                             <span class="font-semibold text-[#b36b00]">SEHV — Le Journal des Élus</span>

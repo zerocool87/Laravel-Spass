@@ -19,7 +19,7 @@ class ActualiteController extends Controller
             ->published()
             ->when($search, fn ($q) => $q->where('title', 'like', "%{$search}%"))
             ->orderBy('published_at', 'desc')
-            ->paginate(15)
+            ->paginate(7)
             ->withQueryString();
 
         return view('elus.actualites.index', compact('actualites', 'search'));

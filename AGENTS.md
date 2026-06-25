@@ -63,6 +63,18 @@ composer run dev
 - Enum keys in TitleCase.
 - `vendor/bin/pint --dirty` before finalizing changes.
 
+## Pages spécifiques
+
+### Actualités (élus) — `/elus/actualites`
+
+- Pagination personnalisée intégrée dans l'en-tête "Le Journal du SEHV" (masthead), pas en bas de page
+- Template de pagination : `resources/views/vendor/pagination/tailwind.blade.php` (surcharge locale)
+- Affiche "Articles précédents | Articles suivants" au lieu des numéros de page
+- 7 articles par page (`paginate(7)` dans `Elus\ActualiteController`)
+- Contenu avec `nl2br(e())` pour préserver les sauts de ligne (textarea → HTML)
+- Modal Alpine.js avec `x-html="selected.content"` (pas `x-text`) pour le rendu HTML
+- Titres en orange `text-[#faa21b]`
+
 ## Gotchas
 
 - **No CI** — there are no GitHub Actions workflows. You must run tests locally.

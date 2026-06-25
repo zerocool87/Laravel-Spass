@@ -11,6 +11,7 @@ Plateforme Laravel 12 pour la gestion documentaire, le suivi des événements/r�
 - Tailwind CSS v3
 - Alpine.js v3
 - PHPUnit 11
+- **Responsive design** — adaptation mobile (Android/iOS) et desktop (Windows)
 
 ## Démarrage rapide
 

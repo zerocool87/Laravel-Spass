@@ -26,6 +26,7 @@ Fournir une plateforme mobile et web pour les élus et l'administration , centr�
 - `declare(strict_types=1)` ajouté sur l'ensemble des fichiers PHP.
 - Refactoring des contrôleurs (séparation Admin/Elus complète, traits Concerns).
 - Améliorations responsive mobile (tableaux, formulaires, navigation).
+- **Actualités page** — refonte UI complète : titres en orange, pagination intégrée dans l'en-tête "Le Journal du SEHV" avec liens "Articles précédents | Articles suivants", 7 articles par page, modal avec contenu HTML et sauts de ligne préservés (`nl2br`), hauteur adaptative sans colonnes.
 
 ## Changements récents (11/03/2026)
 

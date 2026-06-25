@@ -29,7 +29,7 @@
 
                 {{-- Contenu --}}
                 <div class="p-8 sm:p-10">
-                    <h1 class="font-sans font-black text-3xl sm:text-4xl lg:text-5xl text-gray-900 leading-tight">
+                    <h1 class="font-sans font-black text-3xl sm:text-4xl lg:text-5xl text-[#faa21b] leading-tight">
                         {{ $actualite->title }}
                     </h1>
 
@@ -44,8 +44,8 @@
                         @endif
                     </div>
 
-                    <div class="text-base sm:text-[1.0625rem] text-gray-800 leading-relaxed columns-1 lg:columns-2 lg:gap-10 [&::first-letter]:float-left [&::first-letter]:text-5xl sm:[&::first-letter]:text-6xl [&::first-letter]:font-sans [&::first-letter]:font-black [&::first-letter]:text-[#b36b00] [&::first-letter]:mr-3 [&::first-letter]:mt-1 [&::first-letter]:leading-none [&::first-letter]:select-none">
-                        {{ $actualite->content }}
+                    <div class="text-base sm:text-[1.0625rem] text-gray-800 leading-relaxed [&::first-letter]:float-left [&::first-letter]:text-5xl sm:[&::first-letter]:text-6xl [&::first-letter]:font-sans [&::first-letter]:font-black [&::first-letter]:text-[#b36b00] [&::first-letter]:mr-3 [&::first-letter]:mt-1 [&::first-letter]:leading-none [&::first-letter]:select-none">
+                        {!! nl2br(e($actualite->content)) !!}
                     </div>
                 </div>
 
