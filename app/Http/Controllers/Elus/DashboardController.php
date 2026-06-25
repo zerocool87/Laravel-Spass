@@ -80,44 +80,110 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get current weather for Limoges from Open-Meteo.
+     * Get current weather for Limoges (server-side fallback).
      */
     private function getWeather(): array
     {
-        return Cache::remember('weather_limoges', 1800, function () {
-            try {
-                $response = Http::timeout(5)->get('https://api.open-meteo.com/v1/forecast', [
-                    'latitude' => 45.83,
-                    'longitude' => 1.26,
-                    'current_weather' => true,
-                    'timezone' => 'auto',
-                ]);
+        return Cache::remember('weather_limoges', 1800, fn () => array_merge(
+            $this->fetchWeather(45.83, 1.26),
+            ['city' => 'Limoges'],
+        ));
+    }
 
-                if ($response->failed()) {
-                    return ['icon' => '❓', 'temp' => '--'];
-                }
+    /**
+     * Fetch weather data from Open-Meteo for given coordinates.
+     *
+     * @return array{icon: string, temp: string}
+     */
+    private function fetchWeather(float $lat, float $lng): array
+    {
+        try {
+            $response = Http::timeout(5)->get('https://api.open-meteo.com/v1/forecast', [
+                'latitude' => $lat,
+                'longitude' => $lng,
+                'current_weather' => true,
+                'timezone' => 'auto',
+            ]);
 
-                $data = $response->json();
-                $code = $data['current_weather']['weathercode'] ?? 0;
-                $temp = round($data['current_weather']['temperature'] ?? 0);
-
-                $icon = match (true) {
-                    $code === 0 => '☀️',
-                    $code <= 3 => '⛅',
-                    $code >= 95 => '⛈️',
-                    $code >= 80 => '🌦️',
-                    $code >= 71 => '❄️',
-                    $code >= 61 => '🌧️',
-                    $code >= 51 => '🌦️',
-                    $code >= 45 => '🌫️',
-                    default => '☀️',
-                };
-
-                return ['icon' => $icon, 'temp' => $temp.'°C'];
-            } catch (RequestException) {
+            if ($response->failed()) {
                 return ['icon' => '❓', 'temp' => '--'];
             }
+
+            $data = $response->json();
+            $code = $data['current_weather']['weathercode'] ?? 0;
+            $temp = round($data['current_weather']['temperature'] ?? 0);
+
+            $icon = match (true) {
+                $code === 0 => '☀️',
+                $code <= 3 => '⛅',
+                $code >= 95 => '⛈️',
+                $code >= 80 => '🌦️',
+                $code >= 71 => '❄️',
+                $code >= 61 => '🌧️',
+                $code >= 51 => '🌦️',
+                $code >= 45 => '🌫️',
+                default => '☀️',
+            };
+
+            return ['icon' => $icon, 'temp' => $temp.'°C'];
+        } catch (RequestException) {
+            return ['icon' => '❓', 'temp' => '--'];
+        }
+    }
+
+    /**
+     * Reverse-geocode coordinates to a city name via Nominatim.
+     */
+    private function fetchCity(float $lat, float $lng): string
+    {
+        try {
+            $response = Http::timeout(5)
+                ->withUserAgent('Spass/1.0')
+                ->get('https://nominatim.openstreetmap.org/reverse', [
+                    'format' => 'json',
+                    'lat' => $lat,
+                    'lon' => $lng,
+                    'zoom' => 12,
+                    'accept-language' => 'fr',
+                ]);
+
+            if ($response->failed()) {
+                return '';
+            }
+
+            $addr = $response->json('address');
+            if (! $addr) {
+                return '';
+            }
+
+            return $addr['city'] ?? $addr['town'] ?? $addr['village'] ?? $addr['municipality'] ?? $addr['county'] ?? '';
+        } catch (RequestException) {
+            return '';
+        }
+    }
+
+    /**
+     * Get weather for given coordinates (AJAX endpoint).
+     */
+    public function weatherByCoords(Request $request): JsonResponse
+    {
+        $request->validate([
+            'lat' => 'required|numeric|between:-90,90',
+            'lng' => 'required|numeric|between:-180,180',
+        ]);
+
+        $lat = (float) $request->input('lat');
+        $lng = (float) $request->input('lng');
+        $cacheKey = "weather_coords_{$lat}_{$lng}";
+
+        $data = Cache::remember($cacheKey, 1800, function () use ($lat, $lng) {
+            $weather = $this->fetchWeather($lat, $lng);
+            $city = $this->fetchCity($lat, $lng);
+
+            return array_merge($weather, ['city' => $city]);
         });
+
+        return response()->json($data);
     }
 
     /**

@@ -50,12 +50,12 @@
                     <p class="text-white/90 text-xs sm:text-sm truncate">{{ $subtitle }}</p>
                 @endif
                 @if($weather)
-                    <p class="text-white text-xs mt-0.5 font-semibold">
+                    <p id="weather-info" class="text-white text-xs mt-0.5 font-semibold">
                         <span class="inline-flex items-center gap-1.5">
-                            <span class="text-lg">{{ $weather['icon'] }}</span>
-                            <span>{{ $weather['temp'] }}</span>
+                            <span id="weather-icon" class="text-lg">{{ $weather['icon'] }}</span>
+                            <span id="weather-temp">{{ $weather['temp'] }}</span>
                             <span class="text-white/60">•</span>
-                            <span>Limoges</span>
+                            <span id="weather-city">{{ $weather['city'] ?? 'Limoges' }}</span>
                         </span>
                     </p>
                 @endif

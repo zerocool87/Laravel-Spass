@@ -14,10 +14,6 @@
         />
     </header>
 
-    <x-slot name="breadcrumbs">
-        <x-breadcrumbs :items="[['label' => __('Accueil')]]" />
-    </x-slot>
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[calc(100vh-56px)] flex flex-col py-2 gap-2">
 
             {{-- 2×2 Widget Grid — fills remaining vertical space --}}
@@ -194,4 +190,34 @@
 
     {{-- Onboarding tour --}}
     <x-onboarding-tour :show="$showOnboarding" />
+
+    @if($weather)
+        <script>
+            (function () {
+                if (!navigator.geolocation) return;
+
+                navigator.geolocation.getCurrentPosition(
+                    async function (pos) {
+                        const lat = pos.coords.latitude;
+                        const lng = pos.coords.longitude;
+                        try {
+                            const resp = await fetch(`{{ route('elus.weather.by-coords') }}?lat=${lat}&lng=${lng}`);
+                            if (!resp.ok) return;
+                            const data = await resp.json();
+
+                            const icon = document.getElementById('weather-icon');
+                            const tempEl = document.getElementById('weather-temp');
+                            const city = document.getElementById('weather-city');
+
+                            if (icon && data.icon) icon.textContent = data.icon;
+                            if (tempEl && data.temp) tempEl.textContent = data.temp;
+                            if (city && data.city) city.textContent = data.city;
+                        } catch (_) { /* fallback to server-side weather */ }
+                    },
+                    function () { /* permission denied, fallback to server-side weather */ },
+                    { timeout: 5000, maximumAge: 600000 }
+                );
+            })();
+        </script>
+    @endif
 </x-app-layout>
