@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
 
         // Redirect to Elus dashboard if user is an elu, otherwise to regular dashboard
         $user = $request->user();
-        if ($user && $user->is_elu) {
+        if ($user && $user->isElu()) {
             return redirect()->intended(route('elus.dashboard', absolute: false));
         }
 

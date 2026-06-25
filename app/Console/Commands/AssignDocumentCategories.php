@@ -13,7 +13,7 @@ class AssignDocumentCategories extends Command
 
     protected $description = 'Assign categories to documents automatically based on filename/title/description keywords';
 
-    public function handle()
+    public function handle(): int
     {
         $default = $this->option('default');
         $dryRun = $this->option('dry-run');

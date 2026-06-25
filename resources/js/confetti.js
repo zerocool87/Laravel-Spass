@@ -5,6 +5,7 @@
 export default function initConfetti() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
+    if (!ctx) return { fire() {}, clear() {} };
     let particles = [];
     let animationId = null;
     let isRunning = false;

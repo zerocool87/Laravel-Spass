@@ -13,7 +13,7 @@
     {{-- Enable calendar debug to surface initialization issues on this page --}}
     <script>window.CALENDAR_DEBUG = {{ config('app.debug') ? 'true' : 'false' }};</script>
 
-    <div class="container">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div class="mt-6">
                 @foreach($events as $event)

@@ -97,13 +97,21 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
 
     // Projects
     Route::get('/projects/geojson', [\App\Http\Controllers\Elus\ProjectController::class, 'geojson'])->name('projects.geojson');
-    Route::resource('projects', \App\Http\Controllers\Elus\ProjectController::class);
+    Route::resource('projects', \App\Http\Controllers\Elus\ProjectController::class)
+        ->only(['index', 'show']);
+    Route::resource('projects', \App\Http\Controllers\Elus\ProjectController::class)
+        ->only(['create', 'store', 'edit', 'update', 'destroy'])
+        ->middleware('can:admin');
 
     // Reunions
     Route::get('/reunions/calendar', [\App\Http\Controllers\Elus\ReunionController::class, 'calendar'])->name('reunions.calendar');
     Route::get('/reunions/json', [\App\Http\Controllers\Elus\ReunionController::class, 'json'])->name('reunions.json');
     Route::post('/reunions/toggle-calendar', [\App\Http\Controllers\Elus\ReunionController::class, 'toggleCalendar'])->name('reunions.toggle-calendar');
-    Route::resource('reunions', \App\Http\Controllers\Elus\ReunionController::class);
+    Route::resource('reunions', \App\Http\Controllers\Elus\ReunionController::class)
+        ->only(['index', 'show']);
+    Route::resource('reunions', \App\Http\Controllers\Elus\ReunionController::class)
+        ->only(['create', 'store', 'edit', 'update', 'destroy'])
+        ->middleware('can:admin');
 
     // Documents / Library
     Route::get('/documents', [\App\Http\Controllers\Elus\DocumentController::class, 'index'])->name('documents.index');

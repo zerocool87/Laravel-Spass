@@ -1,6 +1,10 @@
 // Event detail modal: accessible, fetches JSON and maps to DOM, progressive enhancement friendly
 (function(){
-    const SELECTOR = 'body';
+    function escapeHtml(str){
+        const div = document.createElement('div');
+        div.textContent = String(str ?? '');
+        return div.innerHTML;
+    }
 
     function formatDateTime(value){
         if (!value) {
@@ -23,10 +27,10 @@
     }
 
     function renderMinimalReunion(bodyEl, footerEl, reunion){
-        const subject = reunion?.subject || '—';
-        const instanceName = reunion?.instance || '—';
-        const startLabel = formatDateTime(reunion?.start);
-        const endLabel = formatDateTime(reunion?.end);
+        const subject = escapeHtml(reunion?.subject || '—');
+        const instanceName = escapeHtml(reunion?.instance || '—');
+        const startLabel = escapeHtml(formatDateTime(reunion?.start));
+        const endLabel = escapeHtml(formatDateTime(reunion?.end));
 
         bodyEl.innerHTML = `
             <div class="space-y-4 text-sm text-gray-700">
@@ -94,6 +98,17 @@
         createModalIfMissing();
         const modal = document.getElementById('event-detail-modal');
         if (!modal) return;
+
+        // Remove previous handlers to prevent accumulation on re-open
+        if (modal.__onClose) {
+            modal.querySelectorAll('[data-modal-close]').forEach(btn => btn.removeEventListener('click', modal.__onClose));
+            const prevBackdrop = modal.querySelector('[data-modal-backdrop]');
+            if (prevBackdrop) prevBackdrop.removeEventListener('click', modal.__onClose);
+        }
+        if (modal.__escHandler) {
+            document.removeEventListener('keydown', modal.__escHandler);
+        }
+
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         modal.setAttribute('aria-hidden','false');
@@ -104,12 +119,12 @@
             cleanup();
             closeModal(triggerEl);
         }
-        modal.__closeHandler = onClose;
-        // attach backdrop and close handlers
+        modal.__onClose = onClose;
         modal.querySelectorAll('[data-modal-close]').forEach(btn => btn.addEventListener('click', onClose));
         const backdrop = modal.querySelector('[data-modal-backdrop]');
         if (backdrop) backdrop.addEventListener('click', onClose);
-        document.addEventListener('keydown', modal.__escHandler = function(e){ if (e.key === 'Escape') onClose(); });
+        modal.__escHandler = function(e){ if (e.key === 'Escape') onClose(); };
+        document.addEventListener('keydown', modal.__escHandler);
         modal.__trigger = triggerEl || null;
     }
 
@@ -119,13 +134,18 @@
         modal.classList.remove('flex');
         modal.classList.add('hidden');
         modal.setAttribute('aria-hidden','true');
-        // cleanup handlers
-        if (modal.__closeHandler) { /* already called */ }
+        // Remove all handlers
+        if (modal.__onClose) {
+            modal.querySelectorAll('[data-modal-close]').forEach(btn => btn.removeEventListener('click', modal.__onClose));
+            const backdrop = modal.querySelector('[data-modal-backdrop]');
+            if (backdrop) backdrop.removeEventListener('click', modal.__onClose);
+            delete modal.__onClose;
+        }
         if (modal.__escHandler) { document.removeEventListener('keydown', modal.__escHandler); delete modal.__escHandler; }
-        // return focus
+        // Return focus to trigger element
         const trigger = modal.__trigger || triggerEl;
         if (trigger && typeof trigger.focus === 'function') trigger.focus();
-        // clear content after delay to reduce layout jank
+        // Clear content after delay to reduce layout jank
         setTimeout(()=>{
             const title = modal.querySelector('#event-detail-title'); if (title) title.textContent = '';
             const body = modal.querySelector('#event-detail-body'); if (body) body.innerHTML = '';

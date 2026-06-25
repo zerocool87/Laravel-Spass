@@ -79,6 +79,20 @@ html.text-large .stat-card-value {
   .overflow-x-auto {
     -webkit-overflow-scrolling: touch;
   }
+
+  /* Smaller font for stat cards */
+  .stat-card-value {
+    font-size: 1.5rem;
+  }
+}
+
+/* Tablet and below table optimizations */
+@media (max-width: 1023px) {
+  .cyber-table th,
+  .cyber-table td {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
 }
 
 
@@ -342,9 +356,6 @@ input[type="text"], textarea, select, .input-text {
   width: 100%;
 }
 .fc .fc-daygrid-day-top {
-  padding: 1px 1px 1px 1px;
-}
-.fc .fc-daygrid-day-top {
   padding: 3px 3px 2px;
 }
 .fc .fc-daygrid-day-number {
@@ -514,13 +525,12 @@ input[type="text"], textarea, select, .input-text {
 .sr-only { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
 /* Spinner */
-/* Spinner plus visible */
 .calendar-spinner{ display:inline-block; width:36px; height:36px; border:4px solid #e5e7eb; border-top-color:#f59e42; border-radius:50%; animation:spin 1s linear infinite; margin:12px auto; }
 @keyframes spin{ to{ transform:rotate(360deg);} }
 
-/* Quick Actions Widget - Decreased height by 50px */
+/* Quick Actions Widget */
 .quick-actions-widget {
-    min-height: calc(50%); /* Adjusted from 40% to 39% to reduce height by 50px */
+    min-height: calc(50%);
     display: flex;
     flex-direction: column;
 }

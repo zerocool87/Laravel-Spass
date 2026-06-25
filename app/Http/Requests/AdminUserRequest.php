@@ -23,7 +23,7 @@ class AdminUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'titres' => ['nullable', 'array'],
-            'titres.*' => ['string', 'max:255', Rule::in(['Président', 'Vice-président', 'Membre du bureau', 'Membre de commission', 'Représentant', 'Délégué titulaire', 'Délégué suppléant'])],
+            'titres.*' => ['string', 'max:255', Rule::in(config('options.titres', []))],
             'commune' => ['nullable', 'string', 'max:255', Rule::in(config('options.communes_haute_vienne', []))],
             'is_admin' => ['boolean'],
             'is_elu' => ['boolean'],

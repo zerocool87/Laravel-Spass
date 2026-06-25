@@ -1,23 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\ReunionStatus;
+use App\Models\Instance;
 use App\Models\Reunion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Reunion>
+ */
 class ReunionFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
     protected $model = Reunion::class;
 
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
@@ -27,15 +26,16 @@ class ReunionFactory extends Factory
         $endTime = $date->modify('+2 hours')->format('Y-m-d H:i:s');
 
         return [
+            'instance_id' => Instance::factory(),
             'title' => $this->faker->sentence(4),
-            'description' => $this->faker->paragraph,
+            'description' => $this->faker->paragraph(),
             'start_time' => $startTime,
             'end_time' => $endTime,
-            'location' => $this->faker->address,
+            'location' => $this->faker->address(),
             'status' => $this->faker->randomElement(array_column(ReunionStatus::cases(), 'value')),
             'participants' => [],
-            'ordre_du_jour' => $this->faker->paragraph,
-            'compte_rendu' => $this->faker->paragraph,
+            'ordre_du_jour' => $this->faker->paragraph(),
+            'compte_rendu' => $this->faker->paragraph(),
             'documents' => [],
         ];
     }

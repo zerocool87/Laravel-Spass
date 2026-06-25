@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,6 +42,31 @@ class Document extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Scope documents accessible to a user (admin sees all; others see visible_to_all,
+     * own, shared via pivot, or matched by titres).
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeAccessibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->isAdmin()) {
+            return $query;
+        }
+
+        return $query->where(function (Builder $q) use ($user) {
+            $q->where('visible_to_all', true)
+                ->orWhere('created_by', $user->id)
+                ->orWhereHas('users', fn ($query) => $query->where('user_id', $user->id));
+
+            if ($user->titres) {
+                foreach ($user->titres as $titre) {
+                    $q->orWhereJsonContains('titres', $titre);
+                }
+            }
+        });
     }
 
     /**

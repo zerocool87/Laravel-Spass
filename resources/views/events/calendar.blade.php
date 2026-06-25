@@ -10,7 +10,7 @@
         <x-breadcrumbs :items="[['label' => __('Accueil'), 'url' => route('dashboard')], ['label' => __('Événements'), 'url' => route('events.index')], ['label' => __('Calendrier')]]" />
     </x-slot>
 
-    <div class="container mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between mb-4">
             <h1 class="text-xl font-semibold text-gray-900">{{ __('Calendar') }}</h1>
         </div>

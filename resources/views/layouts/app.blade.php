@@ -31,7 +31,7 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-[#fffbe9]">
             {{-- Accessibility toolbar --}}
-            <div class="fixed top-4 right-4 z-[100] flex gap-2">
+            <div class="fixed top-2 sm:top-4 right-2 sm:right-4 z-[100] flex gap-2">
                 <button
                     @click="largeText = !largeText"
                     class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition shadow-lg"

@@ -14,15 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return v === '1' || v === 'true' || v === true;
     }
 
-    // Keep a lightweight listener that tracks which calendar opened the modal (for add/remove operations)
-    window.addEventListener('admin:event-open', function(e){
-        try {
-            window.__lastCalendarId = e?.detail?.calendarId || null;
-        } catch (err) {
-            window.__lastCalendarId = null;
-        }
-    });
-
     // messages for i18n (French fallback)
     const isFr = (document.documentElement.lang && document.documentElement.lang.startsWith('fr'));
     const msgs = isFr ? {
@@ -49,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const feedUrl = el.dataset.feedUrl || '/events/json';
 
         // Mark admin calendar elements so CSS can target them more easily
-        if (el.id && el.id === 'admin-events-calendar') {
+        if (el.id === 'admin-events-calendar') {
             el.classList.add('admin-calendar');
         }
         const mode = el.dataset.mode || 'full';
@@ -57,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const createUrl = el.dataset.createUrl || '';
         const editBase = el.dataset.editBase || '';
 
-        console.info('[calendar] initializing calendar:', el.id || el, 'mode:', mode);
+        if (window.CALENDAR_DEBUG) console.info('[calendar] initializing calendar:', el.id || el, 'mode:', mode);
 
         // Helper: apply event colors and list styling
         function applyEventColors(info) {
@@ -136,8 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const defaultOptions = {
             plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
-            // Use French locale when the page language starts with 'fr'
-            // Force French locale
+            // Use French locale
             locale: frLocale,
             // Map mode to a sensible initial view: 'mini' -> listWeek, 'compact' -> dayGridMonth, 'week' -> timeGridWeek, otherwise month
             initialView: (mode === 'mini') ? 'listWeek' : (mode === 'compact' ? 'dayGridMonth' : (mode === 'week' ? 'timeGridWeek' : 'dayGridMonth')),
@@ -261,7 +251,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             if (res.ok || res.status === 204) {
                                 try { info.event.remove(); } catch (err) {}
-                                window.dispatchEvent(new CustomEvent('admin:event-deleted', { detail: { id: info.event.id } }));
                             } else {
                                 alert(msgs.couldNotDelete);
                             }
@@ -299,9 +288,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 } catch (err) { /* ignore */ }
             }
 
-            // Notify listeners that an admin requested to open create modal for this calendar
-            window.dispatchEvent(new CustomEvent('admin:event-open', { detail: { start: start, calendarId } }));
-
             if (window.CALENDAR_DEBUG) console.info('[calendar] trying to open modal for', start);
 
             // Try helper function first
@@ -332,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
             el._fcCalendar = calendar;
             el._fcMode = mode;
             el.dataset.initialized = '1';
-            console.info('[calendar] initialized:', el.id || el);
+            if (window.CALENDAR_DEBUG) console.info('[calendar] initialized:', el.id || el);
 
             // Attach dateClick using FullCalendar's native option (set after render to avoid unknown option errors)
             if (canEdit) {
@@ -410,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(json => {
             const shouldShow = json.show === true;
-            console.info('[calendar] toggle response:', json.show, 'shouldShow:', shouldShow);
+            if (window.CALENDAR_DEBUG) console.info('[calendar] toggle response:', json.show, 'shouldShow:', shouldShow);
 
             // Toggle container visibility
             if (shouldShow) {
@@ -422,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     setTimeout(() => {
                         try {
                             calendarEl._fcCalendar.updateSize();
-                            console.info('[calendar] updated size after show');
+                            if (window.CALENDAR_DEBUG) console.info('[calendar] updated size after show');
                         } catch (e) {
                             console.warn('[calendar] Could not update size:', e);
                         }

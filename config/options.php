@@ -135,4 +135,14 @@ return [
         'Le Vigen',
         'Villefavard',
     ],
+
+    'titres' => [
+        'Président',
+        'Vice-président',
+        'Membre du bureau',
+        'Membre de commission',
+        'Représentant',
+        'Délégué titulaire',
+        'Délégué suppléant',
+    ],
 ];

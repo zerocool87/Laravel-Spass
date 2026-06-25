@@ -17,7 +17,9 @@ class EnsureUserIsElu
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user() || (! $request->user()->is_elu && ! $request->user()->is_admin)) {
+        $user = $request->user();
+
+        if (! $user || (! $user->isElu() && ! $user->isAdmin())) {
             abort(403, __('Accès réservé aux élus.'));
         }
 

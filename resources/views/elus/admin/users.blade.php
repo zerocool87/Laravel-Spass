@@ -114,8 +114,8 @@
                         <tr>
                             <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Utilisateur') }}</th>
                             <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Rôles') }}</th>
-                            <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Fonction') }}</th>
-                            <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Commune') }}</th>
+                            <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider hidden lg:table-cell">{{ __('Fonction') }}</th>
+                            <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-semibold text-[#a85f00] uppercase tracking-wider hidden lg:table-cell">{{ __('Commune') }}</th>
                             <th class="px-3 sm:px-6 py-2 sm:py-3 text-right text-xs font-semibold text-[#a85f00] uppercase tracking-wider">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
@@ -141,8 +141,8 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-500">{{ is_array($user->titres) ? implode(', ', $user->titres) : '-' }}</td>
-                                <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-500">{{ $user->commune ?? '-' }}</td>
+                                <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-500 hidden lg:table-cell">{{ is_array($user->titres) ? implode(', ', $user->titres) : '-' }}</td>
+                                <td class="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-500 hidden lg:table-cell">{{ $user->commune ?? '-' }}</td>
                                 <td class="px-3 sm:px-6 py-2 sm:py-4 text-right">
                                     <div class="flex items-center justify-end gap-2 flex-wrap">
                                         <a href="{{ route('elus.admin.users.edit', $user) }}" class="inline-flex items-center px-3 py-1 border border-[#faa21b] rounded-full text-xs font-semibold text-[#faa21b] hover:bg-[#faa21b]/10">

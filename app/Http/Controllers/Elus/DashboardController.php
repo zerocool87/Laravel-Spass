@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Elus\Concerns\FiltersDocuments;
 use App\Models\Actualite;
+use App\Models\Document;
 use App\Models\Instance;
 use App\Models\Project;
 use App\Models\Reunion;
@@ -17,8 +17,6 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    use FiltersDocuments;
-
     public function __construct(
         private readonly WeatherService $weatherService,
     ) {}
@@ -39,7 +37,7 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        $latestDocuments = $this->getUserAccessibleDocuments($user)
+        $latestDocuments = Document::accessibleTo($user)
             ->with('creator')
             ->latest()
             ->take(5)

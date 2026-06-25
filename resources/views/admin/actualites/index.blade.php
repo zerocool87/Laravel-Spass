@@ -129,8 +129,8 @@
                                 <tr class="text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                                     <th class="px-6 py-3">{{ __('Titre') }}</th>
                                     <th class="px-4 py-3">{{ __('Statut') }}</th>
-                                    <th class="px-4 py-3">{{ __('Publié le') }}</th>
-                                    <th class="px-4 py-3">{{ __('Auteur') }}</th>
+                                    <th class="px-4 py-3 hidden sm:table-cell">{{ __('Publié le') }}</th>
+                                    <th class="px-4 py-3 hidden md:table-cell">{{ __('Auteur') }}</th>
                                     <th class="px-4 py-3 text-right">{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
@@ -158,10 +158,10 @@
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="px-4 py-4 text-gray-500 whitespace-nowrap">
+                                        <td class="px-4 py-4 text-gray-500 whitespace-nowrap hidden sm:table-cell">
                                             {{ $actualite->published_at?->format('d/m/Y') ?? '—' }}
                                         </td>
-                                        <td class="px-4 py-4 text-gray-500">
+                                        <td class="px-4 py-4 text-gray-500 hidden md:table-cell">
                                             {{ $actualite->creator?->name ?? '—' }}
                                         </td>
                                         <td class="px-4 py-4">

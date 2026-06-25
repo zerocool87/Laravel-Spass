@@ -83,17 +83,10 @@ class DocumentController extends Controller
 
         if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
             $document->users()->sync($data['assigned_users']);
-
-            $users = User::whereIn('id', $data['assigned_users'])->get();
-            Notification::send($users, new DocumentActionNotification(
-                'Nouveau document partagé avec vous',
-                'Un document vous a été partagé : '.$document->title,
-                'Voir le document',
-                route('elus.documents.index'),
-            ));
+            $this->notifyAssignedUsers($document, $data['assigned_users'], isNew: true);
         }
 
-        return redirect()->route('admin.documents.index')->with('success', 'Document créé.')->with('celebrate', true);
+        return redirect()->route('admin.documents.index')->with('success', __('Document créé.'))->with('celebrate', true);
     }
 
     public function edit(Document $document): View
@@ -126,19 +119,12 @@ class DocumentController extends Controller
 
         if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
             $document->users()->sync($data['assigned_users']);
-
-            $users = User::whereIn('id', $data['assigned_users'])->get();
-            Notification::send($users, new DocumentActionNotification(
-                'Document mis à jour : '.$document->title,
-                'Le document a été mis à jour : '.$document->title,
-                'Voir le document',
-                route('elus.documents.index'),
-            ));
+            $this->notifyAssignedUsers($document, $data['assigned_users'], isNew: false);
         } else {
             $document->users()->detach();
         }
 
-        return redirect()->route('admin.documents.index')->with('success', 'Document mis à jour.');
+        return redirect()->route('admin.documents.index')->with('success', __('Document mis à jour.'));
     }
 
     public function destroy(Document $document): RedirectResponse
@@ -146,27 +132,19 @@ class DocumentController extends Controller
         Storage::delete($document->path);
         $document->delete();
 
-        return redirect()->route('admin.documents.index')->with('success', 'Document supprimé.');
+        return redirect()->route('admin.documents.index')->with('success', __('Document supprimé.'));
     }
 
-    public function download(Document $document): BinaryFileResponse|StreamedResponse
+    public function download(Request $request, Document $document): BinaryFileResponse|StreamedResponse
     {
-        abort_unless($document->isAccessibleBy(auth()->user()), 403);
+        abort_unless($document->isAccessibleBy($request->user()), 403);
 
-        $raw = $document->original_name ?? basename($document->path);
-        // strip control characters and limit length
-        $filename = preg_replace('/[\\x00-\\x1F\\x7F]+/', '', (string) $raw);
-        $filename = trim($filename) ?: basename($document->path);
-        if (mb_strlen($filename) > 200) {
-            $filename = mb_substr($filename, 0, 200);
-        }
-
-        return Storage::download($document->path, $filename);
+        return Storage::download($document->path, $this->sanitizeFilename($document));
     }
 
-    public function info(Document $document): JsonResponse
+    public function info(Request $request, Document $document): JsonResponse
     {
-        abort_unless($document->isAccessibleBy(auth()->user()), 403);
+        abort_unless($document->isAccessibleBy($request->user()), 403);
 
         return response()->json([
             'mime' => $document->getMimeType(),
@@ -176,23 +154,17 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function embed(Document $document): Response|StreamedResponse
+    public function embed(Request $request, Document $document): Response|StreamedResponse
     {
-        abort_unless($document->isAccessibleBy(auth()->user()), 403);
+        abort_unless($document->isAccessibleBy($request->user()), 403);
 
         $mime = $document->getMimeType() ?: 'application/octet-stream';
 
-        // sanitize filename for headers
-        $raw = $document->original_name ?: basename($document->path);
-        $filename = preg_replace('/[\\x00-\\x1F\\x7F]+/', '', (string) $raw);
-        $filename = trim($filename) ?: basename($document->path);
-        if (mb_strlen($filename) > 200) {
-            $filename = mb_substr($filename, 0, 200);
-        }
+        $filename = $this->sanitizeFilename($document);
         $safeQuoted = str_replace(['\\', '"'], ['\\\\', '\\"'], $filename);
         $disposition = 'inline; filename="'.$safeQuoted.'"; filename*=UTF-8\'\''.rawurlencode($filename);
 
-        $rangeHeader = request()->header('Range');
+        $rangeHeader = $request->header('Range');
 
         // Prefer streaming via Storage (supports local and remote disks)
         if (Storage::exists($document->path)) {
@@ -255,6 +227,33 @@ class DocumentController extends Controller
         }
 
         return $this->respondPartialFile($path, $filesize, $rangeHeader, $headers);
+    }
+
+    private function sanitizeFilename(Document $document): string
+    {
+        $raw = $document->original_name ?? basename($document->path);
+        $filename = preg_replace('/[\x00-\x1F\x7F]+/', '', (string) $raw);
+        $filename = trim($filename) ?: basename($document->path);
+        if (mb_strlen($filename) > 200) {
+            $filename = mb_substr($filename, 0, 200);
+        }
+
+        return $filename;
+    }
+
+    private function notifyAssignedUsers(Document $document, array $assignedUserIds, bool $isNew): void
+    {
+        if (empty($assignedUserIds)) {
+            return;
+        }
+
+        $users = User::whereIn('id', $assignedUserIds)->get();
+        Notification::send($users, new DocumentActionNotification(
+            $isNew ? __('Nouveau document partagé avec vous') : __('Document mis à jour : :title', ['title' => $document->title]),
+            $isNew ? __('Un document vous a été partagé : :title', ['title' => $document->title]) : __('Le document a été mis à jour : :title', ['title' => $document->title]),
+            __('Voir le document'),
+            route('elus.documents.index'),
+        ));
     }
 
     private function respondFullFile(string $path, int $filesize, array $headers): Response|StreamedResponse

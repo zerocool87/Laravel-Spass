@@ -66,7 +66,15 @@ class Reunion extends Model
 
     public function getStatusColorAttribute(): string
     {
-        return ReunionStatus::tryFrom($this->status)?->color() ?? 'gray';
+        $color = ReunionStatus::tryFrom($this->status)?->color() ?? 'gray';
+
+        return match ($color) {
+            'blue' => 'bg-blue-100 text-blue-800',
+            'green' => 'bg-green-100 text-green-800',
+            'gray' => 'bg-gray-100 text-gray-800',
+            'red' => 'bg-red-100 text-red-800',
+            default => 'bg-gray-100 text-gray-800',
+        };
     }
 
     /** @param Builder<self> $query */
@@ -85,5 +93,27 @@ class Reunion extends Model
                 }
             }
         });
+    }
+
+    /**
+     * Apply common index filters (instance, status, date range, search).
+     *
+     * @param  array<string, mixed>  $filters
+     * @param  Builder<self>  $query
+     */
+    public function scopeFiltered(Builder $query, array $filters): Builder
+    {
+        return $query
+            ->when($filters['instance_id'] ?? null, fn ($q, $v) => $q->where('instance_id', $v))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->when($filters['from_date'] ?? null, fn ($q, $v) => $q->where('start_time', '>=', $v))
+            ->when($filters['to_date'] ?? null, fn ($q, $v) => $q->where('end_time', '<=', $v))
+            ->when($filters['search'] ?? null, function ($q, $search) {
+                $like = '%'.$search.'%';
+                $q->where(function ($subQuery) use ($like) {
+                    $subQuery->where('title', 'like', $like)
+                        ->orWhere('description', 'like', $like);
+                });
+            });
     }
 }

@@ -20,32 +20,13 @@ class ProjectController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Project::query();
+        $projects = Project::query()
+            ->filtered($request->only(['type', 'status', 'search']))
+            ->when($request->filled('commune'), fn ($q) => $q->where('commune', $request->commune))
+            ->orderBy('updated_at', 'desc')
+            ->paginate(15)
+            ->withQueryString();
 
-        // Filter by type
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
-
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Filter by commune
-        if ($request->filled('commune')) {
-            $query->where('commune', $request->commune);
-        }
-
-        // Search
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%'.$request->search.'%')
-                    ->orWhere('description', 'like', '%'.$request->search.'%');
-            });
-        }
-
-        $projects = $query->orderBy('updated_at', 'desc')->paginate(15)->withQueryString();
         $types = ProjectType::labels();
         $statuses = ProjectStatus::labels();
         $communes = $this->communes();

@@ -139,10 +139,10 @@
                                 <thead class="bg-[#faa21b]/5">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Titre') }}</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Type') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider hidden md:table-cell">{{ __('Type') }}</th>
                                         <th class="px-6 py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Statut') }}</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Budget') }}</th>
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Échéance') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider hidden sm:table-cell">{{ __('Budget') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider hidden lg:table-cell">{{ __('Échéance') }}</th>
                                         <th class="px-6 py-3 text-right text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
@@ -157,7 +157,7 @@
                                                     <p class="text-xs text-gray-500 mt-0.5">{{ $project->commune }}</p>
                                                 @endif
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-600">
+                                            <td class="px-6 py-4 text-sm text-gray-600 hidden md:table-cell">
                                                 {{ $project->type_label }}
                                             </td>
                                             <td class="px-6 py-4">
@@ -165,10 +165,10 @@
                                                     {{ $project->status_label }}
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-900 font-variant-numeric tabular-nums">
+                                            <td class="px-6 py-4 text-sm text-gray-900 font-variant-numeric tabular-nums hidden sm:table-cell">
                                                 {{ $project->formatted_budget }}
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-500">
+                                            <td class="px-6 py-4 text-sm text-gray-500 hidden lg:table-cell">
                                                 {{ $project->end_date?->format('d/m/Y') ?? '—' }}
                                             </td>
                                             <td class="px-6 py-4 text-right">

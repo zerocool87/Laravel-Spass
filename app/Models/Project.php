@@ -92,4 +92,24 @@ class Project extends Model
 
         return $query->where('commune', $user->commune);
     }
+
+    /**
+     * Apply common index filters (type, status, search).
+     *
+     * @param  array<string, mixed>  $filters
+     * @param  Builder<self>  $query
+     */
+    public function scopeFiltered(Builder $query, array $filters): Builder
+    {
+        return $query
+            ->when($filters['type'] ?? null, fn ($q, $v) => $q->where('type', $v))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->when($filters['search'] ?? null, function ($q, $search) {
+                $like = '%'.$search.'%';
+                $q->where(function ($subQuery) use ($like) {
+                    $subQuery->where('title', 'like', $like)
+                        ->orWhere('description', 'like', $like);
+                });
+            });
+    }
 }

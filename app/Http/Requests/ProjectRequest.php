@@ -18,15 +18,12 @@ class ProjectRequest extends FormRequest
 
     public function rules(): array
     {
-        $communes = config('options.communes_haute_vienne', []);
-        sort($communes, SORT_STRING | SORT_FLAG_CASE);
-
         return [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'type' => ['required', 'string', Rule::in(array_column(ProjectType::cases(), 'value'))],
             'status' => ['required', 'string', Rule::in(array_column(ProjectStatus::cases(), 'value'))],
-            'commune' => ['nullable', 'string', 'max:255', Rule::in($communes)],
+            'commune' => ['nullable', 'string', 'max:255', Rule::in(config('options.communes_haute_vienne', []))],
             'territories' => ['nullable', 'array'],
             'budget' => ['nullable', 'numeric', 'min:0'],
             'start_date' => ['nullable', 'date'],

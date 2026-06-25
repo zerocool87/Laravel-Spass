@@ -35,7 +35,7 @@
                 @endif
             </div>
 
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8"
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-4 sm:p-6 lg:p-8"
                  x-data="{ charCount: {{ strlen(old('content', $actualite->content)) }}, titleCount: {{ strlen(old('title', $actualite->title)) }} }">
 
                 <form action="{{ route('admin.actualites.update', $actualite) }}" method="POST" class="space-y-6">

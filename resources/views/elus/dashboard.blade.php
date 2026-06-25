@@ -14,7 +14,7 @@
         />
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[calc(100vh-56px)] flex flex-col py-2 gap-2">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-56px)] lg:h-[calc(100vh-56px)] flex flex-col py-2 gap-2">
 
             {{-- 2×2 Widget Grid — fills remaining vertical space --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 flex-1 min-h-0 gap-2">

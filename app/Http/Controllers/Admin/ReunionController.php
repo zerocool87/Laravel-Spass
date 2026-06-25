@@ -10,6 +10,8 @@ use App\Http\Requests\ReunionRequest;
 use App\Models\Instance;
 use App\Models\Reunion;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -21,35 +23,12 @@ class ReunionController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Reunion::with('instance');
+        $reunions = Reunion::with('instance')
+            ->filtered($request->only(['instance_id', 'status', 'from_date', 'to_date', 'search']))
+            ->orderBy('start_time', 'desc')
+            ->paginate(15)
+            ->withQueryString();
 
-        // Filter by instance
-        if ($request->filled('instance_id')) {
-            $query->where('instance_id', $request->instance_id);
-        }
-
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Filter by date range
-        if ($request->filled('from_date')) {
-            $query->where('start_time', '>=', $request->from_date);
-        }
-        if ($request->filled('to_date')) {
-            $query->where('end_time', '<=', $request->to_date);
-        }
-
-        // Search
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%'.$request->search.'%')
-                    ->orWhere('description', 'like', '%'.$request->search.'%');
-            });
-        }
-
-        $reunions = $query->orderBy('start_time', 'desc')->paginate(15);
         $instances = Instance::orderBy('name')->get();
         $statuses = ReunionStatus::labels();
 
@@ -75,46 +54,20 @@ class ReunionController extends Controller
     public function store(ReunionRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $validated['visible_to_all'] = (bool) ($validated['visible_to_all'] ?? false);
-        if ($validated['visible_to_all']) {
-            $validated['titres'] = null;
-        }
-
-        // Normalize participants: accept array or newline-separated text
-        $participants = $request->input('participants');
-        if (is_array($participants)) {
-            $validated['participants'] = $participants;
-        } else {
-            $participantsText = $request->input('participants_text', '');
-            $participants = array_filter(
-                array_map('trim', explode("\n", $participantsText)),
-                fn ($p) => ! empty($p)
-            );
-            $validated['participants'] = array_values($participants);
-        }
-
-        // Combine date with time
-        $startDateTime = $validated['date'].' '.$validated['start_time'];
-        $endDateTime = $validated['date'].' '.$validated['end_time'];
-
-        $validated['start_time'] = $startDateTime;
-        $validated['end_time'] = $endDateTime;
-
         unset($validated['date']);
 
         // Check for scheduling conflicts
         $conflicts = $this->checkForConflicts(
             $validated['instance_id'],
-            $startDateTime,
-            $endDateTime
+            $validated['start_time'],
+            $validated['end_time']
         );
 
         if ($conflicts->isNotEmpty()) {
-            // Generate alternative time slots
             $alternatives = $this->suggestAlternativeTimeSlots(
                 $validated['instance_id'],
-                $startDateTime,
-                $endDateTime
+                $validated['start_time'],
+                $validated['end_time']
             );
 
             return back()->withInput()
@@ -149,47 +102,21 @@ class ReunionController extends Controller
     public function update(ReunionRequest $request, Reunion $reunion): RedirectResponse
     {
         $validated = $request->validated();
-        $validated['visible_to_all'] = (bool) ($validated['visible_to_all'] ?? false);
-        if ($validated['visible_to_all']) {
-            $validated['titres'] = null;
-        }
-
-        // Normalize participants: accept array or newline-separated text
-        $participants = $request->input('participants');
-        if (is_array($participants)) {
-            $validated['participants'] = $participants;
-        } else {
-            $participantsText = $request->input('participants_text', '');
-            $participants = array_filter(
-                array_map('trim', explode("\n", $participantsText)),
-                fn ($p) => ! empty($p)
-            );
-            $validated['participants'] = array_values($participants);
-        }
-
-        // Combine date with time
-        $startDateTime = $validated['date'].' '.$validated['start_time'];
-        $endDateTime = $validated['date'].' '.$validated['end_time'];
-
-        $validated['start_time'] = $startDateTime;
-        $validated['end_time'] = $endDateTime;
-
         unset($validated['date']);
 
         // Check for scheduling conflicts (excluding current reunion)
         $conflicts = $this->checkForConflicts(
             $validated['instance_id'],
-            $startDateTime,
-            $endDateTime,
+            $validated['start_time'],
+            $validated['end_time'],
             $reunion->id
         );
 
         if ($conflicts->isNotEmpty()) {
-            // Generate alternative time slots
             $alternatives = $this->suggestAlternativeTimeSlots(
                 $validated['instance_id'],
-                $startDateTime,
-                $endDateTime
+                $validated['start_time'],
+                $validated['end_time']
             );
 
             return back()->withInput()
@@ -209,14 +136,13 @@ class ReunionController extends Controller
     /**
      * Check for scheduling conflicts.
      */
-    private function checkForConflicts(int $instanceId, string $startTime, string $endTime, ?int $excludeId = null): \Illuminate\Database\Eloquent\Collection
+    private function checkForConflicts(int $instanceId, string $startTime, string $endTime, ?int $excludeId = null): Collection
     {
-        $start = \Carbon\Carbon::parse($startTime)->setTimezone('UTC');
-        $end = \Carbon\Carbon::parse($endTime)->setTimezone('UTC');
+        $start = Carbon::parse($startTime)->setTimezone('UTC');
+        $end = Carbon::parse($endTime)->setTimezone('UTC');
 
         $query = Reunion::where('instance_id', $instanceId)
             ->where(function ($q) use ($start, $end) {
-                // Check for overlapping time ranges
                 $q->where(function ($q2) use ($start, $end) {
                     $q2->where('start_time', '<', $end)
                         ->where('end_time', '>', $start);
@@ -235,19 +161,17 @@ class ReunionController extends Controller
      */
     private function suggestAlternativeTimeSlots(int $instanceId, string $startTime, string $endTime): array
     {
-        $start = \Carbon\Carbon::parse($startTime);
-        $end = \Carbon\Carbon::parse($endTime);
+        $start = Carbon::parse($startTime);
+        $end = Carbon::parse($endTime);
         $duration = $end->diffInMinutes($start);
 
         $alternatives = [];
         $current = $start->copy();
 
-        // Try to find 3 alternative slots
         for ($i = 0; $i < 10; $i++) {
-            $current->addHours(2); // Try 2 hours later
+            $current->addHours(2);
             $proposedEnd = $current->copy()->addMinutes($duration);
 
-            // Check if this slot is available
             $conflicts = $this->checkForConflicts(
                 $instanceId,
                 $current->toDateTimeString(),

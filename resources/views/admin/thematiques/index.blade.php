@@ -51,21 +51,21 @@
                 <table class="min-w-full divide-y divide-[#faa21b]/10">
                     <thead class="bg-[#faa21b]/5">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Nom') }}</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Discussions') }}</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                            <th class="px-4 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Nom') }}</th>
+                            <th class="px-4 sm:px-6 py-2 sm:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Discussions') }}</th>
+                            <th class="px-4 sm:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-[#faa21b]/10">
                         @forelse($thematiques as $thematique)
                             <tr class="hover:bg-[#faa21b]/5 transition">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                <td class="px-4 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     {{ $thematique->name }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                <td class="px-4 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-center text-sm text-gray-500">
                                     {{ $thematique->forum_threads_count }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td class="px-4 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end gap-2 flex-wrap">
                                         <a href="{{ route('admin.thematiques.edit', $thematique) }}" class="inline-flex items-center gap-1 px-3 py-1 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#faa21b] transition">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -29,7 +29,7 @@ class DocumentRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'visible_to_all' => ['required', 'boolean'],
             'titres' => ['nullable', 'array'],
-            'titres.*' => ['string', 'max:255'],
+            'titres.*' => ['string', 'max:255', Rule::in(config('options.titres', []))],
             'assigned_users' => ['nullable', 'array'],
             'assigned_users.*' => ['exists:users,id'],
             'category' => ['nullable', 'string', Rule::in(config('documents.categories', []))],

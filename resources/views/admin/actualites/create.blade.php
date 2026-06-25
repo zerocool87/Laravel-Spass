@@ -16,7 +16,7 @@
 
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8"
+            <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-4 sm:p-6 lg:p-8"
                  x-data="{ charCount: {{ old('content') ? "'" . strlen(old('content')) . "'" : 0 }}, titleCount: {{ old('title') ? "'" . strlen(old('title')) . "'" : 0 }} }">
 
                 <form action="{{ route('admin.actualites.store') }}" method="POST" class="space-y-6">

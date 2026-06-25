@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Elus\Concerns\FiltersDocuments;
 use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
 use App\Models\User;
@@ -15,15 +14,13 @@ use Illuminate\View\View;
 
 class DocumentController extends Controller
 {
-    use FiltersDocuments;
-
     /**
      * Display a listing of the documents.
      */
     public function index(Request $request): View
     {
         $user = $request->user();
-        $query = $this->getUserAccessibleDocuments($user);
+        $query = Document::accessibleTo($user);
 
         if ($request->filled('category')) {
             if ($request->category === 'uncategorized') {
@@ -40,7 +37,7 @@ class DocumentController extends Controller
             });
         }
 
-        $documents = $query->with(['creator', 'users'])->latest()->paginate(20);
+        $documents = $query->with(['creator', 'users'])->latest()->paginate(20)->withQueryString();
         $documentsByCategory = $documents->getCollection()->groupBy(function ($d) {
             return $d->category ?: __('Non catégorisé');
         });
@@ -54,9 +51,6 @@ class DocumentController extends Controller
         return view('elus.documents.index', compact('documentsByCategory', 'categories', 'documents'));
     }
 
-    /**
-     * Show the form for creating a new document.
-     */
     public function create(): View
     {
         $users = User::orderBy('name')->get();
@@ -64,9 +58,6 @@ class DocumentController extends Controller
         return view('elus.documents.create', compact('users'));
     }
 
-    /**
-     * Store a newly created document in storage.
-     */
     public function store(DocumentRequest $request): RedirectResponse
     {
         $data = $request->validated();
@@ -88,6 +79,6 @@ class DocumentController extends Controller
             $document->users()->sync($data['assigned_users']);
         }
 
-        return redirect()->route('elus.documents.index')->with('success', 'Document créé.')->with('celebrate', true);
+        return redirect()->route('elus.documents.index')->with('success', __('Document créé.'))->with('celebrate', true);
     }
 }

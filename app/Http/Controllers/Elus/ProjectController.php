@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Elus;
 use App\Enums\ProjectStatus;
 use App\Enums\ProjectType;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
 use App\Http\Requests\ProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\JsonResponse;
@@ -17,44 +16,20 @@ use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
-    use RequiresAdmin;
-
-    /**
-     * Display a listing of the projects.
-     */
     public function index(Request $request): View
     {
         $baseQuery = Project::query()->visibleToUser($request->user());
-        $query = clone $baseQuery;
 
-        // Filter by type
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
+        $projects = (clone $baseQuery)
+            ->filtered($request->only(['type', 'status', 'search']))
+            ->when($request->filled('territory'), fn ($q) => $q->whereJsonContains('territories', $request->territory))
+            ->orderBy('updated_at', 'desc')
+            ->paginate(12)
+            ->withQueryString();
 
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Filter by territory
-        if ($request->filled('territory')) {
-            $query->whereJsonContains('territories', $request->territory);
-        }
-
-        // Search
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%'.$request->search.'%')
-                    ->orWhere('description', 'like', '%'.$request->search.'%');
-            });
-        }
-
-        $projects = $query->orderBy('updated_at', 'desc')->paginate(12);
         $types = ProjectType::labels();
         $statuses = ProjectStatus::labels();
 
-        // Statistics
         $stats = [
             'total' => (clone $baseQuery)->count(),
             'active' => (clone $baseQuery)->active()->count(),
@@ -64,13 +39,8 @@ class ProjectController extends Controller
         return view('elus.projects.index', compact('projects', 'types', 'statuses', 'stats'));
     }
 
-    /**
-     * Show the form for creating a new project.
-     */
     public function create(): View
     {
-        $this->requireAdmin();
-
         $types = ProjectType::labels();
         $statuses = ProjectStatus::labels();
         $communes = $this->communes();
@@ -78,13 +48,8 @@ class ProjectController extends Controller
         return view('elus.projects.create', compact('types', 'statuses', 'communes'));
     }
 
-    /**
-     * Store a newly created project in storage.
-     */
     public function store(ProjectRequest $request): RedirectResponse
     {
-        $this->requireAdmin();
-
         Project::create($request->validated());
 
         return redirect()
@@ -92,13 +57,10 @@ class ProjectController extends Controller
             ->with('success', __('Projet créé avec succès.'));
     }
 
-    /**
-     * Display the specified project.
-     */
-    public function show(Project $project): View
+    public function show(Request $request, Project $project): View
     {
         abort_unless(
-            Project::query()->visibleToUser(request()->user())->whereKey($project->getKey())->exists(),
+            Project::query()->visibleToUser($request->user())->whereKey($project->getKey())->exists(),
             403,
             __('Vous n\'avez pas accès à ce projet.')
         );
@@ -106,13 +68,8 @@ class ProjectController extends Controller
         return view('elus.projects.show', compact('project'));
     }
 
-    /**
-     * Show the form for editing the specified project.
-     */
     public function edit(Project $project): View
     {
-        $this->requireAdmin();
-
         $types = ProjectType::labels();
         $statuses = ProjectStatus::labels();
         $communes = $this->communes();
@@ -120,13 +77,8 @@ class ProjectController extends Controller
         return view('elus.projects.edit', compact('project', 'types', 'statuses', 'communes'));
     }
 
-    /**
-     * Update the specified project in storage.
-     */
     public function update(ProjectRequest $request, Project $project): RedirectResponse
     {
-        $this->requireAdmin();
-
         $project->update($request->validated());
 
         return redirect()
@@ -134,13 +86,8 @@ class ProjectController extends Controller
             ->with('success', __('Projet mis à jour avec succès.'));
     }
 
-    /**
-     * Remove the specified project from storage.
-     */
     public function destroy(Project $project): RedirectResponse
     {
-        $this->requireAdmin();
-
         $project->delete();
 
         return redirect()

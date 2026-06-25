@@ -18,10 +18,10 @@
     </x-slot>
 
     <div class="py-4">
-        <div class="max-w-7xl mx-auto sm:px-3 lg:px-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {{-- Create Reunion Button moved into widget header --}}
 
-            {{-- Calendar Section (header always visible; body toggled by AJAX) --}}
+            {{-- Calendar Section --}}
             <div class="widget-container mb-3">
                 <x-widget-header
                     title="📅 {{ __('Calendrier') }}"

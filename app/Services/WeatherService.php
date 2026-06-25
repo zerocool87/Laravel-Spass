@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -55,7 +56,7 @@ class WeatherService
             };
 
             return ['icon' => $icon, 'temp' => $temp.'°C'];
-        } catch (RequestException) {
+        } catch (RequestException|ConnectionException) {
             return ['icon' => '❓', 'temp' => '--'];
         }
     }
@@ -84,7 +85,7 @@ class WeatherService
             }
 
             return $addr['city'] ?? $addr['town'] ?? $addr['village'] ?? $addr['municipality'] ?? $addr['county'] ?? '';
-        } catch (RequestException) {
+        } catch (RequestException|ConnectionException) {
             return '';
         }
     }

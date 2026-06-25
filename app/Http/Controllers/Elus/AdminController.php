@@ -22,7 +22,7 @@ class AdminController extends Controller
      */
     public function index(): View
     {
-        $recentDocuments = Document::orderBy('created_at', 'desc')->take(3)->get();
+        $recentDocuments = Document::with('creator')->orderBy('created_at', 'desc')->take(3)->get();
 
         return view('elus.admin.index', compact('recentDocuments'));
     }
@@ -54,7 +54,7 @@ class AdminController extends Controller
             });
         }
 
-        $users = $query->orderBy('name')->paginate(20);
+        $users = $query->orderBy('name')->paginate(20)->withQueryString();
 
         $communes = $this->communes();
 
@@ -266,13 +266,11 @@ class AdminController extends Controller
      */
     public function storeElu(Request $request): RedirectResponse
     {
-        $allowedTitres = ['Président', 'Vice-président', 'Membre du bureau', 'Membre de commission', 'Représentant', 'Délégué titulaire', 'Délégué suppléant'];
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'titres' => ['nullable', 'array'],
-            'titres.*' => ['string', Rule::in($allowedTitres)],
+            'titres.*' => ['string', Rule::in(config('options.titres', []))],
             'commune' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
         ]);
 
@@ -303,9 +301,9 @@ class AdminController extends Controller
     /**
      * Delete a user.
      */
-    public function destroy(User $user): RedirectResponse
+    public function destroy(Request $request, User $user): RedirectResponse
     {
-        if ($user->id === request()->user()->id) {
+        if ($user->id === $request->user()->id) {
             return back()->with('error', __('Vous ne pouvez pas supprimer votre propre compte.'));
         }
 

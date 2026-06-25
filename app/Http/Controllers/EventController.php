@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,7 +15,11 @@ class EventController extends Controller
 {
     public function index(): View
     {
-        $events = Event::with('creator')->where('end_at', '>=', now())->orderBy('start_at', 'asc')->paginate(20);
+        $events = Event::with('creator')
+            ->where('end_at', '>=', now())
+            ->orderBy('start_at', 'asc')
+            ->paginate(20)
+            ->withQueryString();
 
         return view('events.index', compact('events'));
     }
@@ -59,8 +64,8 @@ class EventController extends Controller
         // If the calendar requests a range, filter events intersecting the range
         if ($request->has('start') && $request->has('end')) {
             try {
-                $start = \Carbon\Carbon::parse($request->input('start'));
-                $end = \Carbon\Carbon::parse($request->input('end'));
+                $start = Carbon::parse($request->input('start'));
+                $end = Carbon::parse($request->input('end'));
 
                 $query->where(function ($q) use ($start, $end) {
                     $q->whereBetween('start_at', [$start, $end])

@@ -13,15 +13,15 @@
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="glass p-6 rounded-xl shadow-md">
-                <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $event->title }}</h1>
-                <div class="flex flex-wrap items-center gap-4 text-gray-700 mb-4">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass p-4 sm:p-6 rounded-xl shadow-md">
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{{ $event->title }}</h1>
+                <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-4 text-gray-700 mb-4">
                     <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#faa21b]/15 text-[#b36b00] text-sm font-medium">
                         <svg class="w-4 h-4 mr-1 text-[#faa21b]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         {{ $event->start_at->format('d/m/Y H:i') }}
                         @if($event->end_at)
-                            <span class="mx-2">&rarr;</span> {{ $event->end_at->format('d/m/Y H:i') }}
+                            <span class="mx-1">&rarr;</span> {{ $event->end_at->format('d/m/Y H:i') }}
                         @endif
                     </span>
                     <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#faa21b]/15 text-[#b36b00] text-sm font-medium">

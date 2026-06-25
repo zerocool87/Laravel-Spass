@@ -74,6 +74,6 @@ class UserController extends Controller
             );
         }
 
-        return redirect()->route('elus.admin.users')->with('success', 'Utilisateur mis à jour.');
+        return redirect()->route('elus.admin.users')->with('success', __('Utilisateur mis à jour.'));
     }
 }
