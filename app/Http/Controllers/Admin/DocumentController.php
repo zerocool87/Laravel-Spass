@@ -107,7 +107,7 @@ class DocumentController extends Controller
             ));
         }
 
-        return redirect()->route('admin.documents.index')->with('success', 'Document créé.');
+        return redirect()->route('admin.documents.index')->with('success', 'Document créé.')->with('celebrate', true);
     }
 
     public function edit(Document $document): View

@@ -80,6 +80,7 @@ Route::middleware('auth')->group(function () {
 Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(function () {
     // Dashboard
     Route::get('/', [\App\Http\Controllers\Elus\DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/onboarding-complete', [\App\Http\Controllers\Elus\DashboardController::class, 'onboardingComplete'])->name('onboarding.complete');
 
     // Instances (Comités, Bureaux, Commissions)
     Route::resource('instances', \App\Http\Controllers\Elus\InstanceController::class)->only(['index', 'show']);

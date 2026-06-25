@@ -10,6 +10,7 @@ use App\Models\Actualite;
 use App\Models\Instance;
 use App\Models\Project;
 use App\Models\Reunion;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -38,42 +39,28 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Get latest documents accessible to the user (limit to 3, newest first)
+        // Get latest documents accessible to the user (newest first)
         $latestDocuments = $this->getUserAccessibleDocuments($user)
             ->with('creator')
             ->latest()
-            ->take(3)
+            ->take(5)
             ->get();
 
-        // Get instances (limit to 3, sorted alphabetically)
+        // Get instances (sorted alphabetically)
         $instances = Instance::withCount('reunions')
             ->orderBy('name')
-            ->take(3)
+            ->take(5)
             ->get();
 
-        // Get latest published actualités (limit to 3)
+        // Get latest published actualités
         $latestActualites = Actualite::with('creator')
             ->where('is_published', true)
             ->latest('published_at')
-            ->take(3)
+            ->take(5)
             ->get();
 
-        // Statistics
-        $baseProjectQuery = Project::query()->visibleToUser($user);
-        $totalProjectsCount = (clone $baseProjectQuery)->count();
-        $activeProjectsCount = (clone $baseProjectQuery)->active()->count();
-        $activeBudgetSum = (clone $baseProjectQuery)->active()->sum('budget');
-        $totalDocumentsCount = $this->getUserAccessibleDocuments($user)->count();
-
-        $stats = [
-            'total_projects' => $totalProjectsCount,
-            'active_projects' => $activeProjectsCount,
-            'total_reunions' => Reunion::count(),
-            'upcoming_reunions' => Reunion::upcoming()->count(),
-            'total_instances' => Instance::count(),
-            'total_budget' => $activeBudgetSum ?? 0,
-            'total_documents' => $totalDocumentsCount,
-        ];
+        // Onboarding tour (show once per session)
+        $showOnboarding = ! session('onboarding_completed', false);
 
         return view('elus.dashboard', compact(
             'user',
@@ -82,7 +69,17 @@ class DashboardController extends Controller
             'latestDocuments',
             'latestActualites',
             'instances',
-            'stats'
+            'showOnboarding',
         ));
+    }
+
+    /**
+     * Mark onboarding as completed for this session.
+     */
+    public function onboardingComplete(Request $request): JsonResponse
+    {
+        session(['onboarding_completed' => true]);
+
+        return response()->json(['ok' => true]);
     }
 }

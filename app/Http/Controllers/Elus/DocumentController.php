@@ -88,6 +88,6 @@ class DocumentController extends Controller
             $document->users()->sync($data['assigned_users']);
         }
 
-        return redirect()->route('elus.documents.index')->with('success', 'Document créé.');
+        return redirect()->route('elus.documents.index')->with('success', 'Document créé.')->with('celebrate', true);
     }
 }

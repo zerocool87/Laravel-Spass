@@ -1,5 +1,15 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    x-data="{ largeText: localStorage.getItem('spass_large_text') === 'true' }"
+    x-init="
+        if (largeText) document.documentElement.classList.add('text-large');
+        $watch('largeText', val => {
+            document.documentElement.classList.toggle('text-large', val);
+            localStorage.setItem('spass_large_text', val);
+        });
+    "
+    :class="{ 'text-large': largeText }"
+>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +30,20 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-[#fffbe9]">
-            <!-- Navigation removed as requested -->
+            {{-- Accessibility toolbar --}}
+            <div class="fixed top-4 right-4 z-[100] flex gap-2">
+                <button
+                    @click="largeText = !largeText"
+                    class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition shadow-lg"
+                    :class="largeText ? 'bg-[#faa21b] text-white' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'"
+                    :title="largeText ? 'Texte normal' : 'Agrandir le texte'"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                    <span x-text="largeText ? 'A' : 'A+'"></span>
+                </button>
+            </div>
 
             <!-- Page Heading -->
             @isset($header)
@@ -50,6 +73,9 @@
                 @if(session('info'))
                     $store.toasts.add('{{ session('info') }}', 'info');
                 @endif
+                @if(session('celebrate'))
+                    setTimeout(() => $store.confetti.fire({ particleCount: 100 }), 300);
+                @endif
             "
             class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"
         >
@@ -70,7 +96,7 @@
                     @click="$store.toasts.remove(toast.id)"
                 >
                     <span class="text-lg flex-shrink-0 leading-none" x-text="toast.type === 'success' ? '✅' : toast.type === 'error' ? '❌' : 'ℹ️'"></span>
-                    <p class="text-sm font-semibold flex-1" x-text="toast.message"></p>
+                    <p class="text-base font-semibold flex-1" x-text="toast.message"></p>
                     <button @click.stop="$store.toasts.remove(toast.id)" class="text-white/70 hover:text-white flex-shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

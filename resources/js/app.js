@@ -5,6 +5,7 @@ import Alpine from 'alpinejs';
 import './calendar';
 import './modal';
 import './event-detail-modal';
+import initConfetti from './confetti';
 
 window.Alpine = Alpine;
 
@@ -23,6 +24,8 @@ document.addEventListener('alpine:init', () => {
             this.items = this.items.filter(t => t.id !== id);
         },
     });
+
+    Alpine.store('confetti', initConfetti());
 });
 
 Alpine.start();

@@ -91,7 +91,8 @@ class ForumController extends Controller
         });
 
         return redirect()->route('elus.forum.show', $thread)
-            ->with('success', __('Sujet créé avec succès !'));
+            ->with('success', __('Sujet créé avec succès !'))
+            ->with('celebrate', true);
     }
 
     public function show(ForumThread $forumThread): View
@@ -129,6 +130,7 @@ class ForumController extends Controller
         ]);
 
         return redirect()->route('elus.forum.show', $forumThread)
-            ->with('success', __('Réponse postée avec succès !'));
+            ->with('success', __('Réponse postée avec succès !'))
+            ->with('celebrate', true);
     }
 }
