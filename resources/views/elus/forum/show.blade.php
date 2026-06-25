@@ -67,11 +67,16 @@
                     @endforelse
                 </div>
 
-                <div class="px-6 sm:px-8 pb-6">
-                    {{ $posts->links() }}
+                <div class="px-6 sm:px-8 pb-6 flex items-center justify-between gap-4">
+                    <div class="flex-1">
+                        {{ $posts->links() }}
+                    </div>
+                    <a href="#" class="text-sm text-gray-500 hover:text-[#faa21b] flex-shrink-0 transition" title="{{ __('Retour en haut') }}">
+                        ↑ {{ __('Haut') }}
+                    </a>
                 </div>
 
-                <div class="border-t border-[#faa21b]/20 p-6 sm:p-8">
+                <div id="repondre" class="scroll-mt-24 border-t border-[#faa21b]/20 p-6 sm:p-8">
                     <form method="POST" action="{{ route('elus.forum.posts.store', $thread) }}" class="flex flex-col gap-4">
                         @csrf
                         <textarea name="body" rows="4" class="w-full input-orange text-base" placeholder="{{ __('Écrire une réponse...') }}" required maxlength="5000">{{ old('body') }}</textarea>

@@ -12,13 +12,14 @@ use App\Models\ForumThread;
 use App\Models\Instance;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ForumController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         /** @var User $user */
         $user = Auth::user();
@@ -28,7 +29,7 @@ class ForumController extends Controller
             ->orderBy('name')
             ->get();
 
-        $threads = ForumThread::query()
+        $query = ForumThread::query()
             ->with([
                 'instance',
                 'creator' => fn ($q) => $q->withCount('forumPosts'),
@@ -36,18 +37,44 @@ class ForumController extends Controller
             ])
             ->withCount('posts')
             ->withExists([
-                'readBy as is_read' => fn ($query) => $query->where('user_id', $user->id),
-            ])
-            ->orderByDesc('is_pinned')
-            ->orderByDesc(
+                'readBy as is_read' => fn ($q) => $q->where('user_id', $user->id),
+            ]);
+
+        // Filtre par instance
+        if ($request->filled('instance_id')) {
+            $query->where('instance_id', $request->integer('instance_id'));
+        }
+
+        // Recherche par titre
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%'.$request->string('search').'%');
+        }
+
+        // Tri
+        $query->orderByDesc('is_pinned');
+
+        $sort = $request->input('sort', 'latest');
+        match ($sort) {
+            'replies' => $query->orderByDesc(
+                ForumPost::selectRaw('count(*)')
+                    ->whereColumn('forum_thread_id', 'forum_threads.id')
+                    ->groupBy('forum_thread_id')
+            ),
+            'created' => $query->orderByDesc('created_at'),
+            default => $query->orderByDesc(
                 ForumPost::select('created_at')
                     ->whereColumn('forum_thread_id', 'forum_threads.id')
                     ->latest()
                     ->limit(1)
-            )
-            ->get();
+            ),
+        };
 
-        $unreadCount = $threads->filter(fn ($thread) => ! $thread->is_read)->count();
+        $threads = $query->paginate(30)->withQueryString();
+
+        $unreadCount = ForumThread::query()
+            ->whereDoesntHave('readBy', fn ($q) => $q->where('user_id', $user->id))
+            ->whereHas('posts')
+            ->count();
 
         return view('elus.forum.index', [
             'instances' => $instances,

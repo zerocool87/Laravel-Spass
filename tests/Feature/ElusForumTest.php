@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\ForumPost;
 use App\Models\ForumThread;
 use App\Models\Instance;
 use App\Models\User;
@@ -107,7 +108,7 @@ class ElusForumTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function test_threads_grouped_by_instance_on_index(): void
+    public function test_threads_listed_in_table_on_index(): void
     {
         $user = User::factory()->create(['is_elu' => true]);
         $instanceA = Instance::factory()->create(['name' => 'Commission A']);
@@ -122,7 +123,8 @@ class ElusForumTest extends TestCase
             ->assertSee('Commission A')
             ->assertSee('Commission B')
             ->assertSee('Sujet A')
-            ->assertSee('Sujet B');
+            ->assertSee('Sujet B')
+            ->assertSeeInOrder([__('Instance'), __('Sujet'), __('Auteur'), __('Rép.'), __('Dernière activité')]);
     }
 
     public function test_thread_show_marks_as_read(): void
@@ -138,4 +140,98 @@ class ElusForumTest extends TestCase
             'user_id' => $user->id,
         ]);
     }
+
+    public function test_index_paginates_at_30(): void
+    {
+        $user = User::factory()->create(['is_elu' => true]);
+        $instance = Instance::factory()->create();
+
+        ForumThread::factory()
+            ->count(31)
+            ->create(['instance_id' => $instance->id]);
+
+        $response = $this->actingAs($user)
+            ->get(route('elus.forum.index'))
+            ->assertOk();
+
+        $response->assertViewHas('threads', fn ($paginator) => $paginator->hasPages());
+
+        $response = $this->actingAs($user)
+            ->get(route('elus.forum.index', ['page' => 2]))
+            ->assertOk();
+
+        $response->assertViewHas('threads', fn ($paginator) => $paginator->currentPage() === 2);
+    }
+
+    public function test_index_search_by_title(): void
+    {
+        $user = User::factory()->create(['is_elu' => true]);
+        $instance = Instance::factory()->create();
+
+        ForumThread::factory()->create([
+            'instance_id' => $instance->id,
+            'title' => 'Budget participatif 2026',
+        ]);
+        ForumThread::factory()->create([
+            'instance_id' => $instance->id,
+            'title' => 'Aménagement du parc',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('elus.forum.index', ['search' => 'Budget']))
+            ->assertOk()
+            ->assertSee('Budget participatif 2026')
+            ->assertDontSee('Aménagement du parc');
+    }
+
+    public function test_index_filter_by_instance(): void
+    {
+        $user = User::factory()->create(['is_elu' => true]);
+        $instanceA = Instance::factory()->create(['name' => 'Commission Eau']);
+        $instanceB = Instance::factory()->create(['name' => 'Commission Voirie']);
+
+        ForumThread::factory()->create([
+            'instance_id' => $instanceA->id,
+            'title' => 'Sujet Eau',
+        ]);
+        ForumThread::factory()->create([
+            'instance_id' => $instanceB->id,
+            'title' => 'Sujet Voirie',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('elus.forum.index', ['instance_id' => $instanceA->id]))
+            ->assertOk()
+            ->assertSee('Sujet Eau')
+            ->assertDontSee('Sujet Voirie');
+    }
+
+    public function test_index_sort_by_replies(): void
+    {
+        $user = User::factory()->create(['is_elu' => true]);
+        $instance = Instance::factory()->create();
+
+        $threadMany = ForumThread::factory()->create([
+            'instance_id' => $instance->id,
+            'title' => 'Très actif',
+        ]);
+        ForumPost::factory()->count(5)->create([
+            'forum_thread_id' => $threadMany->id,
+        ]);
+
+        $threadFew = ForumThread::factory()->create([
+            'instance_id' => $instance->id,
+            'title' => 'Peu actif',
+        ]);
+        ForumPost::factory()->create([
+            'forum_thread_id' => $threadFew->id,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get(route('elus.forum.index', ['sort' => 'replies']))
+            ->assertOk();
+
+        $response->assertSeeInOrder(['Très actif', 'Peu actif']);
+    }
+
 }
