@@ -146,12 +146,7 @@
                     description: '{{ __('Utilisez le menu en haut pour naviguer entre Instances, Projets, Réunions, Documents, Actualités et le Forum. Chaque rubrique est conçue pour être simple et intuitive.') }}',
                     color: '#8b5cf6',
                 },
-                {
-                    icon: '🌟',
-                    title: '{{ __('Des badges pour vous récompenser') }}',
-                    description: '{{ __('En utilisant régulièrement la plateforme, vous débloquerez des badges et serez encouragé·e par des messages personnalisés. Plus vous participez, plus l\'expérience s\'enrichit !') }}',
-                    color: '#f59e0b',
-                },
+
             ],
 
             init() {

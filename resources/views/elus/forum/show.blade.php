@@ -7,7 +7,7 @@
     <x-slot name="header">
         <x-elus-header
             title="{{ $thread->title }}"
-            subtitle="{{ $thread->instance->name }}"
+            subtitle="{{ $thread->thematique->name }}"
             icon="💬"
             :backRoute="route('elus.forum.index')"
             :backLabel="__('Retour au forum')"

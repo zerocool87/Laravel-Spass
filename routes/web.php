@@ -36,7 +36,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
         Route::post('/', [\App\Http\Controllers\Admin\ProjectController::class, 'store'])->name('store');
         Route::get('/{project}', [\App\Http\Controllers\Admin\ProjectController::class, 'show'])->name('show');
         Route::get('/{project}/edit', [\App\Http\Controllers\Admin\ProjectController::class, 'edit'])->name('edit');
-        Route::put('/{project}', [\App\Http\Controllers\Admin\ProjectController::class, 'update'])->name('update');
+        Route::patch('/{project}', [\App\Http\Controllers\Admin\ProjectController::class, 'update'])->name('update');
         Route::delete('/{project}', [\App\Http\Controllers\Admin\ProjectController::class, 'destroy'])->name('destroy');
     });
 
@@ -45,7 +45,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
         Route::get('/create', [\App\Http\Controllers\Admin\ReunionController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\ReunionController::class, 'store'])->name('store');
         Route::get('/{reunion}/edit', [\App\Http\Controllers\Admin\ReunionController::class, 'edit'])->name('edit');
-        Route::put('/{reunion}', [\App\Http\Controllers\Admin\ReunionController::class, 'update'])->name('update');
+        Route::patch('/{reunion}', [\App\Http\Controllers\Admin\ReunionController::class, 'update'])->name('update');
         Route::delete('/{reunion}', [\App\Http\Controllers\Admin\ReunionController::class, 'destroy'])->name('destroy');
     });
 
@@ -56,6 +56,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
         Route::get('/{actualite}/edit', [\App\Http\Controllers\Admin\ActualiteController::class, 'edit'])->name('edit');
         Route::patch('/{actualite}', [\App\Http\Controllers\Admin\ActualiteController::class, 'update'])->name('update');
         Route::delete('/{actualite}', [\App\Http\Controllers\Admin\ActualiteController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('thematiques')->name('thematiques.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ThematiqueController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\ThematiqueController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\ThematiqueController::class, 'store'])->name('store');
+        Route::get('/{thematique}/edit', [\App\Http\Controllers\Admin\ThematiqueController::class, 'edit'])->name('edit');
+        Route::patch('/{thematique}', [\App\Http\Controllers\Admin\ThematiqueController::class, 'update'])->name('update');
+        Route::delete('/{thematique}', [\App\Http\Controllers\Admin\ThematiqueController::class, 'destroy'])->name('destroy');
     });
 });
 

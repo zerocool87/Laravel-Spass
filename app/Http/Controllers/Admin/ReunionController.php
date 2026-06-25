@@ -6,8 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\ReunionStatus;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreReunionRequest;
-use App\Http\Requests\UpdateReunionRequest;
+use App\Http\Requests\ReunionRequest;
 use App\Models\Instance;
 use App\Models\Reunion;
 use App\Models\User;
@@ -17,20 +16,6 @@ use Illuminate\View\View;
 
 class ReunionController extends Controller
 {
-    private function titresElus(): array
-    {
-        return User::where('is_elu', true)
-            ->whereNotNull('titres')
-            ->get()
-            ->pluck('titres')
-            ->flatten()
-            ->filter()
-            ->unique()
-            ->sort()
-            ->values()
-            ->toArray();
-    }
-
     /**
      * Display a listing of the reunions.
      */
@@ -79,7 +64,7 @@ class ReunionController extends Controller
         $instances = Instance::orderBy('name')->get();
         $statuses = ReunionStatus::labels();
         $selectedInstance = $request->instance_id;
-        $titres = $this->titresElus();
+        $titres = User::titresElus();
 
         return view('admin.reunions.create', compact('instances', 'statuses', 'selectedInstance', 'titres'));
     }
@@ -87,7 +72,7 @@ class ReunionController extends Controller
     /**
      * Store a newly created reunion in storage.
      */
-    public function store(StoreReunionRequest $request): RedirectResponse
+    public function store(ReunionRequest $request): RedirectResponse
     {
         $validated = $request->validated();
         $validated['visible_to_all'] = (bool) ($validated['visible_to_all'] ?? false);
@@ -153,7 +138,7 @@ class ReunionController extends Controller
     {
         $instances = Instance::orderBy('name')->get();
         $statuses = ReunionStatus::labels();
-        $titres = $this->titresElus();
+        $titres = User::titresElus();
 
         return view('admin.reunions.edit', compact('reunion', 'instances', 'statuses', 'titres'));
     }
@@ -161,7 +146,7 @@ class ReunionController extends Controller
     /**
      * Update the specified reunion in storage.
      */
-    public function update(UpdateReunionRequest $request, Reunion $reunion): RedirectResponse
+    public function update(ReunionRequest $request, Reunion $reunion): RedirectResponse
     {
         $validated = $request->validated();
         $validated['visible_to_all'] = (bool) ($validated['visible_to_all'] ?? false);

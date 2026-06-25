@@ -19,7 +19,7 @@ class StoreForumThreadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'instance_id' => ['required', 'integer', Rule::exists('instances', 'id')],
+            'thematique_id' => ['required', 'integer', Rule::exists('thematiques', 'id')],
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:5000'],
         ];

@@ -9,7 +9,7 @@ use App\Http\Requests\StoreForumPostRequest;
 use App\Http\Requests\StoreForumThreadRequest;
 use App\Models\ForumPost;
 use App\Models\ForumThread;
-use App\Models\Instance;
+use App\Models\Thematique;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,14 +24,13 @@ class ForumController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $instances = Instance::query()
-            ->withCount('reunions')
+        $thematiques = Thematique::query()
             ->orderBy('name')
             ->get();
 
         $query = ForumThread::query()
             ->with([
-                'instance',
+                'thematique',
                 'creator' => fn ($q) => $q->withCount('forumPosts'),
                 'latestPost.author',
             ])
@@ -40,9 +39,9 @@ class ForumController extends Controller
                 'readBy as is_read' => fn ($q) => $q->where('user_id', $user->id),
             ]);
 
-        // Filtre par instance
-        if ($request->filled('instance_id')) {
-            $query->where('instance_id', $request->integer('instance_id'));
+        // Filtre par thématique
+        if ($request->filled('thematique_id')) {
+            $query->where('thematique_id', $request->integer('thematique_id'));
         }
 
         // Recherche par titre
@@ -77,7 +76,7 @@ class ForumController extends Controller
             ->count();
 
         return view('elus.forum.index', [
-            'instances' => $instances,
+            'thematiques' => $thematiques,
             'threads' => $threads,
             'currentUser' => $user,
             'unreadCount' => $unreadCount,
@@ -86,10 +85,10 @@ class ForumController extends Controller
 
     public function create(): View
     {
-        $instances = Instance::query()->orderBy('name')->get();
+        $thematiques = Thematique::query()->orderBy('name')->get();
 
         return view('elus.forum.create', [
-            'instances' => $instances,
+            'thematiques' => $thematiques,
         ]);
     }
 
@@ -102,7 +101,7 @@ class ForumController extends Controller
 
         $thread = DB::transaction(function () use ($user, $validated) {
             $thread = ForumThread::create([
-                'instance_id' => $validated['instance_id'],
+                'thematique_id' => $validated['thematique_id'],
                 'title' => $validated['title'],
                 'created_by' => $user->id,
             ]);
@@ -127,7 +126,7 @@ class ForumController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $forumThread->load(['instance', 'creator', 'posts.author']);
+        $forumThread->load(['thematique', 'creator', 'posts.author']);
 
         $posts = $forumThread->posts()
             ->with(['author' => fn ($q) => $q->withCount('forumPosts')])

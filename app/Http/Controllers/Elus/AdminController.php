@@ -22,16 +22,9 @@ class AdminController extends Controller
      */
     public function index(): View
     {
-        $stats = [
-            'total_users' => User::count(),
-            'total_elus' => User::where('is_elu', true)->count(),
-            'total_admins' => User::where('is_admin', true)->count(),
-        ];
-
-        $recentUsers = User::orderBy('created_at', 'desc')->take(5)->get();
         $recentDocuments = Document::orderBy('created_at', 'desc')->take(3)->get();
 
-        return view('elus.admin.index', compact('stats', 'recentUsers', 'recentDocuments'));
+        return view('elus.admin.index', compact('recentDocuments'));
     }
 
     /**

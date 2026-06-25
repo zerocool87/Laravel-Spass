@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Enums\Concerns\HasLabels;
+
 enum ProjectType: string
 {
+    use HasLabels;
+
     case Infrastructure = 'infrastructure';
     case Energie = 'energie';
     case Amenagement = 'amenagement';
@@ -23,16 +27,5 @@ enum ProjectType: string
             self::Numerique => 'Numérique',
             self::Autre => 'Autre',
         };
-    }
-
-    /** @return array<string, string> */
-    public static function labels(): array
-    {
-        $result = [];
-        foreach (self::cases() as $case) {
-            $result[$case->value] = $case->label();
-        }
-
-        return $result;
     }
 }

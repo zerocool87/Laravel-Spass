@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Enums\Concerns\HasLabels;
+
 enum ProjectStatus: string
 {
+    use HasLabels;
+
     case Planifie = 'planifie';
     case EnCours = 'en_cours';
     case Termine = 'termine';
@@ -32,16 +36,5 @@ enum ProjectStatus: string
             self::Suspendu => 'orange',
             self::Annule => 'red',
         };
-    }
-
-    /** @return array<string, string> */
-    public static function labels(): array
-    {
-        $result = [];
-        foreach (self::cases() as $case) {
-            $result[$case->value] = $case->label();
-        }
-
-        return $result;
     }
 }

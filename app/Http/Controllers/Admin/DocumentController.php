@@ -21,20 +21,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
-    private function titresElus(): array
-    {
-        return User::where('is_elu', true)
-            ->whereNotNull('titres')
-            ->get()
-            ->pluck('titres')
-            ->flatten()
-            ->filter()
-            ->unique()
-            ->sort()
-            ->values()
-            ->toArray();
-    }
-
     public function index(Request $request): View
     {
         $category = $request->query('category');
@@ -72,7 +58,7 @@ class DocumentController extends Controller
     public function create(): View
     {
         $users = User::orderBy('name')->get();
-        $titres = $this->titresElus();
+        $titres = User::titresElus();
 
         return view('admin.documents.create', compact('users', 'titres'));
     }
@@ -114,7 +100,7 @@ class DocumentController extends Controller
     {
         $users = User::orderBy('name')->get();
         $assigned = $document->users()->pluck('users.id')->toArray();
-        $titres = $this->titresElus();
+        $titres = User::titresElus();
 
         return view('admin.documents.edit', compact('document', 'users', 'assigned', 'titres'));
     }

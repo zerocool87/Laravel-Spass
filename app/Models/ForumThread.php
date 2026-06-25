@@ -18,7 +18,7 @@ class ForumThread extends Model
     use HasFactory;
 
     protected $fillable = [
-        'instance_id',
+        'thematique_id',
         'title',
         'created_by',
         'is_pinned',
@@ -31,9 +31,9 @@ class ForumThread extends Model
         ];
     }
 
-    public function instance(): BelongsTo
+    public function thematique(): BelongsTo
     {
-        return $this->belongsTo(Instance::class);
+        return $this->belongsTo(Thematique::class);
     }
 
     public function creator(): BelongsTo

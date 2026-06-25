@@ -6,7 +6,7 @@ namespace Tests\Feature;
 
 use App\Models\ForumPost;
 use App\Models\ForumThread;
-use App\Models\Instance;
+use App\Models\Thematique;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -37,11 +37,11 @@ class ElusForumTest extends TestCase
     public function test_elu_can_create_thread_with_first_post(): void
     {
         $user = User::factory()->create(['is_elu' => true]);
-        $instance = Instance::factory()->create();
+        $thematique = Thematique::factory()->create();
 
         $response = $this->actingAs($user)
             ->post(route('elus.forum.store'), [
-                'instance_id' => $instance->id,
+                'thematique_id' => $thematique->id,
                 'title' => 'Sujet test',
                 'body' => 'Premier message du sujet',
             ]);
@@ -50,7 +50,7 @@ class ElusForumTest extends TestCase
 
         $this->assertNotNull($thread);
         $this->assertEquals('Sujet test', $thread->title);
-        $this->assertEquals($instance->id, $thread->instance_id);
+        $this->assertEquals($thematique->id, $thread->thematique_id);
         $this->assertEquals($user->id, $thread->created_by);
 
         $this->assertDatabaseHas('forum_posts', [
@@ -97,11 +97,11 @@ class ElusForumTest extends TestCase
     public function test_non_elu_cannot_create_thread(): void
     {
         $user = User::factory()->create(['is_elu' => false, 'is_admin' => false]);
-        $instance = Instance::factory()->create();
+        $thematique = Thematique::factory()->create();
 
         $this->actingAs($user)
             ->post(route('elus.forum.store'), [
-                'instance_id' => $instance->id,
+                'thematique_id' => $thematique->id,
                 'title' => 'Test',
                 'body' => 'Test',
             ])
@@ -111,11 +111,11 @@ class ElusForumTest extends TestCase
     public function test_threads_listed_in_table_on_index(): void
     {
         $user = User::factory()->create(['is_elu' => true]);
-        $instanceA = Instance::factory()->create(['name' => 'Commission A']);
-        $instanceB = Instance::factory()->create(['name' => 'Commission B']);
+        $thematiqueA = Thematique::factory()->create(['name' => 'Commission A']);
+        $thematiqueB = Thematique::factory()->create(['name' => 'Commission B']);
 
-        ForumThread::factory()->create(['instance_id' => $instanceA->id, 'title' => 'Sujet A']);
-        ForumThread::factory()->create(['instance_id' => $instanceB->id, 'title' => 'Sujet B']);
+        ForumThread::factory()->create(['thematique_id' => $thematiqueA->id, 'title' => 'Sujet A']);
+        ForumThread::factory()->create(['thematique_id' => $thematiqueB->id, 'title' => 'Sujet B']);
 
         $this->actingAs($user)
             ->get(route('elus.forum.index'))
@@ -124,7 +124,7 @@ class ElusForumTest extends TestCase
             ->assertSee('Commission B')
             ->assertSee('Sujet A')
             ->assertSee('Sujet B')
-            ->assertSeeInOrder([__('Instance'), __('Sujet'), __('Auteur'), __('Rép.'), __('Dernière activité')]);
+            ->assertSeeInOrder([__('Thématique'), __('Sujet'), __('Auteur'), __('Rép.'), __('Dernière activité')]);
     }
 
     public function test_thread_show_marks_as_read(): void
@@ -144,11 +144,11 @@ class ElusForumTest extends TestCase
     public function test_index_paginates_at_30(): void
     {
         $user = User::factory()->create(['is_elu' => true]);
-        $instance = Instance::factory()->create();
+        $thematique = Thematique::factory()->create();
 
         ForumThread::factory()
             ->count(31)
-            ->create(['instance_id' => $instance->id]);
+            ->create(['thematique_id' => $thematique->id]);
 
         $response = $this->actingAs($user)
             ->get(route('elus.forum.index'))
@@ -166,14 +166,14 @@ class ElusForumTest extends TestCase
     public function test_index_search_by_title(): void
     {
         $user = User::factory()->create(['is_elu' => true]);
-        $instance = Instance::factory()->create();
+        $thematique = Thematique::factory()->create();
 
         ForumThread::factory()->create([
-            'instance_id' => $instance->id,
+            'thematique_id' => $thematique->id,
             'title' => 'Budget participatif 2026',
         ]);
         ForumThread::factory()->create([
-            'instance_id' => $instance->id,
+            'thematique_id' => $thematique->id,
             'title' => 'Aménagement du parc',
         ]);
 
@@ -187,20 +187,20 @@ class ElusForumTest extends TestCase
     public function test_index_filter_by_instance(): void
     {
         $user = User::factory()->create(['is_elu' => true]);
-        $instanceA = Instance::factory()->create(['name' => 'Commission Eau']);
-        $instanceB = Instance::factory()->create(['name' => 'Commission Voirie']);
+        $thematiqueA = Thematique::factory()->create(['name' => 'Commission Eau']);
+        $thematiqueB = Thematique::factory()->create(['name' => 'Commission Voirie']);
 
         ForumThread::factory()->create([
-            'instance_id' => $instanceA->id,
+            'thematique_id' => $thematiqueA->id,
             'title' => 'Sujet Eau',
         ]);
         ForumThread::factory()->create([
-            'instance_id' => $instanceB->id,
+            'thematique_id' => $thematiqueB->id,
             'title' => 'Sujet Voirie',
         ]);
 
         $this->actingAs($user)
-            ->get(route('elus.forum.index', ['instance_id' => $instanceA->id]))
+            ->get(route('elus.forum.index', ['thematique_id' => $thematiqueA->id]))
             ->assertOk()
             ->assertSee('Sujet Eau')
             ->assertDontSee('Sujet Voirie');
@@ -209,10 +209,10 @@ class ElusForumTest extends TestCase
     public function test_index_sort_by_replies(): void
     {
         $user = User::factory()->create(['is_elu' => true]);
-        $instance = Instance::factory()->create();
+        $thematique = Thematique::factory()->create();
 
         $threadMany = ForumThread::factory()->create([
-            'instance_id' => $instance->id,
+            'thematique_id' => $thematique->id,
             'title' => 'Très actif',
         ]);
         ForumPost::factory()->count(5)->create([
@@ -220,7 +220,7 @@ class ElusForumTest extends TestCase
         ]);
 
         $threadFew = ForumThread::factory()->create([
-            'instance_id' => $instance->id,
+            'thematique_id' => $thematique->id,
             'title' => 'Peu actif',
         ]);
         ForumPost::factory()->create([
@@ -233,5 +233,4 @@ class ElusForumTest extends TestCase
 
         $response->assertSeeInOrder(['Très actif', 'Peu actif']);
     }
-
 }

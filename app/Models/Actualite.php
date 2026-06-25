@@ -34,8 +34,9 @@ class Actualite extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function scopePublished($query): void
+    /** @param \Illuminate\Database\Eloquent\Builder<self> $query */
+    public function scopePublished($query): \Illuminate\Database\Eloquent\Builder
     {
-        $query->where('is_published', true);
+        return $query->where('is_published', true);
     }
 }

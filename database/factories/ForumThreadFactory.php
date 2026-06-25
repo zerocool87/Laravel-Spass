@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Instance;
+use App\Models\Thematique;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -16,7 +16,7 @@ class ForumThreadFactory extends Factory
     public function definition(): array
     {
         return [
-            'instance_id' => Instance::factory(),
+            'thematique_id' => Thematique::factory(),
             'title' => $this->faker->sentence(),
             'created_by' => User::factory(),
             'is_pinned' => false,

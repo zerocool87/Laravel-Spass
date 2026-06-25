@@ -8,7 +8,7 @@ use App\Enums\ReunionStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreReunionRequest extends FormRequest
+class ReunionRequest extends FormRequest
 {
     public function authorize(): bool
     {

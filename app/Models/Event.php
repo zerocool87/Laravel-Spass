@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,5 +37,24 @@ class Event extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /** @param Builder<self> $query */
+    public function scopeInRange(Builder $query, string $start, string $end): Builder
+    {
+        return $query->where(function (Builder $q) use ($start, $end) {
+            $q->whereBetween('start_at', [$start, $end])
+                ->orWhereBetween('end_at', [$start, $end])
+                ->orWhere(function (Builder $q2) use ($start, $end) {
+                    $q2->where('start_at', '<=', $start)
+                        ->where('end_at', '>=', $end);
+                });
+        });
+    }
+
+    /** @param Builder<self> $query */
+    public function scopeUpcoming(Builder $query): Builder
+    {
+        return $query->where('start_at', '>=', now());
     }
 }

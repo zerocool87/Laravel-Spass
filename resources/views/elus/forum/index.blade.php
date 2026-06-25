@@ -29,11 +29,11 @@
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Rechercher un sujet...') }}" class="w-full input-orange" onchange="this.form.submit()">
                     </div>
                     <div>
-                        <select name="instance_id" class="select-orange" onchange="this.form.submit()">
-                            <option value="">{{ __('Toutes les instances') }}</option>
-                            @foreach($instances as $instance)
-                                <option value="{{ $instance->id }}" {{ request('instance_id') == $instance->id ? 'selected' : '' }}>
-                                    {{ $instance->name }}
+                        <select name="thematique_id" class="select-orange" onchange="this.form.submit()">
+                            <option value="">{{ __('Toutes les thématiques') }}</option>
+                            @foreach($thematiques as $thematique)
+                                <option value="{{ $thematique->id }}" {{ request('thematique_id') == $thematique->id ? 'selected' : '' }}>
+                                    {{ $thematique->name }}
                                 </option>
                             @endforeach
                         </select>
@@ -60,7 +60,7 @@
                             <table class="min-w-full divide-y divide-[#faa21b]/20">
                                 <thead class="bg-[#faa21b]/5">
                                     <tr>
-                                        <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Instance') }}</th>
+                                        <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Thématique') }}</th>
                                         <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Sujet') }}</th>
                                         <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider hidden sm:table-cell">{{ __('Auteur') }}</th>
                                         <th class="px-3 sm:px-6 py-2 sm:py-3 text-center text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Rép.') }}</th>
@@ -72,7 +72,7 @@
                                         <tr class="hover:bg-[#faa21b]/5 transition">
                                             <td class="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap">
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-[#faa21b]/10 text-[#faa21b]">
-                                                    {{ $thread->instance->name }}
+                                                    {{ $thread->thematique->name }}
                                                 </span>
                                             </td>
                                             <td class="px-3 sm:px-6 py-2 sm:py-4">
@@ -120,7 +120,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                                     </svg>
                                                     <h3 class="widget-empty-title">{{ __('Aucune discussion') }}</h3>
-                                                    <p class="widget-empty-description">{{ __('Soyez le premier à lancer un sujet dans une instance.') }}</p>
+                                                    <p class="widget-empty-description">{{ __('Soyez le premier à lancer un sujet dans une thématique.') }}</p>
                                                 </div>
                                             </td>
                                         </tr>

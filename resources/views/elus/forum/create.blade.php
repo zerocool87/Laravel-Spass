@@ -22,18 +22,18 @@
                     @csrf
 
                     <div class="flex flex-col gap-2">
-                        <label for="instance_id" class="text-base font-semibold text-gray-700">
-                            {{ __('Instance') }}
+                        <label for="thematique_id" class="text-base font-semibold text-gray-700">
+                            {{ __('Thématique') }}
                         </label>
-                        <select id="instance_id" name="instance_id" class="w-full select-orange text-base" required>
-                            <option value="">{{ __('Choisir une instance') }}</option>
-                            @foreach($instances as $instance)
-                                <option value="{{ $instance->id }}" {{ old('instance_id') == $instance->id ? 'selected' : '' }}>
-                                    {{ $instance->name }}
+                        <select id="thematique_id" name="thematique_id" class="w-full select-orange text-base" required>
+                            <option value="">{{ __('Choisir une thématique') }}</option>
+                            @foreach($thematiques as $thematique)
+                                <option value="{{ $thematique->id }}" {{ old('thematique_id') == $thematique->id ? 'selected' : '' }}>
+                                    {{ $thematique->name }}
                                 </option>
                             @endforeach
                         </select>
-                        <x-input-error :messages="$errors->get('instance_id')" />
+                        <x-input-error :messages="$errors->get('thematique_id')" />
                     </div>
 
                     <div class="flex flex-col gap-2">

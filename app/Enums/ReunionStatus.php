@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Enums\Concerns\HasLabels;
+
 enum ReunionStatus: string
 {
+    use HasLabels;
+
     case Planifiee = 'planifiee';
     case Confirmee = 'confirmee';
     case Terminee = 'terminee';
@@ -29,17 +33,6 @@ enum ReunionStatus: string
             self::Terminee => 'gray',
             self::Annulee => 'red',
         };
-    }
-
-    /** @return array<string, string> */
-    public static function labels(): array
-    {
-        $result = [];
-        foreach (self::cases() as $case) {
-            $result[$case->value] = $case->label();
-        }
-
-        return $result;
     }
 
     public function hexColor(): string

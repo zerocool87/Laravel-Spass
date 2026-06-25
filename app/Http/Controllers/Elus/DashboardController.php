@@ -10,31 +10,28 @@ use App\Models\Actualite;
 use App\Models\Instance;
 use App\Models\Project;
 use App\Models\Reunion;
-use Illuminate\Http\Client\RequestException;
+use App\Services\WeatherService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
     use FiltersDocuments;
 
-    /**
-     * Display the Espace Élus dashboard.
-     */
+    public function __construct(
+        private readonly WeatherService $weatherService,
+    ) {}
+
     public function index(Request $request): View
     {
         $user = $request->user();
 
-        // Get upcoming reunions (4 dernières)
         $upcomingReunions = Reunion::with('instance')
             ->upcoming()
             ->take(4)
             ->get();
 
-        // Get active projects
         $activeProjects = Project::query()
             ->visibleToUser($user)
             ->active()
@@ -42,29 +39,24 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Get latest documents accessible to the user (newest first)
         $latestDocuments = $this->getUserAccessibleDocuments($user)
             ->with('creator')
             ->latest()
             ->take(5)
             ->get();
 
-        // Get all instances (sorted alphabetically)
         $instances = Instance::withCount('reunions')
             ->orderBy('name')
             ->get();
 
-        // Get latest published actualités
         $latestActualites = Actualite::with('creator')
             ->where('is_published', true)
             ->latest('published_at')
             ->take(5)
             ->get();
 
-        // Current weather (Limoges)
-        $weather = $this->getWeather();
+        $weather = $this->weatherService->getWeather(45.83, 1.26, 'Limoges');
 
-        // Onboarding tour (show once per session)
         $showOnboarding = ! session('onboarding_completed', false);
 
         return view('elus.dashboard', compact(
@@ -79,92 +71,6 @@ class DashboardController extends Controller
         ));
     }
 
-    /**
-     * Get current weather for Limoges (server-side fallback).
-     */
-    private function getWeather(): array
-    {
-        return Cache::remember('weather_limoges', 1800, fn () => array_merge(
-            $this->fetchWeather(45.83, 1.26),
-            ['city' => 'Limoges'],
-        ));
-    }
-
-    /**
-     * Fetch weather data from Open-Meteo for given coordinates.
-     *
-     * @return array{icon: string, temp: string}
-     */
-    private function fetchWeather(float $lat, float $lng): array
-    {
-        try {
-            $response = Http::timeout(5)->get('https://api.open-meteo.com/v1/forecast', [
-                'latitude' => $lat,
-                'longitude' => $lng,
-                'current_weather' => true,
-                'timezone' => 'auto',
-            ]);
-
-            if ($response->failed()) {
-                return ['icon' => '❓', 'temp' => '--'];
-            }
-
-            $data = $response->json();
-            $code = $data['current_weather']['weathercode'] ?? 0;
-            $temp = round($data['current_weather']['temperature'] ?? 0);
-
-            $icon = match (true) {
-                $code === 0 => '☀️',
-                $code <= 3 => '⛅',
-                $code >= 95 => '⛈️',
-                $code >= 80 => '🌦️',
-                $code >= 71 => '❄️',
-                $code >= 61 => '🌧️',
-                $code >= 51 => '🌦️',
-                $code >= 45 => '🌫️',
-                default => '☀️',
-            };
-
-            return ['icon' => $icon, 'temp' => $temp.'°C'];
-        } catch (RequestException) {
-            return ['icon' => '❓', 'temp' => '--'];
-        }
-    }
-
-    /**
-     * Reverse-geocode coordinates to a city name via Nominatim.
-     */
-    private function fetchCity(float $lat, float $lng): string
-    {
-        try {
-            $response = Http::timeout(5)
-                ->withUserAgent('Spass/1.0')
-                ->get('https://nominatim.openstreetmap.org/reverse', [
-                    'format' => 'json',
-                    'lat' => $lat,
-                    'lon' => $lng,
-                    'zoom' => 12,
-                    'accept-language' => 'fr',
-                ]);
-
-            if ($response->failed()) {
-                return '';
-            }
-
-            $addr = $response->json('address');
-            if (! $addr) {
-                return '';
-            }
-
-            return $addr['city'] ?? $addr['town'] ?? $addr['village'] ?? $addr['municipality'] ?? $addr['county'] ?? '';
-        } catch (RequestException) {
-            return '';
-        }
-    }
-
-    /**
-     * Get weather for given coordinates (AJAX endpoint).
-     */
     public function weatherByCoords(Request $request): JsonResponse
     {
         $request->validate([
@@ -174,21 +80,12 @@ class DashboardController extends Controller
 
         $lat = (float) $request->input('lat');
         $lng = (float) $request->input('lng');
-        $cacheKey = "weather_coords_{$lat}_{$lng}";
 
-        $data = Cache::remember($cacheKey, 1800, function () use ($lat, $lng) {
-            $weather = $this->fetchWeather($lat, $lng);
-            $city = $this->fetchCity($lat, $lng);
+        $weather = $this->weatherService->getWeather($lat, $lng);
 
-            return array_merge($weather, ['city' => $city]);
-        });
-
-        return response()->json($data);
+        return response()->json($weather);
     }
 
-    /**
-     * Mark onboarding as completed for this session.
-     */
     public function onboardingComplete(Request $request): JsonResponse
     {
         session(['onboarding_completed' => true]);

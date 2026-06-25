@@ -68,4 +68,22 @@ class Reunion extends Model
     {
         return ReunionStatus::tryFrom($this->status)?->color() ?? 'gray';
     }
+
+    /** @param Builder<self> $query */
+    public function scopeByTitres(Builder $query, User $user): Builder
+    {
+        if ($user->isAdmin()) {
+            return $query;
+        }
+
+        return $query->where(function (Builder $q) use ($user) {
+            $q->where('visible_to_all', true);
+
+            if ($user->titres) {
+                foreach ($user->titres as $titre) {
+                    $q->orWhereJsonContains('titres', $titre);
+                }
+            }
+        });
+    }
 }

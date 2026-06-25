@@ -20,11 +20,6 @@ class ForumPost extends Model
         'body',
     ];
 
-    public function casts(): array
-    {
-        return [];
-    }
-
     public function thread(): BelongsTo
     {
         return $this->belongsTo(ForumThread::class, 'forum_thread_id');

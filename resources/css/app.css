@@ -81,192 +81,7 @@ html.text-large .stat-card-value {
   }
 }
 
-/* Full HD (1920x1080) Optimizations */
-@media (min-width: 1920px) {
-  :root {
-    --card-shadow: 0 6px 32px rgba(16,24,40,0.14);
-  }
 
-  html {
-    font-size: 16px;
-  }
-
-  body {
-    line-height: 1.6;
-  }
-
-  body > #app, .main-content {
-    max-width: 1920px;
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-
-  /* Enhanced spacing for Full HD */
-  .glass, .container, .main-content, #app, #main, .dashboard-wrapper, .dashboard-container {
-    padding: 24px;
-  }
-
-  /* Improved card spacing */
-  .glass {
-    padding: 24px;
-  }
-
-  /* Better button sizing */
-  .btn {
-    padding: 12px 16px;
-    gap:12px;
-  }
-
-  /* Enhanced form elements */
-  input[type="text"], textarea, select, .input-text {
-    padding: 12px;
-    font-size: 16px;
-  }
-
-  /* Better table spacing */
-  .cyber-table th {
-    padding: 8px;
-  }
-  .cyber-table td {
-    padding: 16px;
-  }
-
-  /* Calendar optimizations */
-  #calendar, #dashboard-calendar, #events-calendar, #reunions-calendar {
-    padding: 24px;
-    border-radius: 20px;
-  }
-
-  .fc .fc-daygrid-day-frame {
-    min-height: 8px;
-    width: 100%;
-  }
-
-  .fc .fc-daygrid-day-number {
-    width: 16px;
-    height: 16px;
-    font-size: 0.6rem;
-  }
-
-  /* Widget optimizations */
-   .widget-container {
-     border-radius: 12px;
-   }
-
-   .widget-header {
-     padding: 12px;
-   }
-
-   .widget-content {
-     padding: 24px;
-   }
-
-   .widget-empty {
-     padding: 32px;
-   }
-
-   .widget-empty-icon {
-     width: 4rem;
-     height: 4rem;
-   }
-
-   /* Quick actions widget */
-   .quick-actions-widget {
-     min-height: calc(50%);
-   }
-
-   /* Dashboard widget uniform dimensions */
-   .upcoming-reunions-widget,
-   .instances-widget,
-   .quick-actions-widget,
-   .recent-documents-widget,
-   .active-projects-widget {
-     min-height: 400px;
-     max-height: 400px;
-   }
-
-   .quick-actions-widget {
-     min-height: 200px;
-     max-height: 200px;
-   }
-
-   .recent-documents-widget {
-     min-height: 360px;
-     max-height: 360px;
-   }
-
-   /* Uniform widget padding */
-    .upcoming-reunions-widget .px-6,
-    .instances-widget .px-6,
-    .quick-actions-widget .p-4,
-    .recent-documents-widget .px-6,
-    .active-projects-widget .px-6 {
-      padding-left: 1.5rem !important;
-      padding-right: 1.5rem !important;
-    }
-
-    .upcoming-reunions-widget .py-4,
-    .instances-widget .py-4,
-    .quick-actions-widget .py-4,
-    .recent-documents-widget .py-4,
-    .active-projects-widget .py-4 {
-      padding-top: 1rem !important;
-      padding-bottom: 1rem !important;
-    }
-
-    /* Consistent spacing for all dashboard widgets */
-    .dashboard-widget {
-      padding: 24px;
-      margin-bottom: 24px;
-    }
-
-    .dashboard-widget:last-child {
-      margin-bottom: 0;
-    }
-
-    /* Specific margin for active projects widget */
-    .active-projects-widget {
-      margin-top: 24px !important;
-    }
-
-  /* Enhanced grid layouts */
-   .grid {
-     gap: 24px;
-   }
-
-   /* Uniform widget spacing for dashboard */
-   .widget-container {
-     padding: 24px;
-   }
-
-   .widget-header {
-     padding-bottom: 16px;
-     margin-bottom: 16px;
-     border-bottom: 1px solid var(--panel-border);
-   }
-
-   .widget-content {
-     padding: 24px;
-   }
-
-   .widget-empty {
-     padding: 32px;
-   }
-
-  /* Better typography */
-  h1, h2, h3, h4, h5, h6 {
-    line-height: 1.3;
-  }
-
-  /* Improved hover effects */
-  .btn-primary:hover, .btn-primary:focus {
-    box-shadow: 0 8px 24px rgba(16,24,40,0.16);
-  }
-
-  .fc .fc-event:hover {
-    box-shadow: 0 6px 20px rgba(16,24,40,0.20);
-  }
-}
 
 /* Base */
 
@@ -343,28 +158,7 @@ a:hover { color: var(--brand-dark); text-decoration: underline; }
   font-size: 1rem;
 }
 
-/* Full HD Button Enhancements */
-@media (min-width: 1920px) {
-  .btn {
-    gap:12px;
-    padding:12px 16px;
-    font-size: 16px;
-  }
 
-  .btn-primary {
-    font-size: 16px;
-  }
-
-  .btn-secondary, .btn-danger {
-    font-size: 16px;
-    padding:12px 16px;
-  }
-
-  .btn-primary-orange {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.875rem;
-  }
-}
 .btn-primary {
   background:var(--brand);
   color:#fff;
@@ -406,18 +200,7 @@ input[type="text"], textarea, select, .input-text {
 }
 .input-text:focus, input[type="text"]:focus, textarea:focus, select:focus { outline:none; box-shadow:0 0 0 3px #fbbf24; border-color:#f59e42; }
 
-/* Full HD Form Enhancements */
-@media (min-width: 1920px) {
-  input[type="text"], textarea, select, .input-text {
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 10px;
-  }
 
-  .input-orange, .select-orange {
-    border-radius: 10px;
-  }
-}
 
 /* Tables */
 .cyber-table { width:100%; border-collapse:separate; border-spacing:0; }
@@ -425,22 +208,7 @@ input[type="text"], textarea, select, .input-text {
 .cyber-table td { padding:6px; color:var(--text-default); border-top:1.5px solid #ffe6b8; }
 .cyber-table tr:nth-child(even) { background: #f3f4f6; }
 
-/* Full HD Table Enhancements */
-@media (min-width: 1920px) {
-  .cyber-table th {
-    padding: 8px;
-    font-size: 14px;
-  }
 
-  .cyber-table td {
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  .cyber-table tr:hover {
-    background: #f9fafb;
-  }
-}
 
 /* ==============================
    FullCalendar – App-coherent styling
@@ -628,41 +396,7 @@ input[type="text"], textarea, select, .input-text {
   }
 }
 
-/* Full HD Calendar Enhancements */
-@media (min-width: 1920px) {
-  .fc .fc-daygrid-day-frame {
-    min-height: 4.8px;
-    padding: 0px 0px;
-    width: 100%;
-  }
 
-  .fc .fc-daygrid-day-number {
-    font-size: 0.84rem;
-    width: 18px;
-    height: 18px;
-  }
-
-  .fc .fc-event {
-    padding: 6px 16px !important;
-    font-size: 1rem !important;
-  }
-
-  .fc .fc-event-time {
-    font-size: 0.9em !important;
-  }
-
-  .fc .fc-event-title {
-    font-size: 1rem !important;
-  }
-
-  .fc .fc-timegrid-slot-label-cushion {
-    font-size: 1rem;
-  }
-
-  .fc .fc-timegrid-axis-cushion {
-    font-size: 1rem;
-  }
-}
 .fc .fc-daygrid-day:hover {
   background: #fffdf6;
 }
@@ -966,6 +700,270 @@ input[type="text"], textarea, select, .input-text {
 
 
 [x-cloak] { display: none !important; }
+
+/* Full HD (1920x1080) Optimizations - Consolidated */
+@media (min-width: 1920px) {
+  :root {
+    --card-shadow: 0 6px 32px rgba(16,24,40,0.14);
+  }
+
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    line-height: 1.6;
+  }
+
+  body > #app, .main-content {
+    max-width: 1920px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* Enhanced spacing for Full HD */
+  .glass, .container, .main-content, #app, #main, .dashboard-wrapper, .dashboard-container {
+    padding: 24px;
+  }
+
+  /* Improved card spacing */
+  .glass {
+    padding: 24px;
+  }
+
+  /* Better button sizing */
+  .btn {
+    padding: 12px 16px;
+    gap:12px;
+  }
+
+  /* Enhanced form elements */
+  input[type="text"], textarea, select, .input-text {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  /* Better table spacing */
+  .cyber-table th {
+    padding: 8px;
+  }
+  .cyber-table td {
+    padding: 16px;
+  }
+
+  /* Calendar optimizations */
+  #calendar, #dashboard-calendar, #events-calendar, #reunions-calendar {
+    padding: 24px;
+    border-radius: 20px;
+  }
+
+  .fc .fc-daygrid-day-frame {
+    min-height: 8px;
+    width: 100%;
+  }
+
+  .fc .fc-daygrid-day-number {
+    width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+  }
+
+  /* Widget optimizations */
+   .widget-container {
+     border-radius: 12px;
+   }
+
+   .widget-header {
+     padding: 12px;
+   }
+
+   .widget-content {
+     padding: 24px;
+   }
+
+   .widget-empty {
+     padding: 32px;
+   }
+
+   .widget-empty-icon {
+     width: 4rem;
+     height: 4rem;
+   }
+
+   /* Quick actions widget */
+   .quick-actions-widget {
+     min-height: calc(50%);
+   }
+
+   /* Dashboard widget uniform dimensions */
+   .upcoming-reunions-widget,
+   .instances-widget,
+   .quick-actions-widget,
+   .recent-documents-widget,
+   .active-projects-widget {
+     min-height: 400px;
+     max-height: 400px;
+   }
+
+   .quick-actions-widget {
+     min-height: 200px;
+     max-height: 200px;
+   }
+
+   .recent-documents-widget {
+     min-height: 360px;
+     max-height: 360px;
+   }
+
+   /* Uniform widget padding */
+    .upcoming-reunions-widget .px-6,
+    .instances-widget .px-6,
+    .quick-actions-widget .p-4,
+    .recent-documents-widget .px-6,
+    .active-projects-widget .px-6 {
+      padding-left: 1.5rem !important;
+      padding-right: 1.5rem !important;
+    }
+
+    .upcoming-reunions-widget .py-4,
+    .instances-widget .py-4,
+    .quick-actions-widget .py-4,
+    .recent-documents-widget .py-4,
+    .active-projects-widget .py-4 {
+      padding-top: 1rem !important;
+      padding-bottom: 1rem !important;
+    }
+
+    /* Consistent spacing for all dashboard widgets */
+    .dashboard-widget {
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .dashboard-widget:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Specific margin for active projects widget */
+    .active-projects-widget {
+      margin-top: 24px !important;
+    }
+
+  /* Enhanced grid layouts */
+   .grid {
+     gap: 24px;
+   }
+
+   /* Uniform widget spacing for dashboard */
+   .widget-container {
+     padding: 24px;
+   }
+
+   .widget-header {
+     padding-bottom: 16px;
+     margin-bottom: 16px;
+     border-bottom: 1px solid var(--panel-border);
+   }
+
+   .widget-content {
+     padding: 24px;
+   }
+
+   .widget-empty {
+     padding: 32px;
+   }
+
+  /* Better typography */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+  }
+
+  /* Improved hover effects */
+  .btn-primary:hover, .btn-primary:focus {
+    box-shadow: 0 8px 24px rgba(16,24,40,0.16);
+  }
+
+  .fc .fc-event:hover {
+    box-shadow: 0 6px 20px rgba(16,24,40,0.20);
+  }
+
+  .btn {
+    gap:12px;
+    padding:12px 16px;
+    font-size: 16px;
+  }
+
+  .btn-primary {
+    font-size: 16px;
+  }
+
+  .btn-secondary, .btn-danger {
+    font-size: 16px;
+    padding:12px 16px;
+  }
+
+  .btn-primary-orange {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  input[type="text"], textarea, select, .input-text {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .input-orange, .select-orange {
+    border-radius: 10px;
+  }
+
+  .cyber-table th {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .cyber-table td {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .cyber-table tr:hover {
+    background: #f9fafb;
+  }
+
+  .fc .fc-daygrid-day-frame {
+    min-height: 4.8px;
+    padding: 0px 0px;
+    width: 100%;
+  }
+
+  .fc .fc-daygrid-day-number {
+    font-size: 0.84rem;
+    width: 18px;
+    height: 18px;
+  }
+
+  .fc .fc-event {
+    padding: 6px 16px !important;
+    font-size: 1rem !important;
+  }
+
+  .fc .fc-event-time {
+    font-size: 0.9em !important;
+  }
+
+  .fc .fc-event-title {
+    font-size: 1rem !important;
+  }
+
+  .fc .fc-timegrid-slot-label-cushion {
+    font-size: 1rem;
+  }
+
+  .fc .fc-timegrid-axis-cushion {
+    font-size: 1rem;
+  }
+}
 
 /* End - clean Laravel light theme CSS */
 

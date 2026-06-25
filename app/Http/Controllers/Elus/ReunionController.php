@@ -7,11 +7,9 @@ namespace App\Http\Controllers\Elus;
 use App\Enums\ReunionStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Elus\Concerns\RequiresAdmin;
-use App\Http\Requests\StoreReunionRequest;
-use App\Http\Requests\UpdateReunionRequest;
+use App\Http\Requests\ReunionRequest;
 use App\Models\Instance;
 use App\Models\Reunion;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,25 +18,6 @@ use Illuminate\View\View;
 class ReunionController extends Controller
 {
     use RequiresAdmin;
-
-    /**
-     * Apply titre access scope for non-admin élus.
-     */
-    private function scopeByTitres($query, User $user): void
-    {
-        if ($user->isAdmin()) {
-            return;
-        }
-
-        $query->where(function ($q) use ($user) {
-            $q->where('visible_to_all', true);
-            if ($user->titres) {
-                foreach ($user->titres as $titre) {
-                    $q->orWhereJsonContains('titres', $titre);
-                }
-            }
-        });
-    }
 
     /**
      * Display a listing of the reunions.
@@ -86,7 +65,7 @@ class ReunionController extends Controller
             $query->orderBy('start_time', 'desc');
         }
 
-        $this->scopeByTitres($query, $request->user());
+        $query->byTitres($request->user());
 
         $reunions = $query->paginate(12);
         $instances = Instance::orderBy('name')->get();
@@ -112,7 +91,7 @@ class ReunionController extends Controller
     /**
      * Store a newly created reunion in storage.
      */
-    public function store(StoreReunionRequest $request): RedirectResponse
+    public function store(ReunionRequest $request): RedirectResponse
     {
         $this->requireAdmin();
 
@@ -165,7 +144,7 @@ class ReunionController extends Controller
     /**
      * Update the specified reunion in storage.
      */
-    public function update(UpdateReunionRequest $request, Reunion $reunion): RedirectResponse
+    public function update(ReunionRequest $request, Reunion $reunion): RedirectResponse
     {
         $this->requireAdmin();
 
@@ -203,9 +182,7 @@ class ReunionController extends Controller
      */
     public function json(Request $request): JsonResponse
     {
-        $query = Reunion::with('instance');
-
-        $this->scopeByTitres($query, $request->user());
+        $query = Reunion::with('instance')->byTitres($request->user());
 
         // Filter by date range for calendar
         if ($request->filled('start')) {

@@ -68,4 +68,29 @@ class User extends Authenticatable
     {
         return $this->hasOne(EluProfile::class);
     }
+
+    public function forumThreads(): HasMany
+    {
+        return $this->hasMany(ForumThread::class, 'user_id');
+    }
+
+    public function actualites(): HasMany
+    {
+        return $this->hasMany(Actualite::class, 'created_by');
+    }
+
+    /** @return array<int, string> */
+    public static function titresElus(): array
+    {
+        return self::where('is_elu', true)
+            ->whereNotNull('titres')
+            ->get()
+            ->pluck('titres')
+            ->flatten()
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values()
+            ->toArray();
+    }
 }

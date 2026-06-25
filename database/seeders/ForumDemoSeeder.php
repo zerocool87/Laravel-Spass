@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\ForumThread;
-use App\Models\Instance;
+use App\Models\Thematique;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -13,13 +13,27 @@ class ForumDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        $instances = Instance::all();
         $elus = User::where('is_elu', true)->get();
 
-        if ($instances->isEmpty() || $elus->isEmpty()) {
-            $this->command->warn('Instances or élus missing, skipping forum seeding.');
+        if ($elus->isEmpty()) {
+            $this->command->warn('Élus missing, skipping forum seeding.');
 
             return;
+        }
+
+        $thematiqueNames = [
+            'Concession et délégation de service public',
+            'Travaux',
+            'Administration-Finance',
+            'Transition énergétique et climat',
+            'NTIC-Hygiène et sécurité',
+            'Communication',
+            'CCPE',
+        ];
+
+        $thematiques = [];
+        foreach ($thematiqueNames as $name) {
+            $thematiques[$name] = Thematique::firstOrCreate(['name' => $name]);
         }
 
         $threadData = [
@@ -85,9 +99,9 @@ class ForumDemoSeeder extends Seeder
 
         $createdCount = 0;
 
-        foreach ($threadData as $instanceName => $threads) {
-            $instance = $instances->firstWhere('name', $instanceName);
-            if (! $instance) {
+        foreach ($threadData as $thematiqueName => $threads) {
+            $thematique = $thematiques[$thematiqueName] ?? null;
+            if (! $thematique) {
                 continue;
             }
 
@@ -95,7 +109,7 @@ class ForumDemoSeeder extends Seeder
                 $creator = $elus->random();
                 $body = $data['body'];
                 $thread = ForumThread::create([
-                    'instance_id' => $instance->id,
+                    'thematique_id' => $thematique->id,
                     'title' => $data['title'],
                     'created_by' => $creator->id,
                     'is_pinned' => $index === 0,
@@ -109,15 +123,15 @@ class ForumDemoSeeder extends Seeder
                 // Add 1–3 replies from other élus
                 $repliers = $elus->where('id', '!=', $creator->id)->random(min(3, $elus->count() - 1));
                 $replies = [
-                    "Merci pour le partage. Je valide cette orientation. À discuter en commission.",
+                    'Merci pour le partage. Je valide cette orientation. À discuter en commission.',
                     "Bonne initiative. J'aurais quelques suggestions à apporter sur le planning.",
                     "Prends en compte les remarques que je t'ai envoyées par mail. On en reparle en réunion.",
-                    "Très bonne nouvelle pour les délais. Félicitations aux équipes terrain.",
+                    'Très bonne nouvelle pour les délais. Félicitations aux équipes terrain.',
                     "Je ne suis pas complètement d'accord avec la méthode proposée. Peut-on en débattre ?",
                     "J'ai hâte de voir les maquettes. Le site avait besoin d'un bon rafraîchissement.",
-                    "Merci pour le tableau. Je transmets à mon groupe pour relecture.",
-                    "Je serai présent à la réunion du 12. Compte sur moi pour préparer les dossiers.",
-                    "Excellente nouvelle pour les économies réalisées. Continuons dans cette voie.",
+                    'Merci pour le tableau. Je transmets à mon groupe pour relecture.',
+                    'Je serai présent à la réunion du 12. Compte sur moi pour préparer les dossiers.',
+                    'Excellente nouvelle pour les économies réalisées. Continuons dans cette voie.',
                     "Je propose qu'on invite un représentant du prestataire à la prochaine commission.",
                 ];
 
