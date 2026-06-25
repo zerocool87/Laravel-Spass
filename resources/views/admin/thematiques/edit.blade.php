@@ -19,7 +19,7 @@
             <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-6 sm:p-8">
                 <form action="{{ route('admin.thematiques.update', $thematique) }}" method="POST" class="space-y-5">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
 
                     <div class="flex flex-col gap-2">
                         <label for="name" class="text-base font-semibold text-gray-700">

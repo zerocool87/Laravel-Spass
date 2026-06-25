@@ -19,7 +19,7 @@
             <div class="bg-white rounded-2xl shadow-lg border border-[#faa21b]/20 p-8">
                 <form id="update-form" method="POST" action="{{ route('admin.projects.update', $project) }}" class="space-y-6">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
 
                     @if($errors->any())
                         <div class="rounded-xl border border-red-200 bg-red-50 p-4">

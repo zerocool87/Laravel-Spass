@@ -48,7 +48,7 @@
 
                 <form id="edit-form" action="{{ route('admin.reunions.update', $reunion) }}" method="POST">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
