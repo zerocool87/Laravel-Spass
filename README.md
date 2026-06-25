@@ -2,6 +2,8 @@
 
 Plateforme Laravel 12 pour la gestion documentaire, le suivi des événements/réunions et un espace dédié aux élus.
 
+**Dernière mise à jour :** 25 juin 2026
+
 ## Stack
 
 - PHP 8.4
@@ -40,10 +42,13 @@ Plateforme Laravel 12 pour la gestion documentaire, le suivi des événements/r�
 ## Modules principaux
 
 - Authentification et rôles (admin / élu)
-- Actualités (flux de publications, CRUD admin)
-- Gestion documentaire (upload, consultation, bibliothèque)
-- Événements et calendrier (FullCalendar, 3 types)
-- Réunions (liste, calendrier, fiche, JSON feed)
-- Instances (Comités, Bureaux, Commissions — CRUD complet)
-- Projets (CRUD + GeoJSON)
-- Messagerie collaborative inter-élus (Collab : conversations + messages)
+- Actualités (flux de publications, CRUD admin, vue liste/détail élus)
+- Gestion documentaire (upload, consultation, bibliothèque, preview, embed avec Range headers)
+- Événements et calendrier (FullCalendar, 3 types, JSON feed public)
+- Réunions (liste, calendrier, fiche, JSON feed, détection de conflits)
+- Instances (Comités, Bureaux, Commissions — liste simplifiée et fixe)
+- Projets (CRUD + GeoJSON, filtres par territoire/type/statut)
+- Messagerie collaborative inter-élus (Collab : conversations + messages, accusés de lecture)
+- Profil élu étendu (EluProfile : code INSEE, collectivité, civilité, profession, etc.)
+- Administration avancée (dashboard admin, import CSV massif, gestion des utilisateurs et profils)
+- Contrôle d'accès par titres (documents, réunions projetés par mandat/fonction)

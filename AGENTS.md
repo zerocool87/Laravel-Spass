@@ -31,10 +31,12 @@ composer run dev
 | Directory | Purpose |
 |-----------|---------|
 | `app/Http/Controllers/Admin/` | Admin CRUD controllers (documents, instances, projects, réunions, actualités, users) |
-| `app/Http/Controllers/Elus/` | Elected-official facing controllers (dashboard, collab, documents, etc.) |
+| `app/Http/Controllers/Elus/` | Elected-official facing controllers (dashboard, collab, documents, admin, etc.) |
+| `app/Http/Controllers/Elus/Concerns/` | Reusable traits (FiltersDocuments, RequiresAdmin) |
 | `app/Http/Controllers/Auth/` | Breeze v2 auth controllers |
-| `app/Http/Requests/` | Form Request validation classes (array-based rules) |
-| `app/Models/` | 9 models: User, Document, Event, Instance, Project, Reunion, Actualite, Conversation, Message |
+| `app/Http/Requests/` | 12 Form Request validation classes (array-based rules) |
+| `app/Models/` | 10 models: User, EluProfile, Document, Event, Instance, Project, Reunion, Actualite, Conversation, Message |
+| `app/Enums/` | 3 enums: ReunionStatus, ProjectType, ProjectStatus |
 | `routes/web.php` | All web routes; `routes/auth.php` is required from web.php |
 
 ## Authorization model
@@ -72,3 +74,5 @@ composer run dev
 - **Database default is SQLite** (per `config/database.php`). The `DB_CONNECTION` env controls this.
 - **`boost.json`** sets `"sail": false` — the app runs directly, not via Docker.
 - **4-space indentation** for PHP per `.editorconfig` (not a typo — this project uses 4, not 2).
+- **Titres-based access control** — documents/réunions/projects have `titres` (JSON array) and `visible_to_all` flags for scoping by user's mandate/function.
+- **EluProfile** — separate model from User; stores extended elected-official fields (code_insee, profession, etc.). Always eager-load via `->with('eluProfile')` when editing a user.
