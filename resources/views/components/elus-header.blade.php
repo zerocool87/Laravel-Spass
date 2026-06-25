@@ -9,6 +9,7 @@
     'badge' => null,
     'badgeColor' => null,
     'actions' => null,
+    'weather' => null,
 ])
 
 @php
@@ -47,6 +48,16 @@
                 </h2>
                 @if($subtitle)
                     <p class="text-white/90 text-xs sm:text-sm truncate">{{ $subtitle }}</p>
+                @endif
+                @if($weather)
+                    <p class="text-white text-xs mt-0.5 font-semibold">
+                        <span class="inline-flex items-center gap-1.5">
+                            <span class="text-lg">{{ $weather['icon'] }}</span>
+                            <span>{{ $weather['temp'] }}</span>
+                            <span class="text-white/60">•</span>
+                            <span>Limoges</span>
+                        </span>
+                    </p>
                 @endif
             </div>
         </div>

@@ -17,6 +17,20 @@ class Instance extends Model
         'name',
     ];
 
+    public function getIconAttribute(): string
+    {
+        return match ($this->name) {
+            'Concession et délégation de service public' => '🤝',
+            'Travaux' => '🔧',
+            'Administration-Finance' => '💰',
+            'Transition énergétique et climat' => '🌱',
+            'NTIC-Hygiène et sécurité' => '🖥️',
+            'Communication' => '📢',
+            'CCPE' => '⚖️',
+            default => '🏛️',
+        };
+    }
+
     public function reunions(): HasMany
     {
         return $this->hasMany(Reunion::class);

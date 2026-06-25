@@ -10,6 +10,7 @@
             subtitle="{{ __('Gouvernance et projets territoriaux') }}"
             icon="🏛️"
             activeSection="dashboard"
+            :weather="$weather ?? null"
         />
     </header>
 
@@ -58,14 +59,21 @@
                     </div>
                     <div class="divide-y divide-orange-50 overflow-y-auto flex-1 min-h-0">
                         @forelse($latestActualites as $actualite)
-                            <a href="{{ route('elus.actualites.show', $actualite) }}" class="block px-3 py-2.5 hover:bg-orange-50/50 transition group">
+                            @php $isNew = $actualite->published_at?->greaterThanOrEqualTo(now()->subWeek()); @endphp
+                            <a href="{{ route('elus.actualites.show', $actualite) }}" class="block px-3 py-2 hover:bg-orange-50/50 transition group">
                                 <div class="flex items-start justify-between gap-2">
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] truncate">{{ $actualite->title }}</p>
-                                        <p class="text-xs text-gray-500 line-clamp-1">{{ strip_tags($actualite->content) }}</p>
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="shrink-0 {{ $isNew ? 'text-orange-500' : 'text-gray-300' }}">{{ $isNew ? '✨' : '📄' }}</span>
+                                            <p class="text-xs font-semibold text-gray-900 group-hover:text-[#faa21b] truncate">{{ $actualite->title }}</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500 truncate mt-0.5">{{ strip_tags($actualite->content) }}</p>
                                     </div>
                                     <div class="shrink-0 text-right">
-                                        <p class="text-xs text-gray-400 whitespace-nowrap">{{ $actualite->published_at?->diffForHumans() }}</p>
+                                        @if($isNew)
+                                            <span class="inline-flex items-center rounded-full bg-[#faa21b]/15 px-1.5 py-0.5 text-[10px] font-bold uppercase text-[#b36b00]">{{ __('Nouveau') }}</span>
+                                        @endif
+                                        <p class="text-xs text-gray-400 whitespace-nowrap {{ $isNew ? 'mt-0.5' : '' }}">{{ $actualite->published_at?->diffForHumans() }}</p>
                                     </div>
                                 </div>
                             </a>
@@ -87,7 +95,10 @@
                         @forelse($instances as $instance)
                             <a href="{{ route('elus.instances.show', $instance) }}" class="block px-3 py-2.5 hover:bg-orange-50/50 transition group">
                                 <div class="flex items-center justify-between gap-2">
-                                    <p class="text-sm font-semibold text-gray-900 group-hover:text-orange-600 truncate">{{ $instance->name }}</p>
+                                    <div class="flex items-center gap-2 min-w-0">
+                                        <span class="text-base shrink-0">{{ $instance->icon }}</span>
+                                        <p class="text-sm font-semibold text-gray-900 group-hover:text-orange-600 truncate">{{ $instance->name }}</p>
+                                    </div>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700 shrink-0">
                                         {{ $instance->reunions_count }} {{ __('réunions') }}
                                     </span>

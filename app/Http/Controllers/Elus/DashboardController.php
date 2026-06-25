@@ -10,8 +10,11 @@ use App\Models\Actualite;
 use App\Models\Instance;
 use App\Models\Project;
 use App\Models\Reunion;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -25,10 +28,10 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        // Get upcoming reunions (next 5)
+        // Get upcoming reunions (4 dernières)
         $upcomingReunions = Reunion::with('instance')
             ->upcoming()
-            ->take(5)
+            ->take(4)
             ->get();
 
         // Get active projects
@@ -46,10 +49,9 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Get instances (sorted alphabetically)
+        // Get all instances (sorted alphabetically)
         $instances = Instance::withCount('reunions')
             ->orderBy('name')
-            ->take(5)
             ->get();
 
         // Get latest published actualités
@@ -58,6 +60,9 @@ class DashboardController extends Controller
             ->latest('published_at')
             ->take(5)
             ->get();
+
+        // Current weather (Limoges)
+        $weather = $this->getWeather();
 
         // Onboarding tour (show once per session)
         $showOnboarding = ! session('onboarding_completed', false);
@@ -69,8 +74,50 @@ class DashboardController extends Controller
             'latestDocuments',
             'latestActualites',
             'instances',
+            'weather',
             'showOnboarding',
         ));
+    }
+
+    /**
+     * Get current weather for Limoges from Open-Meteo.
+     */
+    private function getWeather(): array
+    {
+        return Cache::remember('weather_limoges', 1800, function () {
+            try {
+                $response = Http::timeout(5)->get('https://api.open-meteo.com/v1/forecast', [
+                    'latitude' => 45.83,
+                    'longitude' => 1.26,
+                    'current_weather' => true,
+                    'timezone' => 'auto',
+                ]);
+
+                if ($response->failed()) {
+                    return ['icon' => '❓', 'temp' => '--'];
+                }
+
+                $data = $response->json();
+                $code = $data['current_weather']['weathercode'] ?? 0;
+                $temp = round($data['current_weather']['temperature'] ?? 0);
+
+                $icon = match (true) {
+                    $code === 0 => '☀️',
+                    $code <= 3 => '⛅',
+                    $code >= 95 => '⛈️',
+                    $code >= 80 => '🌦️',
+                    $code >= 71 => '❄️',
+                    $code >= 61 => '🌧️',
+                    $code >= 51 => '🌦️',
+                    $code >= 45 => '🌫️',
+                    default => '☀️',
+                };
+
+                return ['icon' => $icon, 'temp' => $temp.'°C'];
+            } catch (RequestException) {
+                return ['icon' => '❓', 'temp' => '--'];
+            }
+        });
     }
 
     /**
