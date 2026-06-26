@@ -56,7 +56,7 @@ class DashboardController extends Controller
 
         $weather = $this->weatherService->getWeather(45.83, 1.26, 'Limoges');
 
-        $showOnboarding = ! session('onboarding_completed', false);
+        $showOnboarding = ! $user->onboarding_completed;
 
         return view('elus.dashboard', compact(
             'user',
@@ -87,7 +87,7 @@ class DashboardController extends Controller
 
     public function onboardingComplete(Request $request): JsonResponse
     {
-        session(['onboarding_completed' => true]);
+        $request->user()->update(['onboarding_completed' => true]);
 
         return response()->json(['ok' => true]);
     }

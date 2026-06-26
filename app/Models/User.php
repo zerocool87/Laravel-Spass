@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'is_admin',
         'is_elu',
+        'onboarding_completed',
         'titres',
         'commune',
     ];
@@ -40,6 +41,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_admin' => 'boolean',
             'is_elu' => 'boolean',
+            'onboarding_completed' => 'boolean',
             'titres' => 'array',
         ];
     }
