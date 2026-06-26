@@ -126,6 +126,9 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
     Route::post('/forum', [\App\Http\Controllers\Elus\ForumController::class, 'store'])->name('forum.store');
     Route::get('/forum/{forum_thread}', [\App\Http\Controllers\Elus\ForumController::class, 'show'])->name('forum.show');
     Route::post('/forum/{forum_thread}/posts', [\App\Http\Controllers\Elus\ForumController::class, 'storePost'])->name('forum.posts.store');
+    Route::put('/forum/{forum_thread}/posts/{forumPost}/detach-reply', [\App\Http\Controllers\Elus\ForumController::class, 'detachReply'])->name('forum.posts.detach-reply');
+    Route::put('/forum/{forum_thread}/posts/{forumPost}', [\App\Http\Controllers\Elus\ForumController::class, 'update'])->name('forum.posts.update');
+    Route::delete('/forum/{forum_thread}/posts/{forumPost}', [\App\Http\Controllers\Elus\ForumController::class, 'destroy'])->name('forum.posts.destroy');
 
     // Actualités
     Route::get('/actualites', [\App\Http\Controllers\Elus\ActualiteController::class, 'index'])->name('actualites.index');

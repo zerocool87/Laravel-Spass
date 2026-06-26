@@ -129,7 +129,10 @@ class ForumController extends Controller
         $forumThread->load(['thematique', 'creator', 'posts.author']);
 
         $posts = $forumThread->posts()
-            ->with(['author' => fn ($q) => $q->withCount('forumPosts')])
+            ->with([
+                'author' => fn ($q) => $q->withCount('forumPosts'),
+                'replyTo.author',
+            ])
             ->orderBy('created_at')
             ->paginate(30);
 
@@ -150,13 +153,69 @@ class ForumController extends Controller
         /** @var User $user */
         $user = $request->user();
 
+        $validated = $request->validated();
+
         $forumThread->posts()->create([
             'user_id' => $user->id,
-            'body' => $request->validated()['body'],
+            'body' => $validated['body'],
+            'reply_to_post_id' => $validated['reply_to_post_id'] ?? null,
         ]);
 
         return redirect()->route('elus.forum.show', $forumThread)
             ->with('success', __('Réponse postée avec succès !'))
             ->with('celebrate', true);
+    }
+
+    public function detachReply(Request $request, ForumThread $forumThread, ForumPost $forumPost): RedirectResponse
+    {
+        $user = $request->user();
+
+        if ($forumPost->user_id !== $user->id && ! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $forumPost->update(['reply_to_post_id' => null]);
+
+        return redirect()->route('elus.forum.show', $forumThread)
+            ->with('success', __('Lien de réponse retiré.'));
+    }
+
+    public function update(Request $request, ForumThread $forumThread, ForumPost $forumPost): RedirectResponse
+    {
+        $user = $request->user();
+
+        if ($forumPost->user_id !== $user->id && ! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'body' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $forumPost->update($validated);
+
+        return redirect()->route('elus.forum.show', $forumThread)
+            ->with('success', __('Message modifié.'));
+    }
+
+    public function destroy(Request $request, ForumThread $forumThread, ForumPost $forumPost): RedirectResponse
+    {
+        $user = $request->user();
+
+        if ($forumPost->user_id !== $user->id && ! $user->isAdmin()) {
+            abort(403);
+        }
+
+        $forumPost->delete();
+
+        if ($forumThread->posts()->count() === 0) {
+            $forumThread->delete();
+
+            return redirect()->route('elus.forum.index')
+                ->with('success', __('Sujet supprimé car il ne contient plus de messages.'));
+        }
+
+        return redirect()->route('elus.forum.show', $forumThread)
+            ->with('success', __('Message supprimé.'));
     }
 }

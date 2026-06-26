@@ -8,6 +8,7 @@ use Database\Factories\ForumPostFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ForumPost extends Model
 {
@@ -18,6 +19,7 @@ class ForumPost extends Model
         'forum_thread_id',
         'user_id',
         'body',
+        'reply_to_post_id',
     ];
 
     public function thread(): BelongsTo
@@ -28,5 +30,15 @@ class ForumPost extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function replyTo(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'reply_to_post_id');
+    }
+
+    public function replies(): HasMany
+    {
+        return $this->hasMany(self::class, 'reply_to_post_id');
     }
 }
