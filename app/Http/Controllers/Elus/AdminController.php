@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Elus;
 
 use App\Http\Controllers\Controller;
-use App\Models\Document;
 use App\Models\EluProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -22,9 +21,7 @@ class AdminController extends Controller
      */
     public function index(): View
     {
-        $recentDocuments = Document::with('creator')->orderBy('created_at', 'desc')->take(3)->get();
-
-        return view('elus.admin.index', compact('recentDocuments'));
+        return view('elus.admin.index');
     }
 
     /**
@@ -150,7 +147,6 @@ class AdminController extends Controller
 
                 $user = User::create([
                     'name' => $nom,
-                    'nom' => $nom,
                     'prenom' => $prenom,
                     'email' => $email,
                     'password' => Hash::make($tempPassword),

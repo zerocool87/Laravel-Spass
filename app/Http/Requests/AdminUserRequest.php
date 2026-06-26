@@ -18,7 +18,6 @@ class AdminUserRequest extends FormRequest
     {
         $rules = [
             'name' => ['required', 'string', 'max:255'],
-            'nom' => ['nullable', 'string', 'max:255'],
             'prenom' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],

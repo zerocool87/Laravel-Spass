@@ -69,27 +69,8 @@
                                 @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label for="nom" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Nom de famille') }}</label>
-                                <input type="text" name="nom" id="nom" value="{{ old('nom', $user->nom) }}" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] px-3 py-2">
-                            </div>
-                            <div>
                                 <label for="prenom" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Prénom') }}</label>
                                 <input type="text" name="prenom" id="prenom" value="{{ old('prenom', $user->prenom) }}" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] px-3 py-2">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Titres / Fonctions') }}</label>
-                                @php $userTitres = old('titres', $user->titres ?? []); @endphp
-                                <div class="grid grid-cols-1 gap-1.5">
-                                    @foreach(['Président', 'Vice-président', 'Membre du bureau', 'Membre de commission', 'Représentant', 'Délégué titulaire', 'Délégué suppléant'] as $titreOption)
-                                        <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                                            <input type="checkbox" name="titres[]" value="{{ $titreOption }}"
-                                                class="rounded border-gray-300 text-[#faa21b] shadow-sm focus:ring-[#faa21b]"
-                                                {{ in_array($titreOption, $userTitres) ? 'checked' : '' }} />
-                                            {{ $titreOption }}
-                                        </label>
-                                    @endforeach
-                                </div>
-                                @error('titres')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <div>
                                 <label for="commune" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Commune') }}</label>
@@ -100,6 +81,21 @@
                                     @endforeach
                                 </select>
                                 @error('commune')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Titres / Fonctions') }}</label>
+                                @php $userTitres = old('titres', $user->titres ?? []); @endphp
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1.5">
+                                    @foreach(['Président', 'Vice-président', 'Membre du bureau', 'Membre de commission', 'Représentant', 'Délégué titulaire', 'Délégué suppléant'] as $titreOption)
+                                        <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                            <input type="checkbox" name="titres[]" value="{{ $titreOption }}"
+                                                class="rounded border-gray-300 text-[#faa21b] shadow-sm focus:ring-[#faa21b]"
+                                                {{ in_array($titreOption, $userTitres) ? 'checked' : '' }} />
+                                            {{ $titreOption }}
+                                        </label>
+                                    @endforeach
+                                </div>
+                                @error('titres')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                             </div>
                             <div class="md:col-span-2 grid grid-cols-2 gap-4">
                                 <div>

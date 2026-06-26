@@ -67,6 +67,9 @@
                                             <span class="shrink-0 {{ $isNew ? 'text-orange-500' : 'text-gray-300' }}">{{ $isNew ? '✨' : '📄' }}</span>
                                             <p class="text-xs font-semibold text-gray-900 group-hover:text-[#faa21b] truncate">{{ $actualite->title }}</p>
                                         </div>
+                                        @if($actualite->content)
+                                            <p class="text-xs text-gray-500 mt-0.5 line-clamp-2">{{ Str::limit(strip_tags($actualite->content), 100) }}</p>
+                                        @endif
                                     </div>
                                     <div class="shrink-0 text-right">
                                         @if($isNew)
