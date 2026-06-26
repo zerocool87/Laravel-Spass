@@ -27,6 +27,7 @@ class DashboardController extends Controller
 
         $upcomingReunions = Reunion::with('instance')
             ->upcoming()
+            ->byTitres($user)
             ->take(4)
             ->get();
 

@@ -27,14 +27,17 @@ class ReunionRequest extends FormRequest
 
         // Normalize participants: accept array or newline-separated text
         $participants = $this->input('participants');
-        if (! is_array($participants)) {
-            $participantsText = $this->input('participants_text', '');
-            $participants = array_filter(
-                array_map('trim', explode("\n", $participantsText)),
-                fn ($p) => ! empty($p)
-            );
+        if (is_array($participants)) {
+            $participants = array_values($participants);
+        } elseif ($this->filled('participants_text')) {
+            $participants = array_values(array_filter(
+                array_map('trim', explode("\n", $this->string('participants_text')->toString())),
+                fn ($p) => $p !== '',
+            ));
+        } else {
+            $participants = [];
         }
-        $this->merge(['participants' => array_values($participants)]);
+        $this->merge(['participants' => $participants]);
 
         // Normalize visibility: nullify titres when visible_to_all
         $this->merge(['visible_to_all' => $this->has('visible_to_all') ? 1 : 0]);

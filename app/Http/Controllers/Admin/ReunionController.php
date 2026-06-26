@@ -58,14 +58,14 @@ class ReunionController extends Controller
 
         // Check for scheduling conflicts
         $conflicts = $this->checkForConflicts(
-            $validated['instance_id'],
+            (int) $validated['instance_id'],
             $validated['start_time'],
             $validated['end_time']
         );
 
         if ($conflicts->isNotEmpty()) {
             $alternatives = $this->suggestAlternativeTimeSlots(
-                $validated['instance_id'],
+                (int) $validated['instance_id'],
                 $validated['start_time'],
                 $validated['end_time']
             );
@@ -106,7 +106,7 @@ class ReunionController extends Controller
 
         // Check for scheduling conflicts (excluding current reunion)
         $conflicts = $this->checkForConflicts(
-            $validated['instance_id'],
+            (int) $validated['instance_id'],
             $validated['start_time'],
             $validated['end_time'],
             $reunion->id
@@ -114,7 +114,7 @@ class ReunionController extends Controller
 
         if ($conflicts->isNotEmpty()) {
             $alternatives = $this->suggestAlternativeTimeSlots(
-                $validated['instance_id'],
+                (int) $validated['instance_id'],
                 $validated['start_time'],
                 $validated['end_time']
             );
@@ -136,8 +136,9 @@ class ReunionController extends Controller
     /**
      * Check for scheduling conflicts.
      */
-    private function checkForConflicts(int $instanceId, string $startTime, string $endTime, ?int $excludeId = null): Collection
+    private function checkForConflicts(string|int $instanceId, string $startTime, string $endTime, ?int $excludeId = null): Collection
     {
+        $instanceId = (int) $instanceId;
         $start = Carbon::parse($startTime)->setTimezone('UTC');
         $end = Carbon::parse($endTime)->setTimezone('UTC');
 
@@ -159,7 +160,7 @@ class ReunionController extends Controller
     /**
      * Suggest alternative time slots.
      */
-    private function suggestAlternativeTimeSlots(int $instanceId, string $startTime, string $endTime): array
+    private function suggestAlternativeTimeSlots(string|int $instanceId, string $startTime, string $endTime): array
     {
         $start = Carbon::parse($startTime);
         $end = Carbon::parse($endTime);

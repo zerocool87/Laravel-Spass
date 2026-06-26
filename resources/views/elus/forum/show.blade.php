@@ -6,11 +6,11 @@
 <x-app-layout>
     <x-slot name="header">
         <x-elus-header
-            title="{{ $thread->title }}"
-            subtitle="{{ $thread->thematique->name }}"
+            title="{{ __('Forum') }}"
+            subtitle="{{ __('Discussions entre élus') }}"
             icon="💬"
-            :backRoute="route('elus.forum.index')"
-            :backLabel="__('Retour au forum')"
+            :backRoute="route('elus.dashboard')"
+            :backLabel="__('Retour au tableau de bord')"
             activeSection="forum"
         />
     </x-slot>
@@ -20,9 +20,10 @@
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="widget-container">
+                <x-widget-header title="💬 {{ $thread->title }}" />
                 <div class="p-6 sm:p-8 flex flex-col gap-5">
                     @forelse($posts as $post)
                         <div class="flex gap-4 {{ $post->user_id === $currentUser->id ? 'flex-row-reverse' : '' }}">
@@ -31,7 +32,7 @@
                                     {{ strtoupper(substr($post->author->prenom ?? $post->author->name, 0, 1)) }}
                                 </div>
                             </div>
-                            <div class="flex-1 min-w-0 max-w-xl {{ $post->user_id === $currentUser->id ? 'text-right' : '' }}">
+                            <div class="flex-1 min-w-0 {{ $post->user_id === $currentUser->id ? 'text-right' : '' }}">
                                 <div class="flex items-center gap-2 {{ $post->user_id === $currentUser->id ? 'justify-end' : '' }}">
                                     <span class="text-base font-semibold text-gray-900">{{ $post->author->name }}</span>
                                     <span class="inline-flex items-center gap-1 text-xs font-medium text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">

@@ -15,7 +15,7 @@
     </x-slot>
 
     <div class="py-8">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="widget-container">
                 <form method="POST" action="{{ route('elus.forum.store') }}" class="p-6 sm:p-8 flex flex-col gap-5">
