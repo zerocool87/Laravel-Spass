@@ -21,7 +21,7 @@
 
                 {{-- Masthead intérieur --}}
                 <div class="text-center py-5 px-8 border-b-2 border-[#faa21b]/20 bg-[#faa21b]/5">
-                    <div class="text-xs uppercase tracking-widest font-bold text-[#b36b00]">Le Journal du SEHV</div>
+                    <div class="text-xs uppercase tracking-widest font-bold text-[#faa21b]">Le Journal du SEHV</div>
                     <div class="mt-1 text-[11px] text-gray-500 italic">
                         {{ $actualite->published_at?->isoFormat('dddd D MMMM YYYY') }}
                     </div>

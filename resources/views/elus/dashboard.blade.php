@@ -14,13 +14,13 @@
         />
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-56px)] lg:h-[calc(100vh-56px)] flex flex-col py-2 gap-2">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col py-1 gap-3 mt-3">
 
             {{-- 2×2 Widget Grid — fills remaining vertical space --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 flex-1 min-h-0 gap-2">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-1 gap-y-3">
                 {{-- Prochaines réunions --}}
                 <div class="bg-white rounded-xl shadow border-2 border-[#faa21b]/20 flex flex-col min-h-0 overflow-hidden">
-                    <div class="px-3 py-1.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl shrink-0">
+                    <div class="px-3 py-1 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl shrink-0">
                         <h3 class="text-sm font-bold text-[#faa21b]">📅 {{ __('Prochaines réunions') }}</h3>
                         <a href="{{ route('elus.reunions.calendar') }}" class="text-xs text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Calendrier') }} <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -28,7 +28,7 @@
                     </div>
                     <div class="divide-y divide-orange-50 overflow-y-auto flex-1 min-h-0">
                         @forelse($upcomingReunions as $reunion)
-                            <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-3 py-2.5 hover:bg-orange-50/50 transition group">
+                            <a href="{{ route('elus.reunions.show', $reunion) }}" class="block px-3 py-1 hover:bg-orange-50/50 transition group">
                                 <div class="flex items-center justify-between gap-2">
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-semibold text-gray-900 group-hover:text-orange-600 truncate">{{ $reunion->title }}</p>
@@ -40,18 +40,18 @@
                                     </div>
                                 </div>
                                 @if($reunion->location)
-                                    <p class="text-xs text-gray-500 truncate mt-0.5">📍 {{ $reunion->location }}</p>
+                                    <p class="text-xs text-gray-500 truncate">📍 {{ $reunion->location }}</p>
                                 @endif
                             </a>
                         @empty
-                            <div class="flex items-center justify-center text-gray-400 text-sm p-6">📅 {{ __('Aucune réunion à venir') }}</div>
+                            <div class="flex items-center justify-center text-gray-400 text-sm p-4">📅 {{ __('Aucune réunion à venir') }}</div>
                         @endforelse
                     </div>
                 </div>
 
                 {{-- Actualités --}}
                 <div class="bg-white rounded-xl shadow border-2 border-[#faa21b]/20 flex flex-col min-h-0 overflow-hidden">
-                    <div class="px-3 py-1.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl shrink-0">
+                    <div class="px-3 py-1 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl shrink-0">
                         <h3 class="text-sm font-bold text-[#faa21b]">📰 {{ __('Actualités') }}</h3>
                         <a href="{{ route('elus.actualites.index') }}" class="text-xs text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Tout voir') }} <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -60,14 +60,13 @@
                     <div class="divide-y divide-orange-50 overflow-y-auto flex-1 min-h-0">
                         @forelse($latestActualites as $actualite)
                             @php $isNew = $actualite->published_at?->greaterThanOrEqualTo(now()->subWeek()); @endphp
-                            <a href="{{ route('elus.actualites.show', $actualite) }}" class="block px-3 py-2 hover:bg-orange-50/50 transition group">
+                            <a href="{{ route('elus.actualites.show', $actualite) }}" class="block px-3 py-1 hover:bg-orange-50/50 transition group">
                                 <div class="flex items-start justify-between gap-2">
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-1.5">
                                             <span class="shrink-0 {{ $isNew ? 'text-orange-500' : 'text-gray-300' }}">{{ $isNew ? '✨' : '📄' }}</span>
                                             <p class="text-xs font-semibold text-gray-900 group-hover:text-[#faa21b] truncate">{{ $actualite->title }}</p>
                                         </div>
-                                        <p class="text-xs text-gray-500 truncate mt-0.5">{{ strip_tags($actualite->content) }}</p>
                                     </div>
                                     <div class="shrink-0 text-right">
                                         @if($isNew)
@@ -78,14 +77,14 @@
                                 </div>
                             </a>
                         @empty
-                            <div class="flex items-center justify-center text-gray-400 text-sm p-6">📰 {{ __('Aucune actualité') }}</div>
+                            <div class="flex items-center justify-center text-gray-400 text-sm p-4">📰 {{ __('Aucune actualité') }}</div>
                         @endforelse
                     </div>
                 </div>
 
                 {{-- Instances --}}
                 <div class="bg-white rounded-xl shadow border-2 border-[#faa21b]/20 flex flex-col min-h-0 overflow-hidden">
-                    <div class="px-3 py-1.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl shrink-0">
+                    <div class="px-3 py-1 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl shrink-0">
                         <h3 class="text-sm font-bold text-[#faa21b]">🏛️ {{ __('Instances') }}</h3>
                         <a href="{{ route('elus.instances.index') }}" class="text-xs text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Tout voir') }} <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -93,7 +92,7 @@
                     </div>
                     <div class="divide-y divide-orange-50 overflow-y-auto flex-1 min-h-0">
                         @forelse($instances as $instance)
-                            <a href="{{ route('elus.instances.show', $instance) }}" class="block px-3 py-2.5 hover:bg-orange-50/50 transition group">
+                            <a href="{{ route('elus.instances.show', $instance) }}" class="block px-3 py-1 hover:bg-orange-50/50 transition group">
                                 <div class="flex items-center justify-between gap-2">
                                     <div class="flex items-center gap-2 min-w-0">
                                         <span class="text-base shrink-0">{{ $instance->icon }}</span>
@@ -105,14 +104,14 @@
                                 </div>
                             </a>
                         @empty
-                            <div class="flex items-center justify-center text-gray-400 text-sm p-6">🏛️ {{ __('Aucune instance') }}</div>
+                            <div class="flex items-center justify-center text-gray-400 text-sm p-4">🏛️ {{ __('Aucune instance') }}</div>
                         @endforelse
                     </div>
                 </div>
 
                 {{-- Documents récents --}}
                 <div class="bg-white rounded-xl shadow border-2 border-[#faa21b]/20 flex flex-col min-h-0 overflow-hidden">
-                    <div class="px-3 py-1.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl shrink-0">
+                    <div class="px-3 py-1 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl shrink-0">
                         <h3 class="text-sm font-bold text-[#faa21b]">📄 {{ __('Documents récents') }}</h3>
                         <a href="{{ route('elus.documents.index') }}" class="text-xs text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Bibliothèque') }} <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
@@ -120,7 +119,7 @@
                     </div>
                     <div class="divide-y divide-orange-50 overflow-y-auto flex-1 min-h-0">
                         @forelse($latestDocuments as $document)
-                            <a href="{{ route('documents.download', $document) }}" class="flex items-center px-3 py-2.5 hover:bg-orange-50/50 transition group gap-2">
+                            <a href="{{ route('documents.download', $document) }}" class="flex items-center px-3 py-1 hover:bg-orange-50/50 transition group gap-2">
                                 <x-category-icon :document="$document" size="w-5 h-5" />
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-1.5">
@@ -133,7 +132,7 @@
                                 </div>
                             </a>
                         @empty
-                            <div class="flex items-center justify-center text-gray-400 text-sm p-6">📄 {{ __('Aucun document récent') }}</div>
+                            <div class="flex items-center justify-center text-gray-400 text-sm p-4">📄 {{ __('Aucun document récent') }}</div>
                         @endforelse
                     </div>
                 </div>
@@ -141,27 +140,27 @@
 
             {{-- Projets en cours --}}
             <div class="bg-white rounded-xl shadow border-2 border-[#faa21b]/20 overflow-hidden shrink-0">
-                <div class="px-3 py-1.5 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between">
+                <div class="px-3 py-1 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between">
                     <h3 class="text-sm font-bold text-[#faa21b]">📋 {{ __('Projets en cours') }}</h3>
                     <a href="{{ route('elus.projects.index') }}" class="text-xs text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                         {{ __('Tous les projets') }} <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </a>
                 </div>
-                <div class="overflow-x-auto overflow-y-auto max-h-56">
+                <div class="overflow-x-auto overflow-y-auto max-h-48">
                     <table class="min-w-full divide-y divide-[#faa21b]/20">
                         <thead class="bg-[#faa21b]/5">
                             <tr>
-                                <th class="px-3 py-1.5 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Projet') }}</th>
-                                <th class="px-3 py-1.5 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Type') }}</th>
-                                <th class="px-3 py-1.5 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Statut') }}</th>
-                                <th class="px-3 py-1.5 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Budget') }}</th>
-                                <th class="px-3 py-1.5 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Échéance') }}</th>
+                                <th class="px-3 py-1 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Projet') }}</th>
+                                <th class="px-3 py-1 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Type') }}</th>
+                                <th class="px-3 py-1 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Statut') }}</th>
+                                <th class="px-3 py-1 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Budget') }}</th>
+                                <th class="px-3 py-1 text-left text-xs font-bold text-[#faa21b] uppercase tracking-wider">{{ __('Échéance') }}</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-orange-50">
                             @forelse($activeProjects as $project)
                                 <tr class="hover:bg-orange-50/50 cursor-pointer transition" onclick="window.location='{{ route('elus.projects.show', $project) }}'">
-                                    <td class="px-3 py-1.5">
+                                    <td class="px-3 py-1">
                                         <div class="text-sm font-semibold text-gray-900">{{ Str::limit($project->title, 40) }}</div>
                                         @if($project->territories)
                                             <div class="text-xs text-gray-600 flex items-center gap-1">
@@ -170,12 +169,12 @@
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="px-3 py-1.5 text-sm text-gray-600">{{ $project->type_label }}</td>
-                                    <td class="px-3 py-1.5">
+                                    <td class="px-3 py-1 text-sm text-gray-600">{{ $project->type_label }}</td>
+                                    <td class="px-3 py-1">
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $project->status_color }}">{{ $project->status_label }}</span>
                                     </td>
-                                    <td class="px-3 py-1.5 text-sm text-gray-900">{{ $project->formatted_budget }}</td>
-                                    <td class="px-3 py-1.5 text-sm text-gray-500">{{ $project->end_date?->format('d/m/Y') ?? '-' }}</td>
+                                    <td class="px-3 py-1 text-sm text-gray-900">{{ $project->formatted_budget }}</td>
+                                    <td class="px-3 py-1 text-sm text-gray-500">{{ $project->end_date?->format('d/m/Y') ?? '-' }}</td>
                                 </tr>
                             @empty
                                 <tr>

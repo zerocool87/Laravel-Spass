@@ -47,7 +47,7 @@
 
             {{-- Masthead --}}
             <div class="bg-white rounded-xl shadow-lg border-2 border-[#faa21b]/20 p-6 sm:p-8 mb-8 text-center select-none">
-                <h1 class="font-sans font-black text-3xl sm:text-4xl lg:text-5xl tracking-tight text-gray-900 leading-none">
+                <h1 class="font-sans font-black text-3xl sm:text-4xl lg:text-5xl tracking-tight text-[#faa21b] leading-none">
                     Le Journal du SEHV
                 </h1>
                 <p class="text-sm text-gray-500 mt-2 italic">
