@@ -1,13 +1,13 @@
-<div class="bg-white rounded-xl shadow-lg border border-[#faa21b]/20 p-6 mt-6">
-    <form method="post" action="{{ route('password.update') }}" class="space-y-6">
+<div class="bg-white rounded-xl shadow-lg border border-[#faa21b]/20 p-4">
+    <form method="post" action="{{ route('password.update') }}" class="space-y-4">
         @csrf
         @method('put')
 
         <div>
-            <h2 class="text-xl font-semibold text-gray-900 mb-6">{{ __('Changer le mot de passe') }}</h2>
+            <h2 class="text-base font-semibold text-gray-900">{{ __('Changer le mot de passe') }}</h2>
         </div>
 
-        <div class="grid grid-cols-1 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
                 <label for="update_password_current_password" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Mot de passe actuel') }} *</label>
                 <input type="password" name="current_password" id="update_password_current_password" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] px-3 py-2">
@@ -33,9 +33,9 @@
             </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-4 pt-4">
-            <button type="submit" class="inline-flex items-center justify-center px-6 py-2.5 bg-[#faa21b] text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition">
-                {{ __('Enregistrer les modifications') }}
+        <div class="flex pt-1">
+            <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-[#faa21b] text-white rounded-lg font-semibold text-sm shadow hover:bg-[#f39b14] transition">
+                {{ __('Enregistrer') }}
             </button>
         </div>
     </form>

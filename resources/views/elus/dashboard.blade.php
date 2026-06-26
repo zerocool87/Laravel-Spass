@@ -52,7 +52,7 @@
                 {{-- Actualités --}}
                 <div class="bg-white rounded-xl shadow border-2 border-[#faa21b]/20 flex flex-col min-h-0 overflow-hidden">
                     <div class="px-3 py-1 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center justify-between gap-2 rounded-t-xl shrink-0">
-                        <h3 class="text-sm font-bold text-[#faa21b]">📰 {{ __('Actualités') }}</h3>
+                        <h3 class="text-sm font-bold text-[#faa21b]"><svg class="w-4 h-4 inline-block align-text-bottom mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 4v4h4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 13h8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17h4"/></svg> {{ __('Actualités') }}</h3>
                         <a href="{{ route('elus.actualites.index') }}" class="text-xs text-[#faa21b] hover:text-[#e89315] font-semibold flex items-center">
                             {{ __('Tout voir') }} <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </a>
@@ -64,8 +64,14 @@
                                 <div class="flex items-start justify-between gap-2">
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-1.5">
-                                            <span class="shrink-0 {{ $isNew ? 'text-orange-500' : 'text-gray-300' }}">{{ $isNew ? '✨' : '📄' }}</span>
-                                            <p class="text-xs font-semibold text-gray-900 group-hover:text-[#faa21b] truncate">{{ $actualite->title }}</p>
+                                            <span class="shrink-0 {{ $isNew ? 'text-orange-500' : 'text-green-500' }}">
+                                                @if($isNew)
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.176 5.176 0 00-2.48 1.868A3.75 3.75 0 0012 18z"/></svg>
+                                                @else
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 4v4h4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 13h8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17h4"/></svg>
+                                                @endif
+                                            </span>
+                                            <p class="text-sm font-semibold text-gray-900 group-hover:text-[#faa21b] truncate">{{ $actualite->title }}</p>
                                         </div>
                                         @if($actualite->content)
                                             <p class="text-xs text-gray-500 mt-0.5 line-clamp-2">{{ Str::limit(strip_tags($actualite->content), 100) }}</p>
@@ -80,7 +86,7 @@
                                 </div>
                             </a>
                         @empty
-                            <div class="flex items-center justify-center text-gray-400 text-sm p-4">📰 {{ __('Aucune actualité') }}</div>
+                            <div class="flex items-center justify-center text-gray-400 text-sm p-4"><svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 4v4h4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 13h8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17h4"/></svg> {{ __('Aucune actualité') }}</div>
                         @endforelse
                     </div>
                 </div>
@@ -95,7 +101,7 @@
                     </div>
                     <div class="divide-y divide-orange-50 overflow-y-auto flex-1 min-h-0">
                         @forelse($instances as $instance)
-                            <a href="{{ route('elus.instances.show', $instance) }}" class="block px-3 py-1 hover:bg-orange-50/50 transition group">
+                            <a href="{{ route('elus.instances.show', $instance) }}" class="block px-3 py-2 hover:bg-orange-50/50 transition group">
                                 <div class="flex items-center justify-between gap-2">
                                     <div class="flex items-center gap-2 min-w-0">
                                         <span class="text-base shrink-0">{{ $instance->icon }}</span>

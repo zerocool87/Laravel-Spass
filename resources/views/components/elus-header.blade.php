@@ -44,7 +44,7 @@
                     </span>
                 @endif
                 <h2 class="font-bold text-xl sm:text-2xl text-white truncate {{ $badge ? '' : 'mb-1' }}">
-                    {{ $icon }} {{ $title }}
+                    {!! $icon !!} {{ $title }}
                 </h2>
                 @if($subtitle)
                     <p class="text-white/90 text-xs sm:text-sm truncate">{{ $subtitle }}</p>

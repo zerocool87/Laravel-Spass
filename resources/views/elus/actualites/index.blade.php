@@ -3,7 +3,7 @@
         <x-elus-header
             title="{{ __('Actualités') }}"
             subtitle="{{ __('Dernières nouvelles du SEHV') }}"
-            icon="📰"
+            icon='<svg class="w-6 h-6 inline-block align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 4v4h4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 13h8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17h4"/></svg>'
             :backRoute="route('elus.dashboard')"
             :backLabel="__('Retour au tableau de bord')"
             activeSection="actualites"
@@ -210,7 +210,7 @@
 
             @empty
                 <div class="bg-white rounded-xl shadow-lg border-2 border-dashed border-[#faa21b]/30 p-14 text-center">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#faa21b]/10 text-3xl mb-4">📰</div>
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#faa21b]/10 mb-4"><svg class="w-8 h-8 text-[#faa21b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 4v4h4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 13h8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17h4"/></svg></div>
                     <p class="font-sans font-bold text-gray-900 text-lg">
                         @if($search)
                             {{ __('Aucune actualité ne correspond à votre recherche.') }}

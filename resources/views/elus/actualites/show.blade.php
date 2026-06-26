@@ -3,7 +3,7 @@
         <x-elus-header
             title="{{ $actualite->title }}"
             subtitle="{{ $actualite->published_at?->isoFormat('D MMMM YYYY') }}"
-            icon="📰"
+            icon='<svg class="w-6 h-6 inline-block align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 4v4h4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 13h8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17h4"/></svg>'
             :backRoute="route('elus.actualites.index')"
             :backLabel="__('Retour aux actualités')"
             activeSection="actualites"

@@ -1,4 +1,4 @@
-<div class="bg-white rounded-xl shadow-lg border border-[#faa21b]/20 p-6 mt-6">
+<div class="bg-white rounded-xl shadow-lg border border-[#faa21b]/20 p-6">
     <form method="post" action="{{ route('profile.destroy') }}">
         @csrf
         @method('delete')
