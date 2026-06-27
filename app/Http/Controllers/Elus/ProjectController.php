@@ -30,11 +30,8 @@ class ProjectController extends Controller
         $types = ProjectType::labels();
         $statuses = ProjectStatus::labels();
 
-        $stats = [
-            'total' => (clone $baseQuery)->count(),
-            'active' => (clone $baseQuery)->active()->count(),
-            'total_budget' => (clone $baseQuery)->active()->sum('budget'),
-        ];
+        // Stats are scoped to the user's visible projects (no caching: visibility varies by commune).
+        $stats = Project::statsFor($request->user());
 
         return view('elus.projects.index', compact('projects', 'types', 'statuses', 'stats'));
     }

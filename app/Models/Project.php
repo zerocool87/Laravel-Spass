@@ -112,4 +112,30 @@ class Project extends Model
                 });
             });
     }
+
+    /**
+     * Compute total/active/total_budget stats scoped to the projects visible to the user.
+     *
+     * When a $cacheKey is provided the result is memoized for 60 seconds under that key
+     * (admins share one global cache since they all see every project; élus are not cached
+     * because visibility varies by commune).
+     *
+     * @return array{total: int, active: int, total_budget: string}
+     */
+    public static function statsFor(User $user, ?string $cacheKey = null): array
+    {
+        $compute = static function () use ($user): array {
+            $base = self::query()->visibleToUser($user);
+
+            return [
+                'total' => (clone $base)->count(),
+                'active' => (clone $base)->active()->count(),
+                'total_budget' => (clone $base)->active()->sum('budget'),
+            ];
+        };
+
+        return $cacheKey !== null
+            ? cache()->remember($cacheKey, 60, $compute)
+            : $compute();
+    }
 }

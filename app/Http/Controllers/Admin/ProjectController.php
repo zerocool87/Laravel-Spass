@@ -33,13 +33,7 @@ class ProjectController extends Controller
 
         // Statistics are intentionally global (not scoped to the current filter)
         // to give admins a consistent overview regardless of which filter is active.
-        $stats = cache()->remember('admin.projects.stats', 60, function () {
-            return [
-                'total' => Project::count(),
-                'active' => Project::active()->count(),
-                'total_budget' => Project::active()->sum('budget'),
-            ];
-        });
+        $stats = Project::statsFor($request->user(), 'admin.projects.stats');
 
         return view('admin.projects.index', compact('projects', 'types', 'statuses', 'communes', 'stats'));
     }

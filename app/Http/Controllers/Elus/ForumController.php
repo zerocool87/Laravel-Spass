@@ -126,7 +126,7 @@ class ForumController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $forumThread->load(['thematique', 'creator', 'posts.author']);
+        $forumThread->load(['thematique', 'creator']);
 
         $posts = $forumThread->posts()
             ->with([
@@ -168,11 +168,7 @@ class ForumController extends Controller
 
     public function detachReply(Request $request, ForumThread $forumThread, ForumPost $forumPost): RedirectResponse
     {
-        $user = $request->user();
-
-        if ($forumPost->user_id !== $user->id && ! $user->isAdmin()) {
-            abort(403);
-        }
+        $this->authorize('update', $forumPost);
 
         $forumPost->update(['reply_to_post_id' => null]);
 
@@ -182,11 +178,7 @@ class ForumController extends Controller
 
     public function update(Request $request, ForumThread $forumThread, ForumPost $forumPost): RedirectResponse
     {
-        $user = $request->user();
-
-        if ($forumPost->user_id !== $user->id && ! $user->isAdmin()) {
-            abort(403);
-        }
+        $this->authorize('update', $forumPost);
 
         $validated = $request->validate([
             'body' => ['required', 'string', 'max:5000'],
@@ -200,11 +192,7 @@ class ForumController extends Controller
 
     public function destroy(Request $request, ForumThread $forumThread, ForumPost $forumPost): RedirectResponse
     {
-        $user = $request->user();
-
-        if ($forumPost->user_id !== $user->id && ! $user->isAdmin()) {
-            abort(403);
-        }
+        $this->authorize('delete', $forumPost);
 
         $forumPost->delete();
 

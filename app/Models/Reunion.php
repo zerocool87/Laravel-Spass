@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ReunionStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -115,5 +117,56 @@ class Reunion extends Model
                         ->orWhere('description', 'like', $like);
                 });
             });
+    }
+
+    /**
+     * Find reunions overlapping the given time window for an instance.
+     *
+     * Times are stored in UTC, so we normalize the incoming values before querying.
+     * Only scheduled/confirmed reunions are considered potential conflicts.
+     *
+     * @return Collection<int, self>
+     */
+    public static function conflicting(int $instanceId, Carbon $start, Carbon $end, ?int $excludeId = null): Collection
+    {
+        $start = $start->copy()->setTimezone('UTC');
+        $end = $end->copy()->setTimezone('UTC');
+
+        return self::where('instance_id', $instanceId)
+            ->where('start_time', '<', $end)
+            ->where('end_time', '>', $start)
+            ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
+            ->whereIn('status', [ReunionStatus::Planifiee->value, ReunionStatus::Confirmee->value])
+            ->get();
+    }
+
+    /**
+     * Suggest up to three free time slots by advancing the requested window by 2h steps.
+     *
+     * @return list<array{start: string, end: string}>
+     */
+    public static function suggestSlots(int $instanceId, Carbon $start, Carbon $end): array
+    {
+        $duration = $end->diffInMinutes($start);
+        $alternatives = [];
+        $current = $start->copy();
+
+        for ($i = 0; $i < 10; $i++) {
+            $current->addHours(2);
+            $proposedEnd = $current->copy()->addMinutes($duration);
+
+            if (self::conflicting($instanceId, $current, $proposedEnd)->isEmpty()) {
+                $alternatives[] = [
+                    'start' => $current->format('H:i'),
+                    'end' => $proposedEnd->format('H:i'),
+                ];
+
+                if (count($alternatives) >= 3) {
+                    break;
+                }
+            }
+        }
+
+        return $alternatives;
     }
 }

@@ -9,7 +9,6 @@ use App\Http\Requests\AdminUserRequest;
 use App\Models\EluProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -26,9 +25,9 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        if (! empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
+        // Drop an empty password rather than storing a blank hash. The User model casts
+        // 'password' to 'hashed', so any non-empty value is hashed on assignment.
+        if (empty($data['password'])) {
             unset($data['password']);
         }
 
@@ -50,11 +49,19 @@ class UserController extends Controller
         ];
 
         $profileData = [];
+
+        // Always process boolean fields (unchecked checkboxes are not sent in the request)
+        foreach (['newsletter', 'frais_route', 'rib_fourni'] as $field) {
+            $profileData[$field] = $request->boolean($field);
+        }
+
         foreach ($profileFields as $field) {
+            if (in_array($field, ['newsletter', 'frais_route', 'rib_fourni'], true)) {
+                continue;
+            }
+
             if ($request->has($field)) {
-                if (in_array($field, ['newsletter', 'frais_route', 'rib_fourni'], true)) {
-                    $profileData[$field] = $request->boolean($field);
-                } elseif (in_array($field, ['ordre_suppleants'], true)) {
+                if (in_array($field, ['ordre_suppleants'], true)) {
                     $profileData[$field] = $request->input($field) !== null ? (int) $request->input($field) : null;
                 } else {
                     $profileData[$field] = $request->input($field) ?: null;

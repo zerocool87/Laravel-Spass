@@ -67,22 +67,12 @@ class DocumentController extends Controller
     {
         $data = $request->validated();
 
-        $file = $request->file('file');
-        $path = $file->store('documents');
-
-        $document = Document::create([
-            'title' => $data['title'],
-            'description' => $data['description'] ?? null,
-            'path' => $path,
-            'original_name' => $file->getClientOriginalName(),
-            'created_by' => $request->user()->id,
-            'visible_to_all' => boolval($data['visible_to_all']),
-            'titres' => $data['visible_to_all'] ? null : ($data['titres'] ?? []),
+        $document = Document::createFromRequest($request, $request->user(), [
+            'titres' => $data['titres'] ?? null,
             'category' => $data['category'] ?? null,
         ]);
 
         if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
-            $document->users()->sync($data['assigned_users']);
             $this->notifyAssignedUsers($document, $data['assigned_users'], isNew: true);
         }
 
@@ -113,7 +103,7 @@ class DocumentController extends Controller
         $document->title = $data['title'];
         $document->description = $data['description'] ?? null;
         $document->visible_to_all = boolval($data['visible_to_all']);
-        $document->titres = $data['visible_to_all'] ? null : ($data['titres'] ?? []);
+        $document->titres = $data['visible_to_all'] ? null : ($data['titres'] ?? null);
         $document->category = $data['category'] ?? null;
         $document->save();
 

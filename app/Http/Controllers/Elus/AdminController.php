@@ -9,7 +9,6 @@ use App\Models\EluProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -149,7 +148,8 @@ class AdminController extends Controller
                     'name' => $nom,
                     'prenom' => $prenom,
                     'email' => $email,
-                    'password' => Hash::make($tempPassword),
+                    // The User model casts 'password' to 'hashed', so the raw value is hashed on assignment.
+                    'password' => $tempPassword,
                     'is_elu' => true,
                     'titres' => $titres ?: null,
                     'commune' => $commune !== '' ? $commune : null,
@@ -276,15 +276,16 @@ class AdminController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($tempPassword),
+            // The User model casts 'password' to 'hashed', so the raw value is hashed on assignment.
+            'password' => $tempPassword,
             'is_elu' => true,
-            'titres' => $validated['titres'] ?? [],
+            'titres' => $validated['titres'] ?? null,
             'commune' => $validated['commune'] ?? null,
         ]);
 
         EluProfile::create([
             'user_id' => $user->id,
-            'titres' => $validated['titres'] ?? [],
+            'titres' => $validated['titres'] ?? null,
         ]);
 
         return redirect()

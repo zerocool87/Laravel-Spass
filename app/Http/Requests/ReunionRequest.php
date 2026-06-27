@@ -46,6 +46,15 @@ class ReunionRequest extends FormRequest
         }
     }
 
+    /**
+     * Remove the composite 'date' field after validation so it is never
+     * passed to the model (it has no database column).
+     */
+    protected function passedValidation(): void
+    {
+        $this->offsetUnset('date');
+    }
+
     public function rules(): array
     {
         return [

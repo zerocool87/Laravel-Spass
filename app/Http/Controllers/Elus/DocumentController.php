@@ -60,24 +60,7 @@ class DocumentController extends Controller
 
     public function store(DocumentRequest $request): RedirectResponse
     {
-        $data = $request->validated();
-
-        $file = $request->file('file');
-        $path = $file->store('documents');
-
-        $document = Document::create([
-            'title' => $data['title'],
-            'description' => $data['description'] ?? null,
-            'path' => $path,
-            'original_name' => $file->getClientOriginalName(),
-            'created_by' => $request->user()->id,
-            'visible_to_all' => boolval($data['visible_to_all']),
-            'category' => $data['category'] ?? null,
-        ]);
-
-        if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
-            $document->users()->sync($data['assigned_users']);
-        }
+        Document::createFromRequest($request, $request->user());
 
         return redirect()->route('elus.documents.index')->with('success', __('Document créé.'))->with('celebrate', true);
     }

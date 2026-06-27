@@ -11,7 +11,6 @@ use App\Models\Instance;
 use App\Models\Reunion;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -54,20 +53,19 @@ class ReunionController extends Controller
     public function store(ReunionRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        unset($validated['date']);
 
         // Check for scheduling conflicts
-        $conflicts = $this->checkForConflicts(
+        $conflicts = Reunion::conflicting(
             (int) $validated['instance_id'],
-            $validated['start_time'],
-            $validated['end_time']
+            Carbon::parse($validated['start_time']),
+            Carbon::parse($validated['end_time']),
         );
 
         if ($conflicts->isNotEmpty()) {
-            $alternatives = $this->suggestAlternativeTimeSlots(
+            $alternatives = Reunion::suggestSlots(
                 (int) $validated['instance_id'],
-                $validated['start_time'],
-                $validated['end_time']
+                Carbon::parse($validated['start_time']),
+                Carbon::parse($validated['end_time']),
             );
 
             return back()->withInput()
@@ -102,21 +100,20 @@ class ReunionController extends Controller
     public function update(ReunionRequest $request, Reunion $reunion): RedirectResponse
     {
         $validated = $request->validated();
-        unset($validated['date']);
 
         // Check for scheduling conflicts (excluding current reunion)
-        $conflicts = $this->checkForConflicts(
+        $conflicts = Reunion::conflicting(
             (int) $validated['instance_id'],
-            $validated['start_time'],
-            $validated['end_time'],
-            $reunion->id
+            Carbon::parse($validated['start_time']),
+            Carbon::parse($validated['end_time']),
+            $reunion->id,
         );
 
         if ($conflicts->isNotEmpty()) {
-            $alternatives = $this->suggestAlternativeTimeSlots(
+            $alternatives = Reunion::suggestSlots(
                 (int) $validated['instance_id'],
-                $validated['start_time'],
-                $validated['end_time']
+                Carbon::parse($validated['start_time']),
+                Carbon::parse($validated['end_time']),
             );
 
             return back()->withInput()
@@ -131,67 +128,6 @@ class ReunionController extends Controller
         return redirect()
             ->route('admin.reunions.index')
             ->with('success', __('Réunion mise à jour avec succès.'));
-    }
-
-    /**
-     * Check for scheduling conflicts.
-     */
-    private function checkForConflicts(string|int $instanceId, string $startTime, string $endTime, ?int $excludeId = null): Collection
-    {
-        $instanceId = (int) $instanceId;
-        $start = Carbon::parse($startTime)->setTimezone('UTC');
-        $end = Carbon::parse($endTime)->setTimezone('UTC');
-
-        $query = Reunion::where('instance_id', $instanceId)
-            ->where(function ($q) use ($start, $end) {
-                $q->where(function ($q2) use ($start, $end) {
-                    $q2->where('start_time', '<', $end)
-                        ->where('end_time', '>', $start);
-                });
-            });
-
-        if ($excludeId) {
-            $query->where('id', '!=', $excludeId);
-        }
-
-        return $query->whereIn('status', [ReunionStatus::Planifiee->value, ReunionStatus::Confirmee->value])->get();
-    }
-
-    /**
-     * Suggest alternative time slots.
-     */
-    private function suggestAlternativeTimeSlots(string|int $instanceId, string $startTime, string $endTime): array
-    {
-        $start = Carbon::parse($startTime);
-        $end = Carbon::parse($endTime);
-        $duration = $end->diffInMinutes($start);
-
-        $alternatives = [];
-        $current = $start->copy();
-
-        for ($i = 0; $i < 10; $i++) {
-            $current->addHours(2);
-            $proposedEnd = $current->copy()->addMinutes($duration);
-
-            $conflicts = $this->checkForConflicts(
-                $instanceId,
-                $current->toDateTimeString(),
-                $proposedEnd->toDateTimeString()
-            );
-
-            if ($conflicts->isEmpty()) {
-                $alternatives[] = [
-                    'start' => $current->format('H:i'),
-                    'end' => $proposedEnd->format('H:i'),
-                ];
-
-                if (count($alternatives) >= 3) {
-                    break;
-                }
-            }
-        }
-
-        return $alternatives;
     }
 
     /**

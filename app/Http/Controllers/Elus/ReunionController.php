@@ -55,7 +55,6 @@ class ReunionController extends Controller
     public function store(ReunionRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        unset($validated['date']);
 
         Reunion::create($validated);
 
@@ -88,7 +87,6 @@ class ReunionController extends Controller
     public function update(ReunionRequest $request, Reunion $reunion): RedirectResponse
     {
         $validated = $request->validated();
-        unset($validated['date']);
 
         $reunion->update($validated);
 
@@ -123,14 +121,16 @@ class ReunionController extends Controller
         $reunions = $query->get();
 
         $events = $reunions->map(function ($reunion) {
+            $color = ReunionStatus::tryFrom($reunion->status)?->hexColor() ?? '#6b7280';
+
             return [
                 'id' => $reunion->id,
                 'title' => $reunion->title,
                 'start' => $reunion->start_time ? $reunion->start_time->toIso8601String() : null,
                 'end' => $reunion->end_time ? $reunion->end_time->toIso8601String() : null,
                 'url' => route('elus.reunions.show', $reunion),
-                'backgroundColor' => ReunionStatus::tryFrom($reunion->status)?->hexColor() ?? '#6b7280',
-                'borderColor' => ReunionStatus::tryFrom($reunion->status)?->hexColor() ?? '#6b7280',
+                'backgroundColor' => $color,
+                'borderColor' => $color,
                 'extendedProps' => [
                     'instance' => $reunion->instance->name ?? '',
                     'location' => $reunion->location,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Http\Requests\DocumentRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -42,6 +43,36 @@ class Document extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Create a document from an uploaded file, storing it and syncing assigned users
+     * when the document is not visible to everyone.
+     *
+     * @param  array{titres?: mixed, category?: mixed}  $extra  Admin-only fields (titres/category).
+     */
+    public static function createFromRequest(DocumentRequest $request, User $creator, array $extra = []): self
+    {
+        $data = $request->validated();
+        $file = $request->file('file');
+        $visibleToAll = (bool) $data['visible_to_all'];
+
+        $document = self::create([
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
+            'path' => $file->store('documents'),
+            'original_name' => $file->getClientOriginalName(),
+            'created_by' => $creator->id,
+            'visible_to_all' => $visibleToAll,
+            'titres' => $visibleToAll ? null : ($extra['titres'] ?? null),
+            'category' => $extra['category'] ?? null,
+        ]);
+
+        if (! $visibleToAll && ! empty($data['assigned_users'])) {
+            $document->users()->sync($data['assigned_users']);
+        }
+
+        return $document;
     }
 
     /**
