@@ -23,14 +23,12 @@ class DocumentController extends Controller
 {
     public function index(Request $request): View
     {
+        $search = trim((string) $request->query('q', '')) ?: null;
         $category = $request->query('category');
-        $search = trim((string) $request->query('q', ''));
-        $search = $search !== '' ? $search : null;
-        $visibility = $request->query('visibility');
-
-        if (! in_array($visibility, ['public', 'private'], true)) {
-            $visibility = null;
-        }
+        $visibility = match ($request->query('visibility')) {
+            'public', 'private' => $request->query('visibility'),
+            default => null,
+        };
 
         $documents = Document::with(['creator', 'users'])
             ->when($category, function ($q, $cat) {
@@ -149,55 +147,14 @@ class DocumentController extends Controller
         abort_unless($document->isAccessibleBy($request->user()), 403);
 
         $mime = $document->getMimeType() ?: 'application/octet-stream';
-
         $filename = $this->sanitizeFilename($document);
         $safeQuoted = str_replace(['\\', '"'], ['\\\\', '\\"'], $filename);
         $disposition = 'inline; filename="'.$safeQuoted.'"; filename*=UTF-8\'\''.rawurlencode($filename);
-
         $rangeHeader = $request->header('Range');
 
         // Prefer streaming via Storage (supports local and remote disks)
         if (Storage::exists($document->path)) {
-            $size = Storage::size($document->path) ?: null;
-
-            $headers = [
-                'Content-Type' => $mime,
-                'Content-Disposition' => $disposition,
-                'Accept-Ranges' => 'bytes',
-            ];
-            if ($size !== null) {
-                $filesize = (int) $size;
-                $headers['Content-Length'] = (string) $filesize;
-            }
-
-            if (empty($rangeHeader)) {
-                if (app()->environment('testing')) {
-                    $content = Storage::get($document->path);
-
-                    return response($content, 200, $headers);
-                }
-
-                $stream = function () use ($document) {
-                    $readStream = Storage::readStream($document->path);
-                    if ($readStream === false) {
-                        abort(404);
-                    }
-                    try {
-                        while (! feof($readStream)) {
-                            echo fread($readStream, 8192);
-                            flush();
-                        }
-                    } finally {
-                        if (is_resource($readStream)) {
-                            fclose($readStream);
-                        }
-                    }
-                };
-
-                return new StreamedResponse($stream, 200, $headers);
-            }
-
-            // If Range header present, fall back to local file handling for partial responses.
+            return $this->streamFromStorage($document, $mime, $disposition, $rangeHeader);
         }
 
         $path = $document->getFullPath();
@@ -217,6 +174,53 @@ class DocumentController extends Controller
         }
 
         return $this->respondPartialFile($path, $filesize, $rangeHeader, $headers);
+    }
+
+    private function streamFromStorage(Document $document, string $mime, string $disposition, ?string $rangeHeader): Response|StreamedResponse
+    {
+        $size = Storage::size($document->path);
+        $filesize = $size !== false ? (int) $size : null;
+
+        $headers = [
+            'Content-Type' => $mime,
+            'Content-Disposition' => $disposition,
+            'Accept-Ranges' => 'bytes',
+        ];
+
+        if ($filesize !== null) {
+            $headers['Content-Length'] = (string) $filesize;
+        }
+
+        if (! empty($rangeHeader)) {
+            // Fall back to local file handling for Range requests on Storage files
+            $path = $document->getFullPath();
+            if ($path && file_exists($path) && $filesize !== null) {
+                return $this->respondPartialFile($path, $filesize, $rangeHeader, $headers);
+            }
+
+            return response('', 416, ['Content-Range' => 'bytes */'.($filesize ?? '*')]);
+        }
+
+        if (app()->environment('testing')) {
+            return response(Storage::get($document->path) ?: '', 200, $headers);
+        }
+
+        return new StreamedResponse(function () use ($document): void {
+            $readStream = Storage::readStream($document->path);
+            if ($readStream === false) {
+                abort(404);
+            }
+            try {
+                while (! feof($readStream)) {
+                    echo fread($readStream, 8192);
+                    flush();
+                }
+            } finally {
+                if (is_resource($readStream)) {
+                    fclose($readStream);
+                }
+            }
+        }, 200, $headers);
     }
 
     private function sanitizeFilename(Document $document): string
@@ -251,27 +255,10 @@ class DocumentController extends Controller
         $headers['Content-Length'] = (string) $filesize;
 
         if (app()->environment('testing')) {
-            return response(file_get_contents($path), 200, $headers);
+            return response(file_get_contents($path) ?: '', 200, $headers);
         }
 
-        $stream = function () use ($path) {
-            $fp = @fopen($path, 'rb');
-            if ($fp === false) {
-                abort(404);
-            }
-            try {
-                while (! feof($fp)) {
-                    echo fread($fp, 8192);
-                    flush();
-                }
-            } finally {
-                if (is_resource($fp)) {
-                    fclose($fp);
-                }
-            }
-        };
-
-        return new StreamedResponse($stream, 200, $headers);
+        return new StreamedResponse($this->createFileStream($path, 0, $filesize), 200, $headers);
     }
 
     private function respondPartialFile(string $path, int $filesize, string $rangeHeader, array $headers): Response|StreamedResponse
@@ -301,33 +288,32 @@ class DocumentController extends Controller
         $headers['Content-Length'] = (string) $length;
 
         if (app()->environment('testing')) {
-            $fp = @fopen($path, 'rb');
-            if ($fp === false) {
-                abort(404);
-            }
-            try {
-                fseek($fp, $start);
-                $content = fread($fp, $length);
-            } finally {
-                if (is_resource($fp)) {
-                    fclose($fp);
-                }
-            }
+            $content = file_get_contents($path, false, null, $start, $length);
 
-            return response($content, 206, $headers);
+            return response($content ?: '', 206, $headers);
         }
 
-        $stream = function () use ($path, $start, $length) {
+        return new StreamedResponse($this->createFileStream($path, $start, $length), 206, $headers);
+    }
+
+    /**
+     * Create a closure that streams a file range from disk.
+     */
+    private function createFileStream(string $path, int $offset, int $length): callable
+    {
+        return function () use ($path, $offset, $length): void {
             $fp = @fopen($path, 'rb');
             if ($fp === false) {
                 abort(404);
             }
             try {
-                fseek($fp, $start);
+                if ($offset > 0) {
+                    fseek($fp, $offset);
+                }
                 $remaining = $length;
                 while ($remaining > 0 && ! feof($fp)) {
-                    $read = min(8192, $remaining);
-                    $data = fread($fp, $read);
+                    $chunk = min(8192, $remaining);
+                    $data = fread($fp, $chunk);
                     if ($data === false) {
                         break;
                     }
@@ -341,7 +327,5 @@ class DocumentController extends Controller
                 }
             }
         };
-
-        return new StreamedResponse($stream, 206, $headers);
     }
 }

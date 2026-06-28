@@ -85,7 +85,6 @@ class User extends Authenticatable
     {
         return self::where('is_elu', true)
             ->whereNotNull('titres')
-            ->get()
             ->pluck('titres')
             ->flatten()
             ->filter()

@@ -32,11 +32,6 @@ return [
         'Guides' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h9l3 3v11a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 8h4"/></svg>',
     ],
 
-    // Examples of preview types shown in preview modal (kept for backward compatibility)
-    'preview_examples' => [
-        'PDF', 'JPEG', 'PNG', 'TXT',
-    ],
-
     // MIME patterns considered previewable by Document::isPreviewable
     'preview_mime_patterns' => ['image/', 'text/', 'application/pdf'],
 ];

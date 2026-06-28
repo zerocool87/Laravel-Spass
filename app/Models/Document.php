@@ -129,12 +129,7 @@ class Document extends Model
      */
     public function getFullPath(): ?string
     {
-        if (Storage::exists($this->path)) {
-            return Storage::path($this->path);
-        }
-        $fallback = storage_path('app/'.$this->path);
-
-        return file_exists($fallback) ? $fallback : null;
+        return $this->resolveStoragePath();
     }
 
     /**
@@ -145,12 +140,24 @@ class Document extends Model
         if (Storage::exists($this->path)) {
             return Storage::mimeType($this->path) ?: null;
         }
-        $fallback = storage_path('app/'.$this->path);
-        if (file_exists($fallback)) {
-            return mime_content_type($fallback) ?: null;
+
+        $path = $this->resolveStoragePath();
+
+        return $path !== null ? (mime_content_type($path) ?: null) : null;
+    }
+
+    /**
+     * Resolve the filesystem path, checking Storage first then the local fallback.
+     */
+    private function resolveStoragePath(): ?string
+    {
+        if (Storage::exists($this->path)) {
+            return Storage::path($this->path);
         }
 
-        return null;
+        $fallback = storage_path('app/'.$this->path);
+
+        return file_exists($fallback) ? $fallback : null;
     }
 
     public function isPreviewable(): bool

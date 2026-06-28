@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,21 +41,17 @@ class Event extends Model
     }
 
     /** @param Builder<self> $query */
-    public function scopeInRange(Builder $query, string $start, string $end): Builder
+    public function scopeInRange(Builder $query, Carbon|string $start, Carbon|string $end): Builder
     {
         return $query->where(function (Builder $q) use ($start, $end) {
             $q->whereBetween('start_at', [$start, $end])
                 ->orWhereBetween('end_at', [$start, $end])
                 ->orWhere(function (Builder $q2) use ($start, $end) {
                     $q2->where('start_at', '<=', $start)
-                        ->where('end_at', '>=', $end);
+                        ->where(function (Builder $q3) use ($end) {
+                            $q3->whereNull('end_at')->orWhere('end_at', '>=', $end);
+                        });
                 });
         });
-    }
-
-    /** @param Builder<self> $query */
-    public function scopeUpcoming(Builder $query): Builder
-    {
-        return $query->where('start_at', '>=', now());
     }
 }

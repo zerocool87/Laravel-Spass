@@ -54,25 +54,9 @@ class ReunionController extends Controller
     {
         $validated = $request->validated();
 
-        // Check for scheduling conflicts
-        $conflicts = Reunion::conflicting(
-            (int) $validated['instance_id'],
-            Carbon::parse($validated['start_time']),
-            Carbon::parse($validated['end_time']),
-        );
-
-        if ($conflicts->isNotEmpty()) {
-            $alternatives = Reunion::suggestSlots(
-                (int) $validated['instance_id'],
-                Carbon::parse($validated['start_time']),
-                Carbon::parse($validated['end_time']),
-            );
-
-            return back()->withInput()
-                ->withErrors([
-                    'conflict' => __('Conflit d\'horaire détecté avec :count autre(s) réunion(s)', ['count' => $conflicts->count()]),
-                ])
-                ->with('alternative_slots', $alternatives);
+        $conflictResponse = $this->checkForConflict($validated);
+        if ($conflictResponse !== null) {
+            return $conflictResponse;
         }
 
         Reunion::create($validated);
@@ -101,26 +85,9 @@ class ReunionController extends Controller
     {
         $validated = $request->validated();
 
-        // Check for scheduling conflicts (excluding current reunion)
-        $conflicts = Reunion::conflicting(
-            (int) $validated['instance_id'],
-            Carbon::parse($validated['start_time']),
-            Carbon::parse($validated['end_time']),
-            $reunion->id,
-        );
-
-        if ($conflicts->isNotEmpty()) {
-            $alternatives = Reunion::suggestSlots(
-                (int) $validated['instance_id'],
-                Carbon::parse($validated['start_time']),
-                Carbon::parse($validated['end_time']),
-            );
-
-            return back()->withInput()
-                ->withErrors([
-                    'conflict' => __('Conflit d\'horaire détecté avec :count autre(s) réunion(s)', ['count' => $conflicts->count()]),
-                ])
-                ->with('alternative_slots', $alternatives);
+        $conflictResponse = $this->checkForConflict($validated, $reunion->id);
+        if ($conflictResponse !== null) {
+            return $conflictResponse;
         }
 
         $reunion->update($validated);
@@ -140,5 +107,36 @@ class ReunionController extends Controller
         return redirect()
             ->route('admin.reunions.index')
             ->with('success', __('Réunion supprimée avec succès.'));
+    }
+
+    /**
+     * Check for scheduling conflicts and return the error response if any.
+     *
+     * @param  array<string, mixed>  $validated
+     */
+    private function checkForConflict(array $validated, ?int $excludeId = null): ?RedirectResponse
+    {
+        $conflicts = Reunion::conflicting(
+            (int) $validated['instance_id'],
+            Carbon::parse($validated['start_time']),
+            Carbon::parse($validated['end_time']),
+            $excludeId,
+        );
+
+        if ($conflicts->isEmpty()) {
+            return null;
+        }
+
+        $alternatives = Reunion::suggestSlots(
+            (int) $validated['instance_id'],
+            Carbon::parse($validated['start_time']),
+            Carbon::parse($validated['end_time']),
+        );
+
+        return back()->withInput()
+            ->withErrors([
+                'conflict' => __('Conflit d\'horaire détecté avec :count autre(s) réunion(s)', ['count' => $conflicts->count()]),
+            ])
+            ->with('alternative_slots', $alternatives);
     }
 }

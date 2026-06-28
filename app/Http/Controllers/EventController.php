@@ -61,22 +61,12 @@ class EventController extends Controller
     {
         $query = Event::with('creator');
 
-        // If the calendar requests a range, filter events intersecting the range
         if ($request->has('start') && $request->has('end')) {
             try {
                 $start = Carbon::parse($request->input('start'));
                 $end = Carbon::parse($request->input('end'));
 
-                $query->where(function ($q) use ($start, $end) {
-                    $q->whereBetween('start_at', [$start, $end])
-                        ->orWhereBetween('end_at', [$start, $end])
-                        ->orWhere(function ($q2) use ($start, $end) {
-                            $q2->where('start_at', '<=', $start)
-                                ->where(function ($q3) use ($end) {
-                                    $q3->whereNull('end_at')->orWhere('end_at', '>=', $end);
-                                });
-                        });
-                });
+                $query->inRange($start, $end);
             } catch (\Exception $e) {
                 report($e);
                 $query->where('end_at', '>=', now());
@@ -87,17 +77,15 @@ class EventController extends Controller
 
         $events = $query->orderBy('start_at')->get();
 
-        $payload = $events->map(function ($e) {
-            return [
-                'id' => $e->id,
-                'title' => $e->title,
-                'start' => $e->start_at ? $e->start_at->toIso8601String() : null,
-                'end' => $e->end_at ? $e->end_at->toIso8601String() : null,
-                'allDay' => (bool) $e->is_all_day,
-                'type' => $e->type ?? 'autre',
-                'url' => route('events.show', $e),
-            ];
-        });
+        $payload = $events->map(fn (Event $e) => [
+            'id' => $e->id,
+            'title' => $e->title,
+            'start' => $e->start_at?->toIso8601String(),
+            'end' => $e->end_at?->toIso8601String(),
+            'allDay' => (bool) $e->is_all_day,
+            'type' => $e->type ?? 'autre',
+            'url' => route('events.show', $e),
+        ]);
 
         return response()->json($payload->values());
     }

@@ -25,8 +25,6 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        // Drop an empty password rather than storing a blank hash. The User model casts
-        // 'password' to 'hashed', so any non-empty value is hashed on assignment.
         if (empty($data['password'])) {
             unset($data['password']);
         }
@@ -38,43 +36,38 @@ class UserController extends Controller
 
         $user->update($data);
 
-        // Update or create elu profile
-        $profileFields = [
-            'code_insee', 'civilite', 'epci_commune', 'telephone',
-            'adresse_1', 'adresse_2', 'code_postal', 'profession', 'societe',
-            'secteur', 'nom_secteur', 'rt_ds_dt', 'contact',
-            'mail_personnel', 'mail_2', 'date_deliberation', 'date_naissance',
-            'visa_prefecture', 'probleme_delib', 'ordre_suppleants',
-            'newsletter', 'frais_route', 'rib_fourni', 'chevaux_fiscaux',
-        ];
-
         $profileData = [];
 
-        // Always process boolean fields (unchecked checkboxes are not sent in the request)
+        // Boolean fields need explicit handling (unchecked checkboxes are not sent)
         foreach (['newsletter', 'frais_route', 'rib_fourni'] as $field) {
             $profileData[$field] = $request->boolean($field);
         }
 
-        foreach ($profileFields as $field) {
-            if (in_array($field, ['newsletter', 'frais_route', 'rib_fourni'], true)) {
-                continue;
-            }
-
+        // Text and date fields
+        foreach (['code_insee', 'civilite', 'epci_commune', 'telephone',
+            'adresse_1', 'adresse_2', 'code_postal', 'profession', 'societe',
+            'secteur', 'nom_secteur', 'rt_ds_dt', 'contact',
+            'mail_personnel', 'mail_2', 'date_deliberation', 'date_naissance',
+            'visa_prefecture', 'probleme_delib', 'chevaux_fiscaux',
+        ] as $field) {
             if ($request->has($field)) {
-                if (in_array($field, ['ordre_suppleants'], true)) {
-                    $profileData[$field] = $request->input($field) !== null ? (int) $request->input($field) : null;
-                } else {
-                    $profileData[$field] = $request->input($field) ?: null;
-                }
+                $profileData[$field] = $request->input($field) ?: null;
             }
         }
 
-        // Sync titres from users.titres to elu_profiles.titres
+        // Integer field with null handling
+        if ($request->has('ordre_suppleants')) {
+            $profileData['ordre_suppleants'] = $request->input('ordre_suppleants') !== null
+                ? (int) $request->input('ordre_suppleants')
+                : null;
+        }
+
+        // Sync titres to elu_profiles
         if ($request->has('titres')) {
             $profileData['titres'] = $request->input('titres', []);
         }
 
-        if (! empty($profileData)) {
+        if ($profileData !== []) {
             EluProfile::updateOrCreate(
                 ['user_id' => $user->id],
                 $profileData
