@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Models\ForumThread;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
             $user = Auth::user();
             $unreadCount = 0;
 
-            if ($user && ($user->isElu() || $user->isAdmin())) {
+            if ($user && ($user->isElu() || $user->isAdmin()) && Schema::hasTable('forum_threads')) {
                 $unreadCount = ForumThread::query()
                     ->whereDoesntHave('readBy', fn ($query) => $query->where('user_id', $user->id))
                     ->whereHas('posts')

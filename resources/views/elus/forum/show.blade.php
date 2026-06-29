@@ -26,8 +26,23 @@
         openMenu: null,
         editPost: null,
         editBody: '',
-        threadId: {{ $thread->id }}
+        threadId: {{ $thread->id }},
+        alpineReady: false,
+        init() {
+            this.alpineReady = true;
+            document.addEventListener('click', (event) => {
+                if (this.openMenu !== null) {
+                    const postEl = document.getElementById(`post-${this.openMenu}`);
+                    if (!postEl || !postEl.contains(event.target)) {
+                        this.openMenu = null;
+                    }
+                }
+            });
+        }
     }">
+        <div x-show="alpineReady" class="text-xs text-emerald-600 text-center mb-2">
+            ✅ Alpine.js actif — thread #<span x-text="threadId"></span>
+        </div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="widget-container">
@@ -74,11 +89,11 @@
                                     <span class="text-sm text-gray-500">
                                         {{ $post->created_at->format('d/m/Y H:i') }}
                                     </span>
-                                    <button
-                                        type="button"
-                                        class="text-sm text-gray-400 hover:text-[#faa21b] transition opacity-0 group-hover:opacity-100 max-sm:opacity-100 inline-flex items-center gap-1"
-                                        @click="replyToPost = {{ $post->id }}; replyName = @js($post->author->prenom ? $post->author->prenom.' '.$post->author->name : $post->author->name); replyToBody = @js(Str::limit($post->body, 120)); $nextTick(() => document.getElementById('forum-reply-form').scrollIntoView({ behavior: 'smooth' }))"
-                                    >
+                                        <button
+                                            type="button"
+                                            class="text-sm text-gray-400 hover:text-[#faa21b] transition opacity-0 group-hover:opacity-100 max-sm:opacity-100 inline-flex items-center gap-1"
+                                            @click="replyToPost = {{ $post->id }}; replyName = @js($post->author->prenom ? $post->author->prenom.' '.$post->author->name : $post->author->name); replyToBody = @js(Str::limit($post->body, 120)); $nextTick(() => document.getElementById('forum-reply-form').scrollIntoView({ behavior: 'smooth' }))"
+                                        >
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                         </svg>
@@ -86,7 +101,7 @@
                                     </button>
 
                                     @if($post->user_id === $currentUser->id || $currentUser->isAdmin())
-                                        <div class="relative" @click.outside="openMenu = null">
+                                        <div class="relative">
                                             <button
                                                 type="button"
                                                 class="text-sm text-gray-400 hover:text-gray-600 transition opacity-0 group-hover:opacity-100 max-sm:opacity-100 inline-flex items-center px-0.5"
