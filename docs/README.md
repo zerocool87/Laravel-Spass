@@ -19,7 +19,7 @@ Ce dossier regroupe les points d’entrée documentation du projet.
 ## État d'avancement (25/06/2026)
 
 Modules opérationnels: Authentification, Actualités, Événements/Agenda (partiel), Instances (simplifiées), Projets, Réunions (avec détection de conflits), Documents (avec preview, embed, catégories, contrôle par titres), Collab inter-élus (avec accusés de lecture), Profil élu étendu (EluProfile), Administration avancée (dashboard, import CSV), Contrôle d'accès par titres.
-Modules à créer: Consultations, Mes Interlocuteurs, Messagerie SDEEG→Élu, Badges, Délégation de pouvoir.
+Modules à créer: Consultations, Mes Interlocuteurs, Messagerie SEHV→Élu, Badges, Délégation de pouvoir.
 
 ## Notes
 
