@@ -21,7 +21,7 @@
                 @forelse($instances as $instance)
                     <div class="widget-container">
                         <div class="widget-content">
-                            <h3 class="text-lg font-medium text-gray-900">{{ $instance->name }}</h3>
+                            <h3 class="text-lg font-medium text-gray-900"><span class="mr-2">{{ $instance->icon }}</span>{{ $instance->name }}</h3>
                             <div class="mt-4 flex items-center justify-between">
                                 <span class="text-sm text-gray-500">{{ $instance->reunions_count }} {{ __('réunion(s)') }}</span>
                                 <a href="{{ route('elus.instances.show', $instance) }}" class="text-sm text-[#faa21b] hover:text-[#e89315] font-semibold">{{ __('Voir détails') }} →</a>

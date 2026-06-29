@@ -2,7 +2,7 @@
     <x-slot name="header">
         <x-elus-header
             :title="$instance->name"
-            icon="🏛️"
+            :icon="$instance->icon"
             :backRoute="route('elus.instances.index')"
             :backLabel="__('Retour aux instances')"
             activeSection="instances"
@@ -82,6 +82,13 @@
                 {{-- Sidebar --}}
                 <div class="space-y-6">
                     <div class="widget-container p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-3xl">{{ $instance->icon }}</span>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ $instance->name }}</h3>
+                                <p class="text-sm text-gray-500">{{ $instance->reunions_count }} {{ __('réunion(s)') }}</p>
+                            </div>
+                        </div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-[#faa21b] rounded-full inline-block"></span>{{ __('Actions') }}</h3>
                         <div class="space-y-2">
                             @can('admin')
