@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Elus;
 use App\Http\Controllers\Controller;
 use App\Models\EluProfile;
 use App\Models\User;
+use App\Services\CsvImportService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -74,174 +75,19 @@ class AdminController extends Controller
             'csv_file' => ['required', 'file', 'mimes:csv,txt'],
         ]);
 
-        $file = $request->file('csv_file');
-        $handle = fopen($file->getRealPath(), 'r');
+        $result = (new CsvImportService($this->communes()))->import($request->file('csv_file'));
 
-        if (! $handle) {
-            return redirect()
-                ->route('elus.admin.users.import.form')
-                ->with('error', __('Impossible de lire le fichier.'));
-        }
-
-        try {
-            // Skip BOM if present
-            $bom = fread($handle, 3);
-            if ($bom !== "\xEF\xBB\xBF") {
-                rewind($handle);
-            }
-
-            $created = 0;
-            $skipped = [];
-            $rowNumber = 0;
-            $communes = $this->communes();
-
-            while (($row = fgetcsv($handle, 0, "\t", '"')) !== false) {
-                $rowNumber++;
-
-                if (count($row) < 2 || empty(array_filter(array_map('trim', $row)))) {
-                    continue;
-                }
-
-                if ($rowNumber === 1) {
-                    $firstCell = strtoupper(trim((string) ($row[0] ?? '')));
-                    if (str_contains($firstCell, 'CODE') || str_contains($firstCell, 'INSEE')) {
-                        continue;
-                    }
-                }
-
-                try {
-                    $email = trim((string) ($row[16] ?? ''));
-
-                    if ($email === '' || $email === '0') {
-                        $skipped[] = "Ligne {$rowNumber} : email vide";
-
-                        continue;
-                    }
-
-                    if (User::where('email', $email)->exists()) {
-                        $skipped[] = "Ligne {$rowNumber} : {$email} déjà existant";
-
-                        continue;
-                    }
-
-                    $nom = trim((string) ($row[8] ?? ''));
-                    $prenom = trim((string) ($row[9] ?? ''));
-                    $titreRaw = trim((string) ($row[13] ?? ''));
-                    $commune = trim((string) ($row[22] ?? ''));
-
-                    // Split multi-titres by pipe and map old values
-                    $titres = array_filter(array_map('trim', explode('|', $titreRaw)));
-                    $mapping = [
-                        'Maire' => 'Président',
-                        'Conseiller municipal' => 'Membre du bureau',
-                    ];
-                    $titres = array_map(fn ($t) => $mapping[$t] ?? $t, $titres);
-                    $titres = array_values($titres);
-                    $tempPassword = Str::random(16);
-
-                    if ($commune !== '' && ! in_array($commune, $communes, true)) {
-                        $commune = null;
-                    }
-
-                    $user = User::create([
-                        'name' => $nom,
-                        'prenom' => $prenom,
-                        'email' => $email,
-                        'password' => $tempPassword,
-                        'is_elu' => true,
-                        'titres' => $titres ?: null,
-                        'commune' => $commune !== '' ? $commune : null,
-                    ]);
-
-                    EluProfile::create([
-                        'user_id' => $user->id,
-                        'code_insee' => $this->nullableString($row[0] ?? ''),
-                        'collectivite' => $this->nullableString($row[1] ?? ''),
-                        'epci_commune' => $this->nullableString($row[2] ?? ''),
-                        'secteur' => $this->nullableString($row[3] ?? ''),
-                        'nom_secteur' => $this->nullableString($row[4] ?? ''),
-                        'date_deliberation' => $this->parseDate($row[5] ?? ''),
-                        'visa_prefecture' => $this->nullableString($row[6] ?? ''),
-                        'probleme_delib' => $this->nullableString($row[7] ?? ''),
-                        'civilite' => $this->nullableString($row[11] ?? ''),
-                        'rt_ds_dt' => $this->nullableString($row[12] ?? ''),
-                        'titres' => $titres ?: null,
-                        'ordre_suppleants' => $this->parseInt($row[14] ?? ''),
-                        'contact' => $this->nullableString($row[15] ?? ''),
-                        'mail_personnel' => $email,
-                        'mail_2' => $this->nullableString($row[17] ?? ''),
-                        'telephone' => $this->nullableString($row[18] ?? ''),
-                        'adresse_1' => $this->nullableString($row[19] ?? ''),
-                        'adresse_2' => $this->nullableString($row[20] ?? ''),
-                        'code_postal' => $this->nullableString($row[21] ?? ''),
-                        'profession' => $this->nullableString($row[23] ?? ''),
-                        'societe' => $this->nullableString($row[24] ?? ''),
-                        'date_naissance' => $this->parseDate($row[25] ?? ''),
-                        'newsletter' => $this->parseBoolean($row[27] ?? ''),
-                        'frais_route' => $this->parseBoolean($row[29] ?? ''),
-                        'rib_fourni' => $this->parseBoolean($row[30] ?? ''),
-                        'chevaux_fiscaux' => $this->nullableString($row[31] ?? ''),
-                    ]);
-
-                    $created++;
-                } catch (\Exception $e) {
-                    $skipped[] = "Ligne {$rowNumber} : erreur — {$e->getMessage()}";
-                }
-            }
-        } finally {
-            fclose($handle);
-        }
-
-        $message = "{$created} élus importés avec succès.";
-        if (count($skipped) > 0) {
-            $message .= ' '.count($skipped).' lignes ignorées.';
+        $message = "{$result['created']} élus importés avec succès.";
+        $skippedCount = count($result['skipped']);
+        if ($skippedCount > 0) {
+            $message .= " {$skippedCount} lignes ignorées.";
         }
 
         return redirect()
             ->route('elus.admin.users.import.form')
             ->with('success', $message)
-            ->with('skipped', $skipped)
-            ->with('created_count', $created);
-    }
-
-    private function nullableString(mixed $value): ?string
-    {
-        $v = trim((string) $value);
-
-        return $v !== '' ? $v : null;
-    }
-
-    private function parseInt(mixed $value): ?int
-    {
-        $v = trim((string) $value);
-
-        return is_numeric($v) ? (int) $v : null;
-    }
-
-    private function parseBoolean(mixed $value): bool
-    {
-        $v = strtolower(trim((string) $value));
-
-        return in_array($v, ['1', 'true', 'oui', 'yes', 'x', 'ok'], true);
-    }
-
-    private function parseDate(mixed $value): ?string
-    {
-        $v = trim((string) $value);
-
-        if ($v === '' || $v === '0') {
-            return null;
-        }
-
-        // Try common French date formats
-        foreach (['d/m/Y', 'Y-m-d', 'd-m-Y', 'm/d/Y'] as $format) {
-            $date = \DateTime::createFromFormat($format, $v);
-            if ($date && $date->format($format) === $v) {
-                return $date->format('Y-m-d');
-            }
-        }
-
-        return null;
+            ->with('skipped', $result['skipped'])
+            ->with('created_count', $result['created']);
     }
 
     /**

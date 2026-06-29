@@ -8,15 +8,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
 use App\Models\User;
+use App\Services\DocumentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DocumentController extends Controller
 {
-    /**
-     * Display a listing of the documents.
-     */
+    public function __construct(
+        private readonly DocumentService $documentService,
+    ) {}
+
     public function index(Request $request): View
     {
         $user = $request->user();
@@ -53,15 +55,28 @@ class DocumentController extends Controller
 
     public function create(): View
     {
-        $users = User::orderBy('name')->get();
-
-        return view('elus.documents.create', compact('users'));
+        return view('elus.documents.create', [
+            'users' => User::orderBy('name')->get(),
+        ]);
     }
 
     public function store(DocumentRequest $request): RedirectResponse
     {
-        Document::createFromRequest($request, $request->user());
+        $data = $request->validated();
 
-        return redirect()->route('elus.documents.index')->with('success', __('Document créé.'))->with('celebrate', true);
+        $this->documentService->create(
+            title: $data['title'],
+            file: $request->file('file'),
+            creator: $request->user(),
+            description: $data['description'] ?? null,
+            visibleToAll: (bool) $data['visible_to_all'],
+            titres: $data['titres'] ?? null,
+            category: $data['category'] ?? null,
+            assignedUserIds: $data['assigned_users'] ?? null,
+        );
+
+        return redirect()->route('elus.documents.index')
+            ->with('success', __('Document créé.'))
+            ->with('celebrate', true);
     }
 }

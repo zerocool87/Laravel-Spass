@@ -21,6 +21,13 @@ class AdminUserRequest extends FormRequest
             'prenom' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+        ];
+
+        if ($this->isMethod('post')) {
+            $rules['password'] = ['required', 'string', 'min:8', 'confirmed'];
+        }
+
+        $rules += [
             'titres' => ['nullable', 'array'],
             'titres.*' => ['string', 'max:255', Rule::in(config('options.titres', []))],
             'commune' => ['nullable', 'string', 'max:255', Rule::in(config('options.communes_haute_vienne', []))],

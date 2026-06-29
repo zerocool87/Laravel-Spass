@@ -17,6 +17,8 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <style>[x-cloak] { display: none !important; }</style>
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -72,13 +74,13 @@
             x-data
             x-init="
                 @if(session('success'))
-                    $store.toasts.add('{{ session('success') }}', 'success');
+                    $store.toasts.add(@json(session('success')), 'success');
                 @endif
                 @if(session('error'))
-                    $store.toasts.add('{{ session('error') }}', 'error');
+                    $store.toasts.add(@json(session('error')), 'error');
                 @endif
                 @if(session('info'))
-                    $store.toasts.add('{{ session('info') }}', 'info');
+                    $store.toasts.add(@json(session('info')), 'info');
                 @endif
                 @if(session('celebrate'))
                     setTimeout(() => $store.confetti.fire({ particleCount: 100 }), 300);

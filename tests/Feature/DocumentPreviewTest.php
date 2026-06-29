@@ -51,7 +51,9 @@ class DocumentPreviewTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('documents.embed', $doc));
         $response->assertStatus(200);
-        $this->assertEquals($content, $response->getContent());
+        ob_start();
+        $response->baseResponse->sendContent();
+        $this->assertEquals($content, ob_get_clean());
         $this->assertEquals('bytes', $response->headers->get('Accept-Ranges'));
     }
 

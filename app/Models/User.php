@@ -21,9 +21,6 @@ class User extends Authenticatable
         'prenom',
         'email',
         'password',
-        'is_admin',
-        'is_elu',
-        'onboarding_completed',
         'titres',
         'commune',
     ];
@@ -83,7 +80,8 @@ class User extends Authenticatable
     /** @return array<int, string> */
     public static function titresElus(): array
     {
-        return self::where('is_elu', true)
+        return self::query()
+            ->where('is_elu', true)
             ->whereNotNull('titres')
             ->pluck('titres')
             ->flatten()

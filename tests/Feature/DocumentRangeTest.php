@@ -32,7 +32,9 @@ class DocumentRangeTest extends TestCase
         $response->assertStatus(206);
         $this->assertEquals('bytes 2-5/10', $response->headers->get('Content-Range'));
         $this->assertEquals('4', $response->headers->get('Content-Length'));
-        $this->assertEquals('2345', $response->getContent());
+        ob_start();
+        $response->baseResponse->sendContent();
+        $this->assertEquals('2345', ob_get_clean());
         $this->assertEquals('bytes', $response->headers->get('Accept-Ranges'));
     }
 
@@ -75,7 +77,9 @@ class DocumentRangeTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('documents.embed', $doc));
         $response->assertStatus(200);
-        $this->assertEquals($content, $response->getContent());
+        ob_start();
+        $response->baseResponse->sendContent();
+        $this->assertEquals($content, ob_get_clean());
         $this->assertEquals('bytes', $response->headers->get('Accept-Ranges'));
     }
 }

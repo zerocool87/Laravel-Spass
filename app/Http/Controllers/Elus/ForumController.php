@@ -39,17 +39,14 @@ class ForumController extends Controller
                 'readBy as is_read' => fn ($q) => $q->where('user_id', $user->id),
             ]);
 
-        // Filtre par thématique
         if ($request->filled('thematique_id')) {
             $query->where('thematique_id', $request->integer('thematique_id'));
         }
 
-        // Recherche par titre
         if ($request->filled('search')) {
             $query->where('title', 'like', '%'.$request->string('search').'%');
         }
 
-        // Tri
         $query->orderByDesc('is_pinned');
 
         $sort = $request->input('sort', 'latest');
@@ -85,10 +82,8 @@ class ForumController extends Controller
 
     public function create(): View
     {
-        $thematiques = Thematique::query()->orderBy('name')->get();
-
         return view('elus.forum.create', [
-            'thematiques' => $thematiques,
+            'thematiques' => Thematique::query()->orderBy('name')->get(),
         ]);
     }
 
@@ -136,10 +131,7 @@ class ForumController extends Controller
             ->orderBy('created_at')
             ->paginate(30);
 
-        DB::table('forum_thread_user')->updateOrInsert(
-            ['forum_thread_id' => $forumThread->id, 'user_id' => $user->id],
-            ['last_read_at' => now(), 'updated_at' => now()],
-        );
+        $forumThread->readBy()->syncWithoutDetaching([$user->id => ['last_read_at' => now()]]);
 
         return view('elus.forum.show', [
             'thread' => $forumThread,
@@ -150,13 +142,10 @@ class ForumController extends Controller
 
     public function storePost(StoreForumPostRequest $request, ForumThread $forumThread): RedirectResponse
     {
-        /** @var User $user */
-        $user = $request->user();
-
         $validated = $request->validated();
 
         $forumThread->posts()->create([
-            'user_id' => $user->id,
+            'user_id' => $request->user()->id,
             'body' => $validated['body'],
             'reply_to_post_id' => $validated['reply_to_post_id'] ?? null,
         ]);
@@ -176,15 +165,11 @@ class ForumController extends Controller
             ->with('success', __('Lien de réponse retiré.'));
     }
 
-    public function update(Request $request, ForumThread $forumThread, ForumPost $forumPost): RedirectResponse
+    public function update(StoreForumPostRequest $request, ForumThread $forumThread, ForumPost $forumPost): RedirectResponse
     {
         $this->authorize('update', $forumPost);
 
-        $validated = $request->validate([
-            'body' => ['required', 'string', 'max:5000'],
-        ]);
-
-        $forumPost->update($validated);
+        $forumPost->update(['body' => $request->validated('body')]);
 
         return redirect()->route('elus.forum.show', $forumThread)
             ->with('success', __('Message modifié.'));

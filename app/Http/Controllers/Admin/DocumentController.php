@@ -8,19 +8,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
 use App\Models\User;
-use App\Notifications\DocumentActionNotification;
+use App\Services\DocumentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
+    public function __construct(
+        private readonly DocumentService $documentService,
+    ) {}
+
     public function index(Request $request): View
     {
         $search = trim((string) $request->query('q', '')) ?: null;
@@ -31,21 +33,16 @@ class DocumentController extends Controller
         };
 
         $documents = Document::with(['creator', 'users'])
-            ->when($category, function ($q, $cat) {
-                $q->where('category', $cat);
-            })
+            ->when($category, fn ($q, $cat) => $q->where('category', $cat))
             ->when($search, function ($q, $search) {
-                $q->where(function ($subQuery) use ($search) {
-                    $like = '%'.$search.'%';
-
-                    $subQuery->where('title', 'like', $like)
-                        ->orWhere('description', 'like', $like)
-                        ->orWhere('original_name', 'like', $like);
-                });
+                $like = '%'.$search.'%';
+                $q->where(fn ($sq) => $sq
+                    ->where('title', 'like', $like)
+                    ->orWhere('description', 'like', $like)
+                    ->orWhere('original_name', 'like', $like)
+                );
             })
-            ->when($visibility, function ($q, $visibility) {
-                $q->where('visible_to_all', $visibility === 'public');
-            })
+            ->when($visibility, fn ($q, $v) => $q->where('visible_to_all', $v === 'public'))
             ->orderBy('created_at', 'desc')
             ->paginate(20)
             ->withQueryString();
@@ -55,35 +52,43 @@ class DocumentController extends Controller
 
     public function create(): View
     {
-        $users = User::orderBy('name')->get();
-        $titres = User::titresElus();
-
-        return view('admin.documents.create', compact('users', 'titres'));
+        return view('admin.documents.create', [
+            'users' => User::orderBy('name')->get(),
+            'titres' => User::titresElus(),
+        ]);
     }
 
     public function store(DocumentRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
-        $document = Document::createFromRequest($request, $request->user(), [
-            'titres' => $data['titres'] ?? null,
-            'category' => $data['category'] ?? null,
-        ]);
+        $document = $this->documentService->create(
+            title: $data['title'],
+            file: $request->file('file'),
+            creator: $request->user(),
+            description: $data['description'] ?? null,
+            visibleToAll: (bool) $data['visible_to_all'],
+            titres: $data['titres'] ?? null,
+            category: $data['category'] ?? null,
+            assignedUserIds: $data['assigned_users'] ?? null,
+        );
 
         if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
-            $this->notifyAssignedUsers($document, $data['assigned_users'], isNew: true);
+            $this->documentService->notifyAssignedUsers($document, $request->user());
         }
 
-        return redirect()->route('admin.documents.index')->with('success', __('Document créé.'))->with('celebrate', true);
+        return redirect()->route('admin.documents.index')
+            ->with('success', __('Document créé.'))->with('celebrate', true);
     }
 
     public function edit(Document $document): View
     {
-        $users = User::orderBy('name')->get();
-        $assigned = $document->users()->pluck('users.id')->toArray();
-        $titres = User::titresElus();
-
-        return view('admin.documents.edit', compact('document', 'users', 'assigned', 'titres'));
+        return view('admin.documents.edit', [
+            'document' => $document,
+            'users' => User::orderBy('name')->get(),
+            'assigned' => $document->users()->pluck('users.id')->toArray(),
+            'titres' => User::titresElus(),
+        ]);
     }
 
     public function update(DocumentRequest $request, Document $document): RedirectResponse
@@ -91,43 +96,43 @@ class DocumentController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('file')) {
-            Storage::delete($document->path);
-            $file = $request->file('file');
-            $path = $file->store('documents');
-            $document->path = $path;
-            $document->original_name = $file->getClientOriginalName();
+            $this->documentService->replaceFile($document, $request->file('file'));
         }
 
-        $document->title = $data['title'];
-        $document->description = $data['description'] ?? null;
-        $document->visible_to_all = boolval($data['visible_to_all']);
-        $document->titres = $data['visible_to_all'] ? null : ($data['titres'] ?? null);
-        $document->category = $data['category'] ?? null;
-        $document->save();
+        $document->timestamps = false;
+
+        $document->forceFill([
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
+            'visible_to_all' => boolval($data['visible_to_all']),
+            'titres' => $data['visible_to_all'] ? null : ($data['titres'] ?? null),
+            'category' => $data['category'] ?? null,
+        ])->save();
 
         if (! $document->visible_to_all && ! empty($data['assigned_users'])) {
             $document->users()->sync($data['assigned_users']);
-            $this->notifyAssignedUsers($document, $data['assigned_users'], isNew: false);
+            $this->documentService->notifyAssignedUsers($document, $request->user());
         } else {
             $document->users()->detach();
         }
 
-        return redirect()->route('admin.documents.index')->with('success', __('Document mis à jour.'));
+        return redirect()->route('admin.documents.index')
+            ->with('success', __('Document mis à jour.'));
     }
 
     public function destroy(Document $document): RedirectResponse
     {
-        Storage::delete($document->path);
-        $document->delete();
+        $this->documentService->delete($document);
 
-        return redirect()->route('admin.documents.index')->with('success', __('Document supprimé.'));
+        return redirect()->route('admin.documents.index')
+            ->with('success', __('Document supprimé.'));
     }
 
     public function download(Request $request, Document $document): BinaryFileResponse|StreamedResponse
     {
         abort_unless($document->isAccessibleBy($request->user()), 403);
 
-        return Storage::download($document->path, $this->sanitizeFilename($document));
+        return $this->documentService->streamToResponse($document);
     }
 
     public function info(Request $request, Document $document): JsonResponse
@@ -142,190 +147,16 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function embed(Request $request, Document $document): Response|StreamedResponse
+    public function embed(Request $request, Document $document): StreamedResponse|Response
     {
         abort_unless($document->isAccessibleBy($request->user()), 403);
 
-        $mime = $document->getMimeType() ?: 'application/octet-stream';
-        $filename = $this->sanitizeFilename($document);
-        $safeQuoted = str_replace(['\\', '"'], ['\\\\', '\\"'], $filename);
-        $disposition = 'inline; filename="'.$safeQuoted.'"; filename*=UTF-8\'\''.rawurlencode($filename);
         $rangeHeader = $request->header('Range');
 
-        // Prefer streaming via Storage (supports local and remote disks)
-        if (Storage::exists($document->path)) {
-            return $this->streamFromStorage($document, $mime, $disposition, $rangeHeader);
-        }
-
-        $path = $document->getFullPath();
-        if (! $path || ! file_exists($path)) {
-            abort(404);
-        }
-
-        $filesize = filesize($path);
-        $headers = [
-            'Content-Type' => $mime,
-            'Content-Disposition' => $disposition,
-            'Accept-Ranges' => 'bytes',
-        ];
-
-        if (empty($rangeHeader)) {
-            return $this->respondFullFile($path, $filesize, $headers);
-        }
-
-        return $this->respondPartialFile($path, $filesize, $rangeHeader, $headers);
-    }
-
-    private function streamFromStorage(Document $document, string $mime, string $disposition, ?string $rangeHeader): Response|StreamedResponse
-    {
-        $size = Storage::size($document->path);
-        $filesize = $size !== false ? (int) $size : null;
-
-        $headers = [
-            'Content-Type' => $mime,
-            'Content-Disposition' => $disposition,
-            'Accept-Ranges' => 'bytes',
-        ];
-
-        if ($filesize !== null) {
-            $headers['Content-Length'] = (string) $filesize;
-        }
-
         if (! empty($rangeHeader)) {
-            // Fall back to local file handling for Range requests on Storage files
-            $path = $document->getFullPath();
-            if ($path && file_exists($path) && $filesize !== null) {
-                return $this->respondPartialFile($path, $filesize, $rangeHeader, $headers);
-            }
-
-            return response('', 416, ['Content-Range' => 'bytes */'.($filesize ?? '*')]);
+            return $this->documentService->streamPartial($document, $rangeHeader);
         }
 
-        if (app()->environment('testing')) {
-            return response(Storage::get($document->path) ?: '', 200, $headers);
-        }
-
-        return new StreamedResponse(function () use ($document): void {
-            $readStream = Storage::readStream($document->path);
-            if ($readStream === false) {
-                abort(404);
-            }
-            try {
-                while (! feof($readStream)) {
-                    echo fread($readStream, 8192);
-                    flush();
-                }
-            } finally {
-                if (is_resource($readStream)) {
-                    fclose($readStream);
-                }
-            }
-        }, 200, $headers);
-    }
-
-    private function sanitizeFilename(Document $document): string
-    {
-        $raw = $document->original_name ?? basename($document->path);
-        $filename = preg_replace('/[\x00-\x1F\x7F]+/', '', (string) $raw);
-        $filename = trim($filename) ?: basename($document->path);
-        if (mb_strlen($filename) > 200) {
-            $filename = mb_substr($filename, 0, 200);
-        }
-
-        return $filename;
-    }
-
-    private function notifyAssignedUsers(Document $document, array $assignedUserIds, bool $isNew): void
-    {
-        if (empty($assignedUserIds)) {
-            return;
-        }
-
-        $users = User::whereIn('id', $assignedUserIds)->get();
-        Notification::send($users, new DocumentActionNotification(
-            $isNew ? __('Nouveau document partagé avec vous') : __('Document mis à jour : :title', ['title' => $document->title]),
-            $isNew ? __('Un document vous a été partagé : :title', ['title' => $document->title]) : __('Le document a été mis à jour : :title', ['title' => $document->title]),
-            __('Voir le document'),
-            route('elus.documents.index'),
-        ));
-    }
-
-    private function respondFullFile(string $path, int $filesize, array $headers): Response|StreamedResponse
-    {
-        $headers['Content-Length'] = (string) $filesize;
-
-        if (app()->environment('testing')) {
-            return response(file_get_contents($path) ?: '', 200, $headers);
-        }
-
-        return new StreamedResponse($this->createFileStream($path, 0, $filesize), 200, $headers);
-    }
-
-    private function respondPartialFile(string $path, int $filesize, string $rangeHeader, array $headers): Response|StreamedResponse
-    {
-        if (! preg_match('/bytes=([0-9]*)-([0-9]*)/', $rangeHeader, $matches)) {
-            return response('', 416, ['Content-Range' => "bytes */$filesize"]);
-        }
-
-        $start = $matches[1] === '' ? null : (int) $matches[1];
-        $end = $matches[2] === '' ? null : (int) $matches[2];
-
-        if ($start === null && $end !== null) {
-            $start = max(0, $filesize - $end);
-            $end = $filesize - 1;
-        } elseif ($start !== null && $end === null) {
-            $end = $filesize - 1;
-        }
-
-        if ($start < 0 || $end < $start || $start >= $filesize) {
-            return response('', 416, ['Content-Range' => "bytes */$filesize"]);
-        }
-
-        $end = min($end, $filesize - 1);
-        $length = $end - $start + 1;
-
-        $headers['Content-Range'] = "bytes $start-$end/$filesize";
-        $headers['Content-Length'] = (string) $length;
-
-        if (app()->environment('testing')) {
-            $content = file_get_contents($path, false, null, $start, $length);
-
-            return response($content ?: '', 206, $headers);
-        }
-
-        return new StreamedResponse($this->createFileStream($path, $start, $length), 206, $headers);
-    }
-
-    /**
-     * Create a closure that streams a file range from disk.
-     */
-    private function createFileStream(string $path, int $offset, int $length): callable
-    {
-        return function () use ($path, $offset, $length): void {
-            $fp = @fopen($path, 'rb');
-            if ($fp === false) {
-                abort(404);
-            }
-            try {
-                if ($offset > 0) {
-                    fseek($fp, $offset);
-                }
-                $remaining = $length;
-                while ($remaining > 0 && ! feof($fp)) {
-                    $chunk = min(8192, $remaining);
-                    $data = fread($fp, $chunk);
-                    if ($data === false) {
-                        break;
-                    }
-                    echo $data;
-                    flush();
-                    $remaining -= strlen($data);
-                }
-            } finally {
-                if (is_resource($fp)) {
-                    fclose($fp);
-                }
-            }
-        };
+        return $this->documentService->streamToResponse($document);
     }
 }

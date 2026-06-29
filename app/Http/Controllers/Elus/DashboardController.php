@@ -13,6 +13,7 @@ use App\Models\Reunion;
 use App\Services\WeatherService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -25,49 +26,50 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        $upcomingReunions = Reunion::with('instance')
-            ->upcoming()
-            ->byTitres($user)
-            ->take(4)
-            ->get();
-
-        $activeProjects = Project::query()
-            ->visibleToUser($user)
-            ->active()
-            ->orderBy('updated_at', 'desc')
-            ->take(5)
-            ->get();
-
-        $latestDocuments = Document::accessibleTo($user)
-            ->with('creator')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        $instances = Instance::withCount('reunions')
-            ->orderBy('name')
-            ->get();
-
-        $latestActualites = Actualite::with('creator')
-            ->where('is_published', true)
-            ->latest('published_at')
-            ->take(5)
-            ->get();
+        $data = DB::transaction(function () use ($user) {
+            return [
+                'upcomingReunions' => Reunion::with('instance')
+                    ->upcoming()
+                    ->byTitres($user)
+                    ->take(4)
+                    ->get(),
+                'activeProjects' => Project::query()
+                    ->visibleToUser($user)
+                    ->active()
+                    ->orderBy('updated_at', 'desc')
+                    ->take(5)
+                    ->get(),
+                'latestDocuments' => Document::accessibleTo($user)
+                    ->with('creator')
+                    ->latest()
+                    ->take(5)
+                    ->get(),
+                'instances' => Instance::withCount('reunions')
+                    ->orderBy('name')
+                    ->get(),
+                'latestActualites' => Actualite::with('creator')
+                    ->where('is_published', true)
+                    ->latest('published_at')
+                    ->take(5)
+                    ->get(),
+            ];
+        });
 
         $weather = $this->weatherService->getWeather(45.83, 1.26, 'Limoges');
 
-        $showOnboarding = ! $user->onboarding_completed;
+        $hour = (int) now()->format('H');
+        $timeGreeting = match (true) {
+            $hour < 12 => '☀️', $hour < 18 => '🌤️', default => '🌙'
+        };
+        $displayName = $user->prenom ?? $user->name ?? __('cher élu');
+        $greeting = __('Bonjour').' '.$displayName.' '.$timeGreeting;
 
-        return view('elus.dashboard', compact(
-            'user',
-            'upcomingReunions',
-            'activeProjects',
-            'latestDocuments',
-            'latestActualites',
-            'instances',
-            'weather',
-            'showOnboarding',
-        ));
+        return view('elus.dashboard', $data + [
+            'user' => $user,
+            'greeting' => $greeting,
+            'weather' => $weather,
+            'showOnboarding' => ! $user->onboarding_completed,
+        ]);
     }
 
     public function weatherByCoords(Request $request): JsonResponse

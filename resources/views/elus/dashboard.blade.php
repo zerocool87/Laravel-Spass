@@ -1,12 +1,7 @@
 <x-app-layout>
     <header>
-        @php
-            $hour = (int) now()->format('H');
-            $timeGreeting = match (true) { $hour < 12 => '☀️', $hour < 18 => '🌤️', default => '🌙' };
-            $displayName = $user->prenom ?? $user->name ?? __('cher élu');
-        @endphp
         <x-elus-header
-            :title="__('Bonjour') . ' ' . $displayName . ' ' . $timeGreeting"
+            :title="$greeting"
             subtitle="{{ __('Gouvernance et projets territoriaux') }}"
             icon="🏛️"
             activeSection="dashboard"
