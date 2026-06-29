@@ -123,10 +123,11 @@ class AdminController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => $tempPassword,
-                'is_elu' => true,
                 'titres' => $validated['titres'] ?? null,
                 'commune' => $validated['commune'] ?? null,
             ]);
+
+            $user->forceFill(['is_elu' => true])->save();
 
             EluProfile::create([
                 'user_id' => $user->id,
