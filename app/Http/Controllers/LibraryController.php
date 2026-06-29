@@ -12,14 +12,14 @@ class LibraryController extends Controller
 {
     public function index(Request $request): View
     {
-        $documents = Document::accessibleTo($request->user())->latest()->get();
+        $documents = Document::accessibleTo($request->user())->latest()->paginate(20);
 
-        $documentsByCategory = $documents->groupBy(
+        $documentsByCategory = $documents->getCollection()->groupBy(
             fn (Document $d) => $d->category ?: __('Non catégorisé')
         );
 
         $allCategories = $documentsByCategory->keys()->all();
 
-        return view('library.index', compact('documentsByCategory', 'allCategories'));
+        return view('library.index', compact('documentsByCategory', 'allCategories', 'documents'));
     }
 }

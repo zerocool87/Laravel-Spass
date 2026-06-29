@@ -28,7 +28,7 @@ class WeatherService
     private function fetchWeather(float $lat, float $lng): array
     {
         try {
-            $response = Http::timeout(5)->get('https://api.open-meteo.com/v1/forecast', [
+            $response = Http::timeout(5)->get(config('services.open_meteo.base_url').'/forecast', [
                 'latitude' => $lat,
                 'longitude' => $lng,
                 'current_weather' => true,
@@ -65,8 +65,8 @@ class WeatherService
     {
         try {
             $response = Http::timeout(5)
-                ->withUserAgent('Spass/1.0')
-                ->get('https://nominatim.openstreetmap.org/reverse', [
+                ->withUserAgent(config('services.nominatim.user_agent'))
+                ->get(config('services.nominatim.base_url').'/reverse', [
                     'format' => 'json',
                     'lat' => $lat,
                     'lon' => $lng,

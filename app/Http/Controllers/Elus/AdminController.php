@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\CsvImportService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -115,29 +116,32 @@ class AdminController extends Controller
             'commune' => ['nullable', 'string', 'max:255', Rule::in($this->communes())],
         ]);
 
-        // Generate a secure temporary password
-        $tempPassword = Str::random(16);
+        $user = DB::transaction(function () use ($validated) {
+            $tempPassword = Str::random(16);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            // The User model casts 'password' to 'hashed', so the raw value is hashed on assignment.
-            'password' => $tempPassword,
-            'is_elu' => true,
-            'titres' => $validated['titres'] ?? null,
-            'commune' => $validated['commune'] ?? null,
-        ]);
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => $tempPassword,
+                'is_elu' => true,
+                'titres' => $validated['titres'] ?? null,
+                'commune' => $validated['commune'] ?? null,
+            ]);
 
-        EluProfile::create([
-            'user_id' => $user->id,
-            'titres' => $validated['titres'] ?? null,
-        ]);
+            EluProfile::create([
+                'user_id' => $user->id,
+                'titres' => $validated['titres'] ?? null,
+            ]);
+
+            return $user;
+        });
+
+        $resetLink = url(route('password.request', [], false));
 
         return redirect()
             ->route('elus.admin.users')
-            ->with('success', "Élu {$user->name} créé avec succès. Mot de passe temporaire : {$tempPassword} (copiez-le maintenant, il ne sera plus affiché).")
-            ->with('temporaryPassword', $tempPassword)
-            ->with('newUserName', $user->name);
+            ->with('success', "Élu {$user->name} créé avec succès. Un lien de réinitialisation de mot de passe lui a été attribué.")
+            ->with('resetLink', $resetLink);
     }
 
     /**

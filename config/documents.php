@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     // Available document categories shown in admin forms and filters
     'categories' => [

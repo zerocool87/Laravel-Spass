@@ -10,11 +10,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::forget('titres_elus'));
+        static::deleted(fn () => Cache::forget('titres_elus'));
+    }
 
     protected $fillable = [
         'name',
@@ -80,15 +87,17 @@ class User extends Authenticatable
     /** @return array<int, string> */
     public static function titresElus(): array
     {
-        return self::query()
-            ->where('is_elu', true)
-            ->whereNotNull('titres')
-            ->pluck('titres')
-            ->flatten()
-            ->filter()
-            ->unique()
-            ->sort()
-            ->values()
-            ->toArray();
+        return Cache::remember('titres_elus', 3600, function () {
+            return self::query()
+                ->where('is_elu', true)
+                ->whereNotNull('titres')
+                ->pluck('titres')
+                ->flatten()
+                ->filter()
+                ->unique()
+                ->sort()
+                ->values()
+                ->toArray();
+        });
     }
 }

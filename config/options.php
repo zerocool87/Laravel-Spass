@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'communes_haute_vienne' => [
         'Aix-sur-Vienne',

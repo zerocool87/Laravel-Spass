@@ -19,21 +19,17 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            @if(session('temporaryPassword'))
+            @if(session('resetLink'))
                 <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-2 border-yellow-400 text-yellow-900 px-6 py-4 rounded-xl shadow-lg">
                     <div class="flex items-start">
                         <svg class="w-6 h-6 mr-3 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
                         <div class="flex-1">
-                            <h4 class="font-bold text-lg mb-2">Mot de passe temporaire pour {{ session('newUserName') }}</h4>
-                            <p class="mb-3">Copiez ce mot de passe maintenant, il ne sera plus affiché :</p>
-                            <div class="bg-white border-2 border-yellow-300 rounded-lg p-4 font-mono text-lg font-bold text-gray-900 select-all break-all">
-                                {{ session('temporaryPassword') }}
-                            </div>
-                            <p class="mt-3 text-sm text-yellow-800">
-                                ⚠️ Ce mot de passe doit être changé lors de la première connexion.
-                            </p>
+                            <p class="mb-3">L'élu a été créé. Pour définir son mot de passe, utilisez la page de réinitialisation :</p>
+                            <a href="{{ session('resetLink') }}" class="text-blue-600 underline font-semibold hover:text-blue-800">
+                                {{ session('resetLink') }}
+                            </a>
                         </div>
                     </div>
                 </div>

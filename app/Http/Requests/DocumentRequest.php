@@ -11,7 +11,7 @@ class DocumentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user() && $this->user()->isAdmin();
+        return $this->user()?->isAdmin() ?? false;
     }
 
     protected function prepareForValidation(): void

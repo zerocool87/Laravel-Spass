@@ -2,6 +2,15 @@
 
 return [
 
+    'open_meteo' => [
+        'base_url' => 'https://api.open-meteo.com/v1',
+    ],
+
+    'nominatim' => [
+        'base_url' => 'https://nominatim.openstreetmap.org',
+        'user_agent' => 'Spass/1.0',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
