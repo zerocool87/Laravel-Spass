@@ -27,22 +27,21 @@
         editPost: null,
         editBody: '',
         threadId: {{ $thread->id }},
-        alpineReady: false,
         init() {
-            this.alpineReady = true;
-            document.addEventListener('click', (event) => {
+            this._onClick = (event) => {
                 if (this.openMenu !== null) {
                     const postEl = document.getElementById(`post-${this.openMenu}`);
                     if (!postEl || !postEl.contains(event.target)) {
                         this.openMenu = null;
                     }
                 }
-            });
+            };
+            document.addEventListener('click', this._onClick);
+        },
+        destroy() {
+            document.removeEventListener('click', this._onClick);
         }
     }">
-        <div x-show="alpineReady" class="text-xs text-emerald-600 text-center mb-2">
-            ✅ Alpine.js actif — thread #<span x-text="threadId"></span>
-        </div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="widget-container">
