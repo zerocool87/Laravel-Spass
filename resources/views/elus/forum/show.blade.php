@@ -88,12 +88,12 @@
                                     <span class="text-sm text-gray-500">
                                         {{ $post->created_at->format('d/m/Y H:i') }}
                                     </span>
-                                        <button
-                                            type="button"
-                                            class="text-sm text-gray-400 hover:text-[#faa21b] transition opacity-0 group-hover:opacity-100 max-sm:opacity-100 inline-flex items-center gap-1"
-                                            @click="replyToPost = {{ $post->id }}; replyName = @js($post->author->prenom ? $post->author->prenom.' '.$post->author->name : $post->author->name); replyToBody = @js(Str::limit($post->body, 120)); $nextTick(() => document.getElementById('forum-reply-form').scrollIntoView({ behavior: 'smooth' }))"
-                                        >
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <button
+                                        type="button"
+                                        class="text-sm text-gray-400 hover:text-[#faa21b] transition opacity-0 group-hover:opacity-100 max-sm:opacity-100 inline-flex items-center gap-1"
+                                        @click="replyToPost = {{ $post->id }}; replyName = @js($post->author->prenom ? $post->author->prenom.' '.$post->author->name : $post->author->name); replyToBody = @js(Str::limit($post->body, 120)); $nextTick(() => document.getElementById('forum-reply-form').scrollIntoView({ behavior: 'smooth' }))"
+                                    >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                                         </svg>
                                         <span class="hidden sm:inline">{{ __('Répondre') }}</span>
