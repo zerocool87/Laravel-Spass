@@ -2,15 +2,12 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\User;
 use App\Models\Instance;
+use App\Models\User;
+use Tests\TestCase;
 
 class ElusInstanceHeaderTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_header_links_absent_for_admin()
     {
         $instance = Instance::factory()->create();

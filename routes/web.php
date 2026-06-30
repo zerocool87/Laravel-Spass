@@ -67,23 +67,24 @@ Route::prefix('elus')->name('elus.')->middleware(['auth', 'elu'])->group(functio
     // Instances (Comités, Bureaux, Commissions)
     Route::resource('instances', InstanceController::class)->only(['index', 'show']);
 
-    // Projects — mutation routes require admin
-    Route::resource('projects', ElusProjectController::class)
-        ->only(['create', 'store', 'edit', 'update', 'destroy'])
-        ->middleware('can:admin');
+    // Projects — read-only routes
     Route::resource('projects', ElusProjectController::class)->only(['index', 'show']);
+    // Projects — mutation routes require admin
+    Route::middleware('can:admin')->group(function () {
+        Route::resource('projects', ElusProjectController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+    });
     Route::get('/projects/geojson', [ElusProjectController::class, 'geojson'])->name('projects.geojson');
 
     // Reunions — specific routes before resource wildcards
     Route::get('/reunions/calendar', [ElusReunionController::class, 'calendar'])->name('reunions.calendar');
     Route::get('/reunions/json', [ElusReunionController::class, 'json'])->name('reunions.json');
     Route::post('/reunions/toggle-calendar', [ElusReunionController::class, 'toggleCalendar'])->name('reunions.toggle-calendar');
-    // Mutation routes require admin
-    Route::resource('reunions', ElusReunionController::class)
-        ->only(['create', 'store', 'edit', 'update', 'destroy'])
-        ->middleware('can:admin');
-    // Read-only routes
+    // Reunions — read-only routes
     Route::resource('reunions', ElusReunionController::class)->only(['index', 'show']);
+    // Reunions — mutation routes require admin
+    Route::middleware('can:admin')->group(function () {
+        Route::resource('reunions', ElusReunionController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+    });
 
     // Documents
     Route::get('/documents', [ElusDocumentController::class, 'index'])->name('documents.index');

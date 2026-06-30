@@ -45,11 +45,9 @@ class ReunionController extends Controller
 
     public function create(Request $request): View
     {
-        $instances = Instance::orderBy('name')->get();
-        $statuses = ReunionStatus::labels();
-        $selectedInstance = $request->instance_id;
-
-        return view('elus.reunions.create', compact('instances', 'statuses', 'selectedInstance'));
+        return view('elus.reunions.create', [
+            'selectedInstance' => $request->instance_id,
+        ] + $this->formData());
     }
 
     public function store(ReunionRequest $request): RedirectResponse
@@ -78,10 +76,16 @@ class ReunionController extends Controller
 
     public function edit(Reunion $reunion): View
     {
-        $instances = Instance::orderBy('name')->get();
-        $statuses = ReunionStatus::labels();
+        return view('elus.reunions.edit', ['reunion' => $reunion] + $this->formData());
+    }
 
-        return view('elus.reunions.edit', compact('reunion', 'instances', 'statuses'));
+    /** @return array<string, mixed> */
+    private function formData(): array
+    {
+        return [
+            'instances' => Instance::orderBy('name')->get(),
+            'statuses' => ReunionStatus::labels(),
+        ];
     }
 
     public function update(ReunionRequest $request, Reunion $reunion): RedirectResponse

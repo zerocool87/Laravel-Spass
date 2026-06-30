@@ -28,23 +28,21 @@ class UserController extends Controller
             unset($data['password']);
         }
 
-        $user->timestamps = false;
-
         $user->forceFill([
             'name' => $data['name'],
             'prenom' => $data['prenom'],
             'email' => $data['email'],
-            'commune' => $request->input('commune'),
-            'titres' => $request->input('titres', []),
-            'is_admin' => $request->boolean('is_admin'),
-            'is_elu' => $request->boolean('is_elu'),
+            'commune' => $data['commune'] ?? null,
+            'titres' => $data['titres'] ?? [],
+            'is_admin' => $data['is_admin'] ?? false,
+            'is_elu' => $data['is_elu'] ?? false,
         ]);
 
         if (isset($data['password'])) {
             $user->password = $data['password'];
         }
 
-        $user->save();
+        $user->saveQuietly();
 
         $user->eluProfile()->updateOrCreate(
             ['user_id' => $user->id],

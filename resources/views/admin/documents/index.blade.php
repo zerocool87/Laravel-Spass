@@ -183,7 +183,7 @@
                                                     </svg>
                                                     {{ __('Modifier') }}
                                                 </a>
-                                                <form method="POST" action="{{ route('admin.documents.destroy', $doc) }}" onsubmit="return confirm('{{ __('Supprimer ce document ?') }}')">
+                                                <form method="POST" action="{{ route('admin.documents.destroy', $doc) }}" @submit.prevent="if(confirm('{{ __('Supprimer ce document ?') }}')) $el.submit()">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="inline-flex items-center gap-1 px-3 py-1 border border-red-200 rounded-lg text-xs font-semibold text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-300 transition">

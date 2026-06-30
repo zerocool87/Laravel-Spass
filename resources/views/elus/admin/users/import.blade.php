@@ -66,8 +66,8 @@
                             <label for="csv_file" class="block text-sm font-medium text-gray-700 mb-2">
                                 {{ __('Fichier CSV') }} *
                             </label>
-                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-[#faa21b] transition cursor-pointer"
-                                 onclick="document.getElementById('csv_file').click()">
+                            <div x-data="{ fileName: '' }" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-[#faa21b] transition cursor-pointer"
+                                 @click="$refs.fileInput.click()">
                                 <div class="space-y-2 text-center">
                                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
@@ -77,11 +77,11 @@
                                         {{ __('ou glissez-déposez') }}
                                     </div>
                                     <p class="text-xs text-gray-500">{{ __('CSV ou TXT uniquement') }}</p>
-                                    <p id="file-name" class="text-sm font-medium text-green-600 hidden"></p>
+                                    <p class="text-sm font-medium text-green-600" x-show="fileName" x-text="fileName"></p>
                                 </div>
-                                <input id="csv_file" name="csv_file" type="file" accept=".csv,.txt" required
+                                <input x-ref="fileInput" id="csv_file" name="csv_file" type="file" accept=".csv,.txt" required
                                        class="sr-only"
-                                       onchange="document.getElementById('file-name').textContent = this.files[0]?.name ?? ''; document.getElementById('file-name').classList.toggle('hidden', !this.files[0]);">
+                                       @change="fileName = $event.target.files[0]?.name ?? ''">
                             </div>
                             @error('csv_file')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>

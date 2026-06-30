@@ -6,7 +6,7 @@ import collapse from '@alpinejs/collapse';
 Alpine.plugin(collapse);
 
 import './calendar';
-import './modal';
+import '../css/calendar.css';
 import './document-preview-modal';
 import './event-detail-modal';
 import initConfetti from './confetti';

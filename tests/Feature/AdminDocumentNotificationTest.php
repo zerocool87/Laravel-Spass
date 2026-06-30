@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Document;
 use App\Models\User;
 use App\Notifications\DocumentActionNotification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
@@ -13,8 +12,6 @@ use Tests\TestCase;
 
 class AdminDocumentNotificationTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_assigned_users_receive_notification_on_create(): void
     {
         Notification::fake();

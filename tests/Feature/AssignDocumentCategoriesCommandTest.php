@@ -3,13 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Document;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AssignDocumentCategoriesCommandTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_assigns_categories_based_on_title()
     {
         $d1 = Document::create(['title' => 'Convocation: réunion', 'path' => 'documents/a.pdf', 'created_by' => null, 'visible_to_all' => true]);

@@ -103,14 +103,20 @@
                             </div>
                         </div>
 
-                        <div>
+                        <div x-data="{ territories: @js(old('territories', $project->territories ?? [])), newTerritory: '', addTerritory() { let v = this.newTerritory.trim(); if (v && !this.territories.includes(v)) { this.territories.push(v); this.newTerritory = ''; } } }">
                             <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Territoires') }}</label>
-                            <div class="flex flex-wrap gap-2" id="territories-container">
-                                {{-- Dynamic territory tags will be rendered here --}}
+                            <div class="flex flex-wrap gap-2">
+                                <template x-for="(t, i) in territories" :key="i">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#faa21b]/15 text-[#b36b00]">
+                                        <span x-text="t"></span>
+                                        <input type="hidden" :name="`territories[]`" :value="t">
+                                        <button type="button" @click="territories.splice(i, 1)" class="ml-2 text-[#faa21b] hover:text-[#e89315]">&times;</button>
+                                    </span>
+                                </template>
                             </div>
                             <div class="mt-2 flex gap-2">
-                                <input type="text" id="new-territory" placeholder="{{ __('Ajouter un territoire') }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] text-sm">
-                                <button type="button" onclick="addTerritory()" class="px-3 py-2 bg-gray-200 rounded-md text-sm hover:bg-gray-300">+</button>
+                                <input type="text" x-model="newTerritory" @keydown.enter.prevent="addTerritory" placeholder="{{ __('Ajouter un territoire') }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-[#faa21b] focus:ring-[#faa21b] text-sm">
+                                <button type="button" @click="addTerritory" class="px-3 py-2 bg-gray-200 rounded-md text-sm hover:bg-gray-300">+</button>
                             </div>
                         </div>
                     </div>
@@ -127,44 +133,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        let territories = @json($project->territories ?? []);
-
-        function addTerritory() {
-            const input = document.getElementById('new-territory');
-            const value = input.value.trim();
-            if (value && !territories.includes(value)) {
-                territories.push(value);
-                renderTerritories();
-                input.value = '';
-            }
-        }
-
-        function removeTerritory(index) {
-            territories.splice(index, 1);
-            renderTerritories();
-        }
-
-        function renderTerritories() {
-            const container = document.getElementById('territories-container');
-            container.innerHTML = territories.map((t, i) => `
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#faa21b]/15 text-[#b36b00]">
-                    ${t}
-                    <input type="hidden" name="territories[]" value="${t}">
-                    <button type="button" onclick="removeTerritory(${i})" class="ml-2 text-[#faa21b] hover:text-[#e89315]">&times;</button>
-                </span>
-            `).join('');
-        }
-
-        document.getElementById('new-territory').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addTerritory();
-            }
-        });
-
-        // Initial render
-        renderTerritories();
-    </script>
 </x-app-layout>

@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Project;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ElusProjectCommuneFilteringTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * Ensure élus only see projects from their commune.
      */

@@ -6,13 +6,10 @@ namespace Tests\Feature;
 
 use App\Models\Document;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LibraryPaginationTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_library_uses_pagination(): void
     {
         $user = User::factory()->create();

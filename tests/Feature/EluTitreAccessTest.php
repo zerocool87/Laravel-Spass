@@ -6,15 +6,12 @@ use App\Models\Document;
 use App\Models\Instance;
 use App\Models\Reunion;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class EluTitreAccessTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_elu_sees_only_documents_matching_titre(): void
     {
         $eluPresident = User::factory()->create([

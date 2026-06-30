@@ -3,13 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class DashboardRecentDocumentsWidgetVisibilityTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * Ensure the recent documents widget is displayed even without documents.
      */

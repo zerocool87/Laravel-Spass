@@ -38,11 +38,7 @@ class ProjectController extends Controller
 
     public function create(): View
     {
-        $types = ProjectType::labels();
-        $statuses = ProjectStatus::labels();
-        $communes = $this->communes();
-
-        return view('elus.projects.create', compact('types', 'statuses', 'communes'));
+        return view('elus.projects.create', $this->formData());
     }
 
     public function store(ProjectRequest $request): RedirectResponse
@@ -67,11 +63,17 @@ class ProjectController extends Controller
 
     public function edit(Project $project): View
     {
-        $types = ProjectType::labels();
-        $statuses = ProjectStatus::labels();
-        $communes = $this->communes();
+        return view('elus.projects.edit', ['project' => $project] + $this->formData());
+    }
 
-        return view('elus.projects.edit', compact('project', 'types', 'statuses', 'communes'));
+    /** @return array<string, mixed> */
+    private function formData(): array
+    {
+        return [
+            'types' => ProjectType::labels(),
+            'statuses' => ProjectStatus::labels(),
+            'communes' => $this->communes(),
+        ];
     }
 
     public function update(ProjectRequest $request, Project $project): RedirectResponse

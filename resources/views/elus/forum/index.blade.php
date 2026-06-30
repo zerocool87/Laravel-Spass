@@ -20,10 +20,10 @@
             <div class="widget-container mb-6">
                 <form method="GET" action="{{ route('elus.forum.index') }}" class="flex flex-wrap gap-4">
                     <div class="flex-1 min-w-[150px] sm:min-w-[200px]">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Rechercher un sujet...') }}" class="w-full input-orange" onchange="this.form.submit()">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Rechercher un sujet...') }}" class="w-full input-orange" @change="$el.closest('form').submit()">
                     </div>
                     <div>
-                        <select name="thematique_id" class="select-orange" onchange="this.form.submit()">
+                        <select name="thematique_id" class="select-orange" @change="$el.closest('form').submit()">
                             <option value="">{{ __('Toutes les thématiques') }}</option>
                             @foreach($thematiques as $thematique)
                                 <option value="{{ $thematique->id }}" {{ request('thematique_id') == $thematique->id ? 'selected' : '' }}>
@@ -33,7 +33,7 @@
                         </select>
                     </div>
                     <div>
-                        <select name="sort" class="select-orange" onchange="this.form.submit()">
+                        <select name="sort" class="select-orange" @change="$el.closest('form').submit()">
                             <option value="latest" {{ request('sort', 'latest') == 'latest' ? 'selected' : '' }}>{{ __('Plus récents (activité)') }}</option>
                             <option value="replies" {{ request('sort') == 'replies' ? 'selected' : '' }}>{{ __('Plus de réponses') }}</option>
                         </select>

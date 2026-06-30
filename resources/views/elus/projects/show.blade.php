@@ -145,7 +145,7 @@
                             <a href="{{ route('elus.projects.edit', $project) }}" class="block w-full text-center px-4 py-2 bg-[#faa21b] text-white rounded-md hover:bg-[#e89315] transition">
                                 {{ __('Modifier le projet') }}
                             </a>
-                            <form method="POST" action="{{ route('elus.projects.destroy', $project) }}" onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer ce projet ?') }}')">
+                            <form method="POST" action="{{ route('elus.projects.destroy', $project) }}" @submit.prevent="if(confirm('{{ __('Êtes-vous sûr de vouloir supprimer ce projet ?') }}')) $el.submit()">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="w-full px-4 py-2 border border-red-300 text-red-600 rounded-md hover:bg-red-50 transition">

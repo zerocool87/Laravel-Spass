@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Actualite;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ActualiteTest extends TestCase
 {
-    use RefreshDatabase;
-
     // ── Admin tests ──────────────────────────────────────────────────
 
     public function test_admin_can_access_actualites_index(): void

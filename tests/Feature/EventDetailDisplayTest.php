@@ -3,14 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class EventDetailDisplayTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -22,12 +19,12 @@ class EventDetailDisplayTest extends TestCase
     /**
      * Helper to render the event detail view component with a given event configuration.
      *
-     * @param array $overrides Attributes for the event object.
+     * @param  array  $overrides  Attributes for the event object.
      * @return \Illuminate\Testing\TestView
      */
     private function renderDetailView(array $overrides = [])
     {
-        $event = new \stdClass();
+        $event = new \stdClass;
         $event->title = 'Test Event';
         $event->description = 'Test Description';
         $event->location = 'Test Location';
@@ -104,7 +101,7 @@ class EventDetailDisplayTest extends TestCase
         $view->assertSee('27 février–2 mars 2023', false);
         $view->assertSee('Toute la journée', false);
     }
-    
+
     public function test_multi_day_all_day_event_over_different_years_displays_correctly()
     {
         $view = $this->renderDetailView([

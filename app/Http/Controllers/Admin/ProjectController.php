@@ -43,11 +43,7 @@ class ProjectController extends Controller
      */
     public function create(): View
     {
-        $types = ProjectType::labels();
-        $statuses = ProjectStatus::labels();
-        $communes = $this->communes();
-
-        return view('admin.projects.create', compact('types', 'statuses', 'communes'));
+        return view('admin.projects.create', $this->formData());
     }
 
     /**
@@ -75,11 +71,17 @@ class ProjectController extends Controller
      */
     public function edit(Project $project): View
     {
-        $types = ProjectType::labels();
-        $statuses = ProjectStatus::labels();
-        $communes = $this->communes();
+        return view('admin.projects.edit', ['project' => $project] + $this->formData());
+    }
 
-        return view('admin.projects.edit', compact('project', 'types', 'statuses', 'communes'));
+    /** @return array<string, mixed> */
+    private function formData(): array
+    {
+        return [
+            'types' => ProjectType::labels(),
+            'statuses' => ProjectStatus::labels(),
+            'communes' => $this->communes(),
+        ];
     }
 
     /**

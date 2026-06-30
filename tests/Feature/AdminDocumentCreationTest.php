@@ -3,13 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AdminDocumentCreationTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_admin_can_access_document_management_page()
     {
         $admin = User::factory()->create(['is_admin' => true, 'is_elu' => true]);

@@ -151,7 +151,7 @@
                                             @csrf
                                             @method('PATCH')
                                             @if($user->is_elu)
-                                                <button type="submit" class="inline-flex items-center px-3 py-1 border border-red-200 rounded-full text-xs font-semibold text-red-600 hover:bg-red-50" onclick="return confirm('{{ __('Retirer le statut élu à cet utilisateur ?') }}')">
+                                                <button type="submit" class="inline-flex items-center px-3 py-1 border border-red-200 rounded-full text-xs font-semibold text-red-600 hover:bg-red-50" @click.prevent="if(confirm('{{ __('Retirer le statut élu à cet utilisateur ?') }}')) $el.closest('form').submit()">
                                                     {{ __('Retirer élu') }}
                                                 </button>
                                             @else
@@ -161,7 +161,7 @@
                                             @endif
                                         </form>
                                         @if($user->id !== auth()->id())
-                                        <form method="POST" action="{{ route('elus.admin.users.destroy', $user) }}" onsubmit="return confirm('{{ __('Supprimer définitivement cet utilisateur ?') }}')">
+                                        <form method="POST" action="{{ route('elus.admin.users.destroy', $user) }}" @submit.prevent="if(confirm('{{ __('Supprimer définitivement cet utilisateur ?') }}')) $el.submit()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="inline-flex items-center px-3 py-1 border border-red-200 rounded-full text-xs font-semibold text-red-500 hover:bg-red-50">

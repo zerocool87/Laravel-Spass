@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Document;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LibraryGroupingTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_library_shows_anchors_and_view_all_links()
     {
         $user = User::factory()->create();

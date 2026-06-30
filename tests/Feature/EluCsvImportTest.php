@@ -3,14 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class EluCsvImportTest extends TestCase
 {
-    use RefreshDatabase;
-
     private function createAdmin(): User
     {
         return User::factory()->create([

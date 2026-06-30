@@ -4,14 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\Document;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class DocumentPreviewTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_info_returns_document_metadata()
     {
         Storage::fake('local');

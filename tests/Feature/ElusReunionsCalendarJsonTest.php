@@ -5,13 +5,10 @@ namespace Tests\Feature;
 use App\Models\Instance;
 use App\Models\Reunion;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ElusReunionsCalendarJsonTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_elus_reunions_calendar_json_contains_minimal_modal_fields(): void
     {
         $elu = User::factory()->create([

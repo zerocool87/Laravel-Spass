@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Event;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class EventCalendarTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_events_json_feed_returns_events()
     {
         $user = User::factory()->create();

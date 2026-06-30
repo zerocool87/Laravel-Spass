@@ -3,14 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PublicEventsFeedTest extends TestCase
 {
-    use RefreshDatabase;
-
     #[Test]
     public function events_json_is_accessible_without_auth()
     {

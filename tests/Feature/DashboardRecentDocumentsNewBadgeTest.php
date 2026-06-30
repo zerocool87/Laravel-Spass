@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Document;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class DashboardRecentDocumentsNewBadgeTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_dashboard_shows_new_badge_for_recent_documents(): void
     {
         $user = User::factory()->create(['is_elu' => true]);

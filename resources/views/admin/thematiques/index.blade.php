@@ -73,7 +73,7 @@
                                             </svg>
                                             {{ __('Modifier') }}
                                         </a>
-                                        <form method="POST" action="{{ route('admin.thematiques.destroy', $thematique) }}" onsubmit="return confirm('{{ __('Êtes-vous sûr de vouloir supprimer cette thématique ?') }}')">
+                                        <form method="POST" action="{{ route('admin.thematiques.destroy', $thematique) }}" @submit.prevent="if(confirm('{{ __('Êtes-vous sûr de vouloir supprimer cette thématique ?') }}')) $el.submit()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="inline-flex items-center gap-1 px-3 py-1 border border-red-200 rounded-lg text-xs font-semibold text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 transition">

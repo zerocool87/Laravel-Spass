@@ -91,12 +91,12 @@
             <div class="flex items-center gap-2">
                 <button
                     type="button"
-                    onclick="window.openDocument({
-                        embed: {{ json_encode(route('documents.embed', $document)) }},
-                        info: {{ json_encode(route('documents.info', $document)) }},
-                        download: {{ json_encode(route('documents.download', $document)) }},
-                        title: {{ json_encode($document->title) }}
-                    })"
+                @click="window.openDocument({
+                    embed: {{ json_encode(route('documents.embed', $document)) }},
+                    info: {{ json_encode(route('documents.info', $document)) }},
+                    download: {{ json_encode(route('documents.download', $document)) }},
+                    title: {{ json_encode($document->title) }}
+                })"
                     class="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-lg border-2 border-gray-200 text-gray-600 bg-white hover:border-[rgb(var(--cat-rgb))]/40 hover:text-[rgb(var(--cat-rgb))] hover:bg-[rgb(var(--cat-rgb))]/5 transition-all shadow-sm"
                 >
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

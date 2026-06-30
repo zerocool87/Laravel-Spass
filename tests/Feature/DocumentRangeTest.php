@@ -4,14 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\Document;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class DocumentRangeTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_embed_returns_partial_content_for_range()
     {
         Storage::fake('local');

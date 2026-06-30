@@ -128,7 +128,7 @@
                                             </svg>
                                             Modifier
                                         </a>
-                                        <form method="POST" action="{{ route('admin.reunions.destroy', $reunion) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réunion ?')">
+                                        <form method="POST" action="{{ route('admin.reunions.destroy', $reunion) }}" @submit.prevent="if(confirm('Êtes-vous sûr de vouloir supprimer cette réunion ?')) $el.submit()">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="inline-flex items-center gap-1 px-3 py-1 border border-red-200 rounded-lg text-xs font-semibold text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 transition">

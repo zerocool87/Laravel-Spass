@@ -6,13 +6,10 @@ namespace Tests\Feature;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ProfileUpdateRequestTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_authorize_returns_true(): void
     {
         $request = new ProfileUpdateRequest;

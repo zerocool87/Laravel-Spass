@@ -8,13 +8,10 @@ use App\Models\ForumPost;
 use App\Models\ForumThread;
 use App\Models\Thematique;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ElusForumTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_non_elu_cannot_access_forum(): void
     {
         $user = User::factory()->create(['is_elu' => false, 'is_admin' => false]);

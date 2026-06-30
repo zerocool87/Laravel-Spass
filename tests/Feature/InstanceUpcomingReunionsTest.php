@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Instance;
 use App\Models\Reunion;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class InstanceUpcomingReunionsTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_upcoming_reunions_filters_by_status()
     {
         $instance = Instance::factory()->create();

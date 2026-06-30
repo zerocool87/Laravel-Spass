@@ -77,7 +77,7 @@ class User extends Authenticatable
 
     public function forumThreads(): HasMany
     {
-        return $this->hasMany(ForumThread::class, 'user_id');
+        return $this->hasMany(ForumThread::class, 'created_by');
     }
 
     public function actualites(): HasMany

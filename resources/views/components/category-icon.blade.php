@@ -3,15 +3,11 @@
 @php
     $doc = $document ?? (isset($category) ? (new \App\Models\Document(['category' => $category])) : null);
 
-    if (!$doc) {
+    if (! $doc) {
         $doc = new \App\Models\Document();
     }
 
     $colorClass = $doc->getCategoryColor();
-    $icon = $doc->getCategoryIcon();
-    // Remove any <script> tags and inline event handlers for safety
-    $safeIcon = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $icon);
-    $safeIcon = preg_replace('/\s+on[a-z]+\s*=\s*(".*?"|\'.*?\'|[^\s>]+)/i', '', $safeIcon);
 
     // Extract color from Tailwind class (e.g., "bg-amber-600" -> "amber-600")
     $colorName = str_replace('bg-', '', $colorClass);
@@ -28,8 +24,9 @@
     ];
 
     $rgb = $colorMap[$colorName] ?? '250, 162, 27';
+    $component = $doc->getCategoryIconComponent();
 @endphp
 
 <div class="inline-flex items-center justify-center {{ $size }} rounded-sm" style="background-color: rgba({{ $rgb }}, 0.1); color: rgb({{ $rgb }})">
-    {!! $safeIcon !!}
+    <x-dynamic-component :component="$component" class="w-4/5 h-4/5" />
 </div>

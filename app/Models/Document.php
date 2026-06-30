@@ -65,23 +65,11 @@ class Document extends Model
 
     public function isAccessibleBy(?User $user): bool
     {
-        if ($this->visible_to_all) {
-            return true;
-        }
         if (! $user) {
             return false;
         }
-        if ($this->created_by === $user->id) {
-            return true;
-        }
-        if ($user->isAdmin()) {
-            return true;
-        }
-        if ($user->titres && $this->titres && array_intersect($user->titres, $this->titres)) {
-            return true;
-        }
 
-        return $this->users()->where('user_id', $user->id)->exists();
+        return self::query()->accessibleTo($user)->whereKey($this->id)->exists();
     }
 
     public function isPreviewable(): bool
@@ -123,11 +111,18 @@ class Document extends Model
         return $colors[$this->category] ?? 'bg-[#faa21b]';
     }
 
-    public function getCategoryIcon(): string
+    public function getCategoryIconComponent(): string
     {
-        $icons = config('documents.category_icons', []);
+        $componentMap = [
+            'Convocations' => 'icon.document-convocations',
+            'Ordres du jour' => 'icon.document-ordres-du-jour',
+            'Comptes rendus' => 'icon.document-comptes-rendus',
+            'Rapports' => 'icon.document-rapports',
+            'Délibérations' => 'icon.document-deliberations',
+            'Guides' => 'icon.document-guides',
+        ];
 
-        return $icons[$this->category] ?? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>';
+        return $componentMap[$this->category] ?? 'icon.document-default';
     }
 
     /** @return array<string, string> */
@@ -137,7 +132,7 @@ class Document extends Model
             'id' => $this->id,
             'title' => $this->title,
             'original_name' => $this->original_name,
-            'mime_type' => $this->resolveMimeType(),
+            'mime_type' => $this->getMimeType(),
             'category' => $this->category,
         ];
     }

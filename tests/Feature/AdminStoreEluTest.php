@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Models\EluProfile;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AdminStoreEluTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_creates_user_and_elu_profile_in_transaction(): void
     {
         $admin = User::factory()->admin()->create();

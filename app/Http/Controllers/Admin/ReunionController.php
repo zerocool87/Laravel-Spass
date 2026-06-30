@@ -39,11 +39,9 @@ class ReunionController extends Controller
     public function create(Request $request): View
     {
         return view('admin.reunions.create', [
-            'instances' => Instance::orderBy('name')->get(),
-            'statuses' => ReunionStatus::labels(),
             'selectedInstance' => $request->instance_id,
             'titres' => User::titresElus(),
-        ]);
+        ] + $this->formData());
     }
 
     public function store(ReunionRequest $request): RedirectResponse
@@ -74,10 +72,17 @@ class ReunionController extends Controller
     {
         return view('admin.reunions.edit', [
             'reunion' => $reunion,
+            'titres' => User::titresElus(),
+        ] + $this->formData());
+    }
+
+    /** @return array<string, mixed> */
+    private function formData(): array
+    {
+        return [
             'instances' => Instance::orderBy('name')->get(),
             'statuses' => ReunionStatus::labels(),
-            'titres' => User::titresElus(),
-        ]);
+        ];
     }
 
     public function update(ReunionRequest $request, Reunion $reunion): RedirectResponse

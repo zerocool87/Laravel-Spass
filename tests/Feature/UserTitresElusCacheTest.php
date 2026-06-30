@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class UserTitresElusCacheTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_returns_unique_sorted_titres(): void
     {
         User::factory()->elu()->create(['titres' => ['Président']]);

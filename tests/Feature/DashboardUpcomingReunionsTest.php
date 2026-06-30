@@ -5,13 +5,10 @@ namespace Tests\Feature;
 use App\Models\Instance;
 use App\Models\Reunion;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class DashboardUpcomingReunionsTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_dashboard_shows_upcoming_reunions()
     {
         $user = User::factory()->create(['is_elu' => true]);

@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Document;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LibraryPublicPrivateBadgeTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_library_shows_public_badge_for_visible_to_all_documents()
     {
         $user = User::factory()->create();

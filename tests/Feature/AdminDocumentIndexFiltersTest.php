@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Document;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AdminDocumentIndexFiltersTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_admin_can_filter_documents_by_search_and_visibility(): void
     {
         $admin = User::factory()->create(['is_admin' => true, 'is_elu' => true]);

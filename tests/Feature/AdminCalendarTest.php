@@ -3,19 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AdminCalendarTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_admin_does_not_see_create_button_on_calendar()
     {
-        $admin = User::factory()->create();
-        // Give admin permission - assume isAdmin is based on 'is_admin' boolean
-        $admin->is_admin = true;
-        $admin->save();
+        $admin = $this->admin();
 
         $this->actingAs($admin)
             ->get(route('events.calendar'))

@@ -5,13 +5,10 @@ namespace Tests\Feature;
 use App\Models\Instance;
 use App\Models\Reunion;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AdminReunionFormsTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_admin_can_access_reunion_create_form_with_expected_fields(): void
     {
         $admin = User::factory()->create(['is_admin' => true, 'is_elu' => true]);
