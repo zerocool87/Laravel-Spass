@@ -18,13 +18,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="widget-container mb-6">
-                <x-widget-header
-                    title="🔍 {{ __('Filtres') }}"
-                    :link="route('elus.forum.index')"
-                    linkText="{{ __('Réinitialiser') }}"
-                    linkIcon="🔄"
-                />
-                <form method="GET" action="{{ route('elus.forum.index') }}" class="flex flex-wrap gap-4 mt-4">
+                <form method="GET" action="{{ route('elus.forum.index') }}" class="flex flex-wrap gap-4">
                     <div class="flex-1 min-w-[150px] sm:min-w-[200px]">
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Rechercher un sujet...') }}" class="w-full input-orange" onchange="this.form.submit()">
                     </div>
@@ -40,8 +34,7 @@
                     </div>
                     <div>
                         <select name="sort" class="select-orange" onchange="this.form.submit()">
-                            <option value="created" {{ request('sort', 'created') == 'created' ? 'selected' : '' }}>{{ __('Plus récents (création)') }}</option>
-                            <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>{{ __('Plus récents (activité)') }}</option>
+                            <option value="latest" {{ request('sort', 'latest') == 'latest' ? 'selected' : '' }}>{{ __('Plus récents (activité)') }}</option>
                             <option value="replies" {{ request('sort') == 'replies' ? 'selected' : '' }}>{{ __('Plus de réponses') }}</option>
                         </select>
                     </div>
@@ -132,7 +125,7 @@
 
             {{-- Pagination --}}
             <div class="mt-6">
-                {{ $threads->links() }}
+                {{ $threads->links('vendor.pagination.forum') }}
             </div>
         </div>
     </div>

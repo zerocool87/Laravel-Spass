@@ -47,7 +47,7 @@ class ForumController extends Controller
             $query->where('title', 'like', '%'.$request->string('search').'%');
         }
 
-        $sort = $request->input('sort', 'created');
+        $sort = $request->input('sort', 'latest');
         match ($sort) {
             'replies' => $query
                 ->orderByDesc('is_pinned')
@@ -56,9 +56,6 @@ class ForumController extends Controller
                         ->whereColumn('forum_thread_id', 'forum_threads.id')
                         ->groupBy('forum_thread_id')
                 ),
-            'created' => $query
-                ->orderByDesc('is_pinned')
-                ->orderByDesc('created_at'),
             default => $query->orderByDesc(
                 ForumPost::select('created_at')
                     ->whereColumn('forum_thread_id', 'forum_threads.id')
@@ -67,7 +64,7 @@ class ForumController extends Controller
             ),
         };
 
-        $threads = $query->paginate(30)->withQueryString();
+        $threads = $query->paginate(7)->withQueryString();
 
         $unreadCount = ForumThread::query()
             ->whereDoesntHave('readBy', fn ($q) => $q->where('user_id', $user->id))

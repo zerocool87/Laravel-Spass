@@ -141,13 +141,13 @@ class ElusForumTest extends TestCase
         ]);
     }
 
-    public function test_index_paginates_at_30(): void
+    public function test_index_paginates_at_7(): void
     {
         $user = User::factory()->create(['is_elu' => true]);
         $thematique = Thematique::factory()->create();
 
         ForumThread::factory()
-            ->count(31)
+            ->count(8)
             ->create(['thematique_id' => $thematique->id]);
 
         $response = $this->actingAs($user)
