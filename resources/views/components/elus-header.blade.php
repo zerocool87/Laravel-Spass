@@ -23,11 +23,11 @@
     ];
     $isActive = fn (string $key): bool => $activeSection === $key;
     $linkClasses = fn (string $key, string $context = 'desktop'): string => $context === 'desktop'
-        ? 'px-3 py-2 text-sm '.($isActive($key) ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium').' rounded-lg transition'
-        : 'block px-4 py-2.5 text-sm '.($isActive($key) ? 'bg-white text-[#faa21b] font-bold' : 'text-white hover:bg-white/20 font-medium').' rounded-lg transition';
+        ? 'px-3 py-2 text-sm '.($isActive($key) ? 'bg-white text-[#faa21b] font-semibold shadow-sm' : 'text-white/90 hover:text-white hover:bg-white/15 font-medium').' rounded-lg transition'
+        : 'block px-4 py-2.5 text-sm '.($isActive($key) ? 'bg-white text-[#faa21b] font-semibold shadow-sm' : 'text-white/90 hover:text-white hover:bg-white/15 font-medium').' rounded-lg transition';
 @endphp
 
-<div class="bg-[#faa21b] mx-auto px-4 py-4 sm:px-6 sm:py-5 lg:px-8 shadow-lg max-w-7xl" x-data="{ mobileOpen: false }">
+<div class="bg-[#faa21b] mx-auto px-4 py-4 sm:px-6 sm:py-5 lg:px-8 shadow max-w-7xl rounded-b-2xl" x-data="{ mobileOpen: false }">
     <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3 sm:space-x-4">
             @if($backRoute)

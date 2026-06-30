@@ -30,6 +30,7 @@ class User extends Authenticatable
         'password',
         'titres',
         'commune',
+        'onboarding_completed',
     ];
 
     protected $hidden = [

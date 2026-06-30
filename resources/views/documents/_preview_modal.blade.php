@@ -26,17 +26,22 @@
                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                 x-transition:leave-end="opacity-0 translate-y-8 scale-95"
             >
-                {{-- Category color bar — 4px accent stripe comme .glass::before --}}
+                {{-- Category banner — colored background with category name --}}
                 <template x-if="category">
-                    <div class="w-full h-1 shrink-0" :class="{
+                    <div class="w-full px-4 py-2 shrink-0 flex items-center gap-2" :class="{
                         'bg-amber-600': category === 'Convocations',
                         'bg-amber-500': category === 'Ordres du jour',
                         'bg-emerald-600': category === 'Comptes rendus',
-                        'bg-[#faa21b]': category === 'Rapports',
+                        'bg-cyan-600': category === 'Rapports',
                         'bg-rose-600': category === 'Délibérations',
                         'bg-sky-600': category === 'Guides',
                         'bg-gray-400': !['Convocations','Ordres du jour','Comptes rendus','Rapports','Délibérations','Guides'].includes(category)
-                    }"></div>
+                    }">
+                        <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                        <span class="text-white text-xs font-bold uppercase tracking-wider" x-text="category"></span>
+                    </div>
                 </template>
 
                 {{-- Header toolbar — pattern widget-header --}}
@@ -53,14 +58,6 @@
                             x-show="showNotPreviewable"
                         >
                             {{ __('Download') }}
-                        </x-primary-button>
-                        <x-primary-button
-                            x-bind:href="embed"
-                            target="_blank"
-                            rel="noopener"
-                            x-show="!showNotPreviewable"
-                        >
-                            {{ __('Open in new tab') }}
                         </x-primary-button>
                     </div>
                 </div>
@@ -139,9 +136,6 @@
 
                                 <x-primary-button x-bind:href="downloadUrl" target="_blank" rel="noopener">
                                     {{ __('Download') }}
-                                </x-primary-button>
-                                <x-primary-button x-bind:href="embed" target="_blank" rel="noopener">
-                                    {{ __('Open in new tab') }}
                                 </x-primary-button>
 
                                 <span class="text-sm text-[#b36b00] font-medium ml-auto whitespace-nowrap">
