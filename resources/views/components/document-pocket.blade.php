@@ -57,19 +57,13 @@
                     {{ $document->title }}
                 </h4>
 
-                <div class="flex items-center gap-2.5 flex-wrap">
-                    <span
-                        class="text-xs font-semibold px-2.5 py-0.5 rounded-full border"
-                        style="background-color: rgba({{ $rgb }}, 0.1); color: rgb({{ $rgb }}); border-color: rgba({{ $rgb }}, 0.2)"
-                    >
-                        {{ $document->category }}
-                    </span>
-                    <span class="text-xs text-gray-400">
+                <div class="flex items-center gap-2 flex-nowrap overflow-hidden">
+                    <span class="text-xs text-gray-400 whitespace-nowrap shrink-0">
                         📅 {{ $document->created_at->format('d/m/Y') }}
                     </span>
                     @if($document->creator)
-                        <span class="text-xs text-gray-400">·</span>
-                        <span class="text-xs text-gray-400">👤 {{ $document->creator->name }}</span>
+                        <span class="text-xs text-gray-400 shrink-0">·</span>
+                        <span class="text-xs text-gray-400 truncate min-w-0 whitespace-nowrap">👤 {{ $document->creator->name }}</span>
                     @endif
                 </div>
             </div>

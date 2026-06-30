@@ -12,7 +12,7 @@ class LibraryController extends Controller
 {
     public function index(Request $request): View
     {
-        $documents = Document::accessibleTo($request->user())->latest()->paginate(20);
+        $documents = Document::accessibleTo($request->user())->with('creator')->latest()->paginate(20);
 
         $documentsByCategory = $documents->getCollection()->groupBy(
             fn (Document $d) => $d->category ?: __('Non catégorisé')
