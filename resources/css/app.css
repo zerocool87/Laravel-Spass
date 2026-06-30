@@ -975,5 +975,15 @@ input[type="text"], textarea, select, .input-text {
   }
 }
 
+/* Classeur : effet pochette transparente */
+.pocket-card::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 10px;
+    pointer-events: none;
+}
+
 /* End - clean Laravel light theme CSS */
 

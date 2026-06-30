@@ -1,3 +1,15 @@
+@php
+    $categoryColors = config('documents.category_colors', []);
+    $categoryIcons = [
+        'Convocations' => '📧',
+        'Ordres du jour' => '📋',
+        'Comptes rendus' => '📝',
+        'Rapports' => '📊',
+        'Délibérations' => '⚖️',
+        'Guides' => '📖',
+    ];
+@endphp
+
 <x-app-layout>
     <x-slot name="header">
         <x-public-header
@@ -12,111 +24,72 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="glass p-3 sm:p-4">
-                <div class="mb-6 flex flex-wrap gap-2">
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            document.querySelectorAll('.category-filter-btn').forEach(function(btn) {
-                                btn.addEventListener('click', function() {
-                                    var slug = this.getAttribute('data-slug');
-                                    document.querySelectorAll('[id^="category-"]').forEach(function(el) {
-                                        el.style.display = (el.id === 'category-' + slug) ? '' : 'none';
-                                    });
-                                    document.querySelectorAll('.category-filter-btn').forEach(function(b) {
-                                        b.classList.add('opacity-50');
-                                    });
-                                    this.classList.remove('opacity-50');
-                                });
-                            });
-                            var allBtn = document.getElementById('show-all-categories');
-                            if (allBtn) {
-                                allBtn.addEventListener('click', function() {
-                                    document.querySelectorAll('[id^="category-"]').forEach(function(el) {
-                                        el.style.display = '';
-                                    });
-                                    document.querySelectorAll('.category-filter-btn').forEach(function(b) {
-                                        b.classList.remove('opacity-50');
-                                    });
-                                });
-                            }
-                        });
-                    </script>
-
-                    <button id="show-all-categories" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-[#faa21b]/30 bg-white text-[#b36b00] font-semibold shadow-sm transition hover:bg-[#faa21b]/10">
-                        <span>🔁</span>
-                        <span class="text-sm">{{ __('Tous') }}</span>
-                    </button>
-
-                        @foreach($allCategories as $cat)
-                        <button type="button" data-slug="{{ Str::slug($cat) }}" class="category-filter-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-[#faa21b]/30 bg-white text-[#b36b00] font-semibold shadow-sm transition hover:bg-[#faa21b]/10">
-                            <x-category-badge :category="$cat === 'Uncategorized' ? null : $cat" />
-                            <span class="sr-only">{{ $cat }}</span>
-                            <span class="text-xs opacity-75">({{ $documentsByCategory[$cat]->count() }})</span>
-                        </button>
-                    @endforeach
-                </div>
-
+            <div class="bg-white rounded-xl shadow border-2 border-[#faa21b]/20 p-4 sm:p-6">
                 @if($documentsByCategory->isEmpty())
-                    <div class="text-center py-8 text-gray-400">
-                        <p>{{ __('Aucun document disponible.') }}</p>
+                    <div class="text-center py-12">
+                        <div class="text-gray-300 mb-4">
+                            <svg class="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-gray-600 font-medium">{{ __('Aucun document disponible.') }}</p>
                     </div>
                 @else
-                    <div class="space-y-4 sm:space-y-8">
-                        @foreach($documentsByCategory as $cat => $docs)
-                            <div id="category-{{ Str::slug($cat) }}">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="w-full flex flex-col">
-                                        <div class="w-full min-h-[2rem] py-1 mb-1 flex items-center justify-center rounded-md bg-[#faa21b]">
-                                            <div class="text-xs sm:text-sm font-semibold text-white uppercase px-2 text-center">{{ $cat }} <span class="text-xs text-white/80">({{ $docs->count() }})</span></div>
+                    <div x-data="{ activeTab: 'all' }">
+                        {{-- Barre d'onglets --}}
+                        <div class="mb-6 flex flex-wrap gap-1.5">
+                            <button
+                                @click="activeTab = 'all'"
+                                :class="activeTab === 'all' ? 'bg-[#faa21b] text-white border-[#faa21b] shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-[#faa21b]/30 hover:text-[#faa21b]'"
+                                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border-2 font-bold text-sm transition-all"
+                            >
+                                <span>📁</span>
+                                <span>{{ __('Toutes') }}</span>
+                            </button>
+
+                            @foreach($allCategories as $cat)
+                                @php $icon = $categoryIcons[$cat] ?? '📄'; @endphp
+                                <button
+                                    @click="activeTab = '{{ $cat }}'"
+                                    :class="activeTab === '{{ $cat }}' ? 'bg-[#faa21b] text-white border-[#faa21b] shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-[#faa21b]/30 hover:text-[#faa21b]'"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border-2 font-bold text-sm transition-all"
+                                >
+                                    <span>{{ $icon }}</span>
+                                    <span>{{ $cat }}</span>
+                                    <span class="text-xs opacity-60">({{ $documentsByCategory[$cat]->count() }})</span>
+                                </button>
+                            @endforeach
+                        </div>
+
+                        {{-- Panneaux --}}
+                        <div class="space-y-6">
+                            @foreach($documentsByCategory as $category => $docs)
+                                @php $icon = $categoryIcons[$category] ?? '📄'; @endphp
+
+                                <div
+                                    id="category-{{ Str::slug($category) }}"
+                                    x-show="activeTab === 'all' || activeTab === '{{ $category }}'"
+                                    x-transition:enter="ease-out duration-200"
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100"
+                                    x-cloak
+                                >
+                                    @if($documentsByCategory->count() > 1)
+                                        <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+                                            <span class="text-base">{{ $icon }}</span>
+                                            <h4 class="font-semibold text-gray-800 text-sm">{{ $category }}</h4>
+                                            <span class="text-xs font-medium text-gray-400">({{ $docs->count() }})</span>
                                         </div>
+                                    @endif
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                                        @foreach($docs as $doc)
+                                            <x-document-pocket :document="$doc" />
+                                        @endforeach
                                     </div>
                                 </div>
-
-                                <div class="space-y-2">
-                                    @foreach($docs as $doc)
-                                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-white border-2 border-[#faa21b]/15 shadow-sm hover:bg-[#faa21b]/5 transition">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center gap-2 flex-wrap">
-                                                    <div class="font-semibold text-gray-900 truncate">{{ $doc->title }}</div>
-                                                    @if($doc->visible_to_all)
-                                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            {{ __('Public') }}
-                                                        </span>
-                                                    @else
-                                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200">
-                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            {{ __('Privé') }}
-                                                        </span>
-                                                    @endif
-                                                </div>
-
-                                                @if($doc->description)
-                                                    <div class="text-sm text-gray-500 mt-1">{{ $doc->description }}</div>
-                                                @endif
-
-                                            </div>
-
-                                            <div class="flex items-center gap-2 sm:ml-4 flex-shrink-0">
-                                                <x-secondary-button
-                                                    type="button"
-                                                    onclick="window.openDocument({embed: {{ json_encode(route('documents.embed', $doc)) }}, info: {{ json_encode(route('documents.info', $doc)) }}, download: {{ json_encode(route('documents.download', $doc)) }}, title: {{ json_encode($doc->title) }}})">
-                                                    {{ __('Voir') }}
-                                                </x-secondary-button>
-                                                <x-primary-button href="{{ route('documents.download', $doc) }}" target="_blank" rel="noopener">
-                                                    {{ __('Télécharger') }}
-                                                </x-primary-button>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 @endif
 

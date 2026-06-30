@@ -1,44 +1,104 @@
-<div x-data="documentPreview()" x-cloak @open-document.window="open($event.detail)">
+<div
+    x-data="documentPreview()"
+    x-cloak
+    @open-document.window="open($event.detail)"
+>
     <template x-if="showModal">
-        <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div class="absolute inset-0 bg-black/60" @click="close()"></div>
-            <div class="relative bg-white dark:bg-neutral-900 w-full max-w-5xl h-[90vh] rounded-2xl shadow-2xl border border-gray-200/60 overflow-hidden flex flex-col">
-                <template x-if="title && info">
-    <div class="w-full flex items-center">
-        <template x-if="info && info.category">
-            <div class="w-full h-2" :class="{
-                'bg-amber-600': info.category === 'Convocations',
-                'bg-amber-500': info.category === 'Ordres du jour',
-                'bg-emerald-600': info.category === 'Comptes rendus',
-                'bg-[#faa21b]': info.category === 'Rapports',
-                'bg-rose-600': info.category === 'Délibérations',
-                'bg-sky-600': info.category === 'Guides',
-                'bg-gray-400': !info.category
-            }"></div>
-        </template>
-    </div>
-</template>
-<div class="p-2 flex justify-between items-center bg-gray-800">
-                    <h3 x-text="title" class="text-white"></h3>
-                    <div class="flex items-center gap-2">
-                        <x-secondary-button @click="close()">{{ __('Close') }}</x-secondary-button>
-                        <x-primary-button x-bind:href="downloadUrl" target="_blank" rel="noopener" x-show="showNotPreviewable">{{ __('Download') }}</x-primary-button>
-                        <x-primary-button x-bind:href="embed" target="_blank" rel="noopener" x-show="!showNotPreviewable">{{ __('Open in new tab') }}</x-primary-button>
+        <div
+            class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+        >
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="close()"></div>
+
+            <div
+                class="relative bg-white w-full max-w-5xl h-[90vh] rounded-xl shadow-lg border-2 border-[#faa21b]/20 overflow-hidden flex flex-col"
+                x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-8 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 translate-y-8 scale-95"
+            >
+                {{-- Category color bar — 4px accent stripe comme .glass::before --}}
+                <template x-if="category">
+                    <div class="w-full h-1 shrink-0" :class="{
+                        'bg-amber-600': category === 'Convocations',
+                        'bg-amber-500': category === 'Ordres du jour',
+                        'bg-emerald-600': category === 'Comptes rendus',
+                        'bg-[#faa21b]': category === 'Rapports',
+                        'bg-rose-600': category === 'Délibérations',
+                        'bg-sky-600': category === 'Guides',
+                        'bg-gray-400': !['Convocations','Ordres du jour','Comptes rendus','Rapports','Délibérations','Guides'].includes(category)
+                    }"></div>
+                </template>
+
+                {{-- Header toolbar — pattern widget-header --}}
+                <div class="px-3 py-2 flex justify-between items-center bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20">
+                    <h3 x-text="title" class="text-[#faa21b] font-bold truncate mr-2"></h3>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <x-secondary-button @click="close()">
+                            {{ __('Close') }}
+                        </x-secondary-button>
+                        <x-primary-button
+                            x-bind:href="downloadUrl"
+                            target="_blank"
+                            rel="noopener"
+                            x-show="showNotPreviewable"
+                        >
+                            {{ __('Download') }}
+                        </x-primary-button>
+                        <x-primary-button
+                            x-bind:href="embed"
+                            target="_blank"
+                            rel="noopener"
+                            x-show="!showNotPreviewable"
+                        >
+                            {{ __('Open in new tab') }}
+                        </x-primary-button>
                     </div>
                 </div>
 
+                {{-- Content area --}}
                 <div class="relative flex-1 min-h-0 min-w-0 overflow-auto">
-                    <div x-show="loading" class="absolute inset-0 flex items-center justify-center z-10 bg-black/40">
-                        <div class="border-4 border-t-cyan-400 rounded-full w-12 h-12 animate-spin"></div>
+                    {{-- Loading spinner --}}
+                    <div
+                        x-show="loading"
+                        class="absolute inset-0 flex items-center justify-center z-10 bg-black/40"
+                    >
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="border-4 border-t-[#faa21b] rounded-full w-12 h-12 animate-spin"></div>
+                            <span x-show="_progress > 0" class="text-white text-sm" x-text="'{{ __('Loading') }}: ' + _progress + '%'"></span>
+                        </div>
                     </div>
 
-                    <div x-show="showNotPreviewable" class="p-6 text-center text-[#faa21b]/70">
-                        <p class="mb-2">{{ __('Preview not available for this file type.') }}</p>
-                        <p class="text-sm text-[#faa21b]/60">{{ __('You can download the file to view it on your device.') }}</p>
+                    {{-- Error message --}}
+                    <div
+                        x-show="errorMessage"
+                        class="absolute inset-0 flex items-center justify-center z-10 bg-black/40"
+                    >
+                        <div class="bg-red-50 border border-red-200 rounded-xl p-6 max-w-md text-center">
+                            <p class="text-red-700 font-medium" x-text="errorMessage"></p>
+                            <x-secondary-button @click="close()" class="mt-4">
+                                {{ __('Close') }}
+                            </x-secondary-button>
+                        </div>
+                    </div>
 
-                        <div class="mt-4 text-left">
-                            <div class="text-sm font-semibold text-[#faa21b]/80">{{ __('Previewable file types:') }}</div>
-                            <ul class="list-disc list-inside text-sm text-[#faa21b]/60 mt-2">
+                    {{-- Not previewable --}}
+                    <div x-show="showNotPreviewable && !errorMessage" class="p-6 text-center text-gray-600">
+                        <p class="mb-2">{{ __('Preview not available for this file type.') }}</p>
+                        <p class="text-sm text-gray-500">{{ __('You can download the file to view it on your device.') }}</p>
+
+                        <div class="mt-4 text-left inline-block">
+                            <p class="text-sm font-semibold text-[#b36b00]">{{ __('Previewable file types:') }}</p>
+                            <ul class="list-disc list-inside text-sm text-gray-500 mt-2">
                                 <template x-for="t in previewTypes" :key="t">
                                     <li x-text="t"></li>
                                 </template>
@@ -46,295 +106,105 @@
                         </div>
                     </div>
 
-                    <div class="w-full h-full min-w-0">
-                        <template x-if="isPdf() && !forceIframe">
-                            <div class="h-full w-full min-w-0 flex flex-col">
-                                <div class="p-2 bg-gray-800 flex items-center gap-2">
-                                    <x-secondary-button @click.prevent="prevPage()" x-bind:disabled="currentPage<=1">{{ __('Prev') }}</x-secondary-button>
-                                    <div class="px-2 text-[#faa21b]/70">{{ __('Page') }} <span x-text="currentPage"></span> / <span x-text="totalPages"></span></div>
-                                    <x-secondary-button @click.prevent="nextPage()" x-bind:disabled="currentPage>=totalPages">{{ __('Next') }}</x-secondary-button>
+                    {{-- PDF via canvas --}}
+                    <template x-if="isPdf() && !forceIframe">
+                        <div class="h-full w-full min-w-0 flex flex-col">
+                            <div class="px-3 py-2 bg-[#faa21b]/15 border-b-2 border-[#faa21b]/20 flex items-center gap-2 flex-wrap">
+                                <x-secondary-button @click.prevent="prevPage()" x-bind:disabled="currentPage <= 1">
+                                    {{ __('Prev') }}
+                                </x-secondary-button>
+                                <span class="px-2 text-[#b36b00] text-sm font-medium">
+                                    {{ __('Page') }} <span x-text="currentPage"></span> / <span x-text="totalPages"></span>
+                                </span>
+                                <x-secondary-button @click.prevent="nextPage()" x-bind:disabled="currentPage >= totalPages">
+                                    {{ __('Next') }}
+                                </x-secondary-button>
 
-                                    <div class="border-l border-gray-700 h-6 mx-2"></div>
+                                <span class="border-l border-[#faa21b]/30 h-6 mx-1"></span>
 
-                                    <x-secondary-button @click.prevent="setPdfZoom('page-width')">{{ __('Fit width') }}</x-secondary-button>
-                                    <x-secondary-button @click.prevent="setPdfZoom('page-fit')">{{ __('Fit page') }}</x-secondary-button>
-                                    <x-secondary-button @click.prevent="setPdfZoom('100')">{{ __('100%') }}</x-secondary-button>
-                                    <x-secondary-button @click.prevent="rotatePdf()">Rotate</x-secondary-button>
-                                    <x-primary-button x-bind:href="downloadUrl" target="_blank" rel="noopener">{{ __('Download') }}</x-primary-button>
-                                    <x-primary-button x-bind:href="embed" target="_blank" rel="noopener">Open in new tab</x-primary-button>
-                                    <div class="ml-4 text-sm text-[#faa21b]/70">{{ __('Zoom') }}: <span x-text="pdfZoom"></span></div>
-                                    <div class="ml-4 text-sm text-[#faa21b]/70" x-show="_progress">Loading: <span x-text="_progress+'%'"></span></div>
-                                </div>
-                                <div class="flex-1 min-h-0 min-w-0 modal-pdf-canvas-container overflow-auto flex items-center justify-center">
-                                    <canvas id="pdf-canvas" class="w-auto inline-block mx-auto block" style="display:block;" aria-label="PDF canvas"></canvas>
-                                </div>
+                                <x-secondary-button @click.prevent="setPdfZoom('page-width')">
+                                    {{ __('Fit width') }}
+                                </x-secondary-button>
+                                <x-secondary-button @click.prevent="setPdfZoom('page-fit')">
+                                    {{ __('Fit page') }}
+                                </x-secondary-button>
+                                <x-secondary-button @click.prevent="setPdfZoom('100')">
+                                    {{ __('100%') }}
+                                </x-secondary-button>
+                                <x-secondary-button @click.prevent="rotatePdf()">
+                                    {{ __('Rotate') }}
+                                </x-secondary-button>
+
+                                <span class="border-l border-[#faa21b]/30 h-6 mx-1"></span>
+
+                                <x-primary-button x-bind:href="downloadUrl" target="_blank" rel="noopener">
+                                    {{ __('Download') }}
+                                </x-primary-button>
+                                <x-primary-button x-bind:href="embed" target="_blank" rel="noopener">
+                                    {{ __('Open in new tab') }}
+                                </x-primary-button>
+
+                                <span class="text-sm text-[#b36b00] font-medium ml-auto whitespace-nowrap">
+                                    {{ __('Zoom') }}: <span x-text="pdfZoom"></span>
+                                </span>
                             </div>
-                        </template>
-
-                        <template x-if="isPdf() && forceIframe">
-                            <div class="h-full w-full min-w-0">
-                                    <iframe x-show="!showNotPreviewable" x-bind:src="embed" class="w-full h-full block min-w-0" style="border:0;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals" allowfullscreen @load="loading=false" ref="pdfIframe"></iframe>
+                            <div
+                                x-ref="pdfContainer"
+                                class="flex-1 min-h-0 min-w-0 overflow-auto flex items-center justify-center bg-[#fffbe9]"
+                            >
+                                <canvas x-ref="pdfCanvas" class="block" aria-label="PDF canvas"></canvas>
                             </div>
-                        </template>
+                        </div>
+                    </template>
 
-                        <template x-if="!isPdf()">
-                            <iframe x-show="!showNotPreviewable" x-bind:src="embed" class="w-full h-full block min-w-0" style="border:0;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals" allowfullscreen @load="loading=false"></iframe>
-                        </template>
-                    </div>
+                    {{-- PDF iframe fallback --}}
+                    <template x-if="isPdf() && forceIframe">
+                        <div class="h-full w-full min-w-0">
+                            <iframe
+                                x-bind:src="embed"
+                                class="w-full h-full block min-w-0"
+                                style="border:0;"
+                                sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
+                                allowfullscreen
+                                @load="loading = false"
+                            ></iframe>
+                        </div>
+                    </template>
+
+                    {{-- Non-PDF (images, text) --}}
+                    <template x-if="!isPdf()">
+                        <iframe
+                            x-show="!showNotPreviewable && !errorMessage"
+                            x-bind:src="embed"
+                            class="w-full h-full block min-w-0"
+                            style="border:0;"
+                            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
+                            allowfullscreen
+                            @load="loading = false"
+                        ></iframe>
+                    </template>
                 </div>
             </div>
         </div>
     </template>
 
     @once
-    <!-- PDF.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script>
-        // Configure worker: prefer same-origin worker if present to avoid cross-origin worker fetches
-        if (window.pdfjsLib) {
-            try {
-                (function(){
-                    var localWorker = null;
-                    // Server-side: if a local worker file was published to public/js/pdf.worker.min.js
-                    // Blade will replace the following placeholder with the proper URL when available.
-                    localWorker = '{{ file_exists(public_path('js/pdf.worker.min.js')) ? asset('js/pdf.worker.min.js') : '' }}';
-                    if (localWorker) {
-                        window.pdfjsLib.GlobalWorkerOptions.workerSrc = localWorker;
-                    } else {
-                        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-                    }
-                })();
-            } catch (e) {
-                console.warn('pdfjs worker setup failed, worker may be unavailable', e);
-            }
-        }
-
-        // Helper to dispatch a global open-document event safely from non-Alpine onclick handlers
-        window.openDocument = function(detail){
-            try{
-                window.dispatchEvent(new CustomEvent('open-document',{detail:detail}));
-            } catch(e){
-                console.error('openDocument dispatch error', e);
-            }
-        }
-
-
-        function documentPreview(){
-            return {
-                showModal:false,
-                loading:false,
-                showNotPreviewable:false,
-                embed:null,
-                embedWithZoom:null,
-                info:null,
-                downloadUrl:null,
-                title:'',
-                mime:null,
-                previewTypes:[],
-                // PDF controls
-                pdfZoom:'page-width',
-                rotate:0,
-                pdfDoc:null,
-                currentPage:1,
-                totalPages:0,
-                scale:1,
-                forceIframe:false,
-                _progress:0,
-
-                isPdf(){ return this.mime === 'application/pdf'; },
-
-                setPdfZoom(z){
-                    this.pdfZoom = z;
-                    // trigger re-render of current page
-                    this.renderPage(this.currentPage);
-                },
-
-                rotatePdf(){
-                    this.rotate = (this.rotate + 90) % 360;
-                    this.renderPage(this.currentPage);
-                },
-
-                async loadPdf(url){
-                    try{
-                        this.loading = true;
-                        // clear any previous error for internal only; do not expose to UI
-                        // error details are logged to console for diagnostics
-
-                        if (!window.pdfjsLib) throw new Error('pdfjs not loaded');
-                        // withCredentials to allow cookies for same-origin sessions
-                        const loadingTask = window.pdfjsLib.getDocument({ url: url, withCredentials: true });
-
-                        // attach progress handler if available
-                        if (loadingTask.onProgress) {
-                            loadingTask.onProgress = (p) => { this._progress = Math.round((p.loaded / p.total) * 100); };
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+        <script>
+            if (window.pdfjsLib) {
+                try {
+                    (function () {
+                        var localWorker = '{{ file_exists(public_path('js/pdf.worker.min.js')) ? asset('js/pdf.worker.min.js') : '' }}';
+                        if (localWorker) {
+                            window.pdfjsLib.GlobalWorkerOptions.workerSrc = localWorker;
+                        } else {
+                            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
                         }
-
-                        this.pdfDoc = await loadingTask.promise;
-                        this.totalPages = this.pdfDoc.numPages;
-                        this.currentPage = 1;
-                        await this.renderPage(this.currentPage);
-                    } catch(e){
-                        // Log for diagnostics; do not show internal errors in the UI
-                        console.warn('PDF load failed, falling back to iframe viewer', e);
-                        // fall back to browser's viewer
-                        this.forceIframe = true;
-                        this.showNotPreviewable = false;
-                        this.loading = false;
-                    }
-                },
-
-                async renderPage(pageNum){
-                    if (!this.pdfDoc) return;
-                    this.loading = true;
-                    this._progress = 0;
-
-                    const page = await this.pdfDoc.getPage(pageNum);
-                    const container = document.querySelector('.modal-pdf-canvas-container');
-                    const canvas = document.getElementById('pdf-canvas');
-                    if (!canvas || !container) { this.loading = false; return; }
-
-                    // Determine scale based on pdfZoom (use unrotated page dims for fit calculations)
-                    const viewport1 = page.getViewport({ scale: 1, rotation: 0 });
-                    let containerWidth = container.clientWidth;
-                    let containerHeight = container.clientHeight;
-                    const r = (this.rotate % 360 + 360) % 360; // normalize
-                    const rotated = (r === 90 || r === 270);
-                    if (rotated) {
-                        [containerWidth, containerHeight] = [containerHeight, containerWidth];
-                    }
-
-                    let desiredScale = 1;
-                    if (this.pdfZoom === 'page-width') {
-                        desiredScale = containerWidth / viewport1.width;
-                    } else if (this.pdfZoom === 'page-fit') {
-                        desiredScale = Math.min(containerWidth / viewport1.width, containerHeight / viewport1.height);
-                    } else if (!isNaN(parseFloat(this.pdfZoom))) {
-                        desiredScale = parseFloat(this.pdfZoom) / 100;
-                    }
-
-                    // Ask for viewport with requested rotation so width/height reflect rotation
-                    const viewport = page.getViewport({ scale: desiredScale, rotation: this.rotate });
-                    const context = canvas.getContext('2d');
-                    const dpr = window.devicePixelRatio || 1;
-
-                    canvas.width = Math.floor(viewport.width * dpr);
-                    canvas.height = Math.floor(viewport.height * dpr);
-                    canvas.style.width = Math.floor(viewport.width) + 'px';
-                    canvas.style.height = Math.floor(viewport.height) + 'px';
-                    canvas.style.maxWidth = '100%';
-
-                    context.setTransform(dpr, 0, 0, dpr, 0, 0);
-                    context.clearRect(0, 0, canvas.width, canvas.height);
-
-                    const renderContext = {
-                        canvasContext: context,
-                        viewport: viewport,
-                    };
-
-                    // Render with progress updates
-                    const renderTask = page.render(renderContext);
-                    if (renderTask.on) {
-                        renderTask.on('progress', (p) => {
-                            this._progress = Math.round((p.loaded / p.total) * 100);
-                        });
-                    }
-
-                    try {
-                        await renderTask.promise;
-                    } catch (e) {
-                        console.warn('renderPage error, falling back to iframe', e);
-                        // fall back to iframe if rendering failed
-                        this.forceIframe = true;
-                    }
-
-                    this.loading = false;
-                },
-
-                nextPage(){ if (this.currentPage < this.totalPages) { this.currentPage++; this.renderPage(this.currentPage); } },
-
-
-
-                prevPage(){ if (this.currentPage > 1) { this.currentPage--; this.renderPage(this.currentPage); } },
-
-                // Keyboard handling for accessibility (left/right to change page, Esc to close)
-                _onKeyDown(e){
-                    if (!this.showModal) return;
-                    if (e.key === 'ArrowLeft') { this.prevPage(); }
-                    if (e.key === 'ArrowRight') { this.nextPage(); }
-                    if (e.key === 'Escape') { this.close(); }
-                },
-                open(detail){
-
-                    this.showModal = true;
-                    this.loading = true;
-                    this.showNotPreviewable = false;
-                    this.embed = detail.embed ?? detail.url ?? null;
-                    this.info = detail.info ?? null;
-                    this.downloadUrl = detail.download ?? null;
-                    this.title = detail.title ?? '';
-                    this.previewTypes = [];
-                    this.mime = null;
-                    this.embedWithZoom = null;
-                    this.pdfZoom = 'page-width';
-                    this.rotate = 0;
-                    this.pdfDoc = null;
-                    this.currentPage = 1;
-                    this.totalPages = 0;
-
-                    if (this.info) {
-                        fetch(this.info, { credentials: 'same-origin', headers:{'Accept':'application/json'} })
-                            .then(r => { if (!r.ok) throw new Error('info fetch failed '+r.status); return r.json(); })
-                            .then(json => {
-                                this.previewTypes = json.preview_types ?? [];
-                                this.mime = json.mime ?? null;
-
-                                if (json.previewable) {
-                                    this.embed = json.embed_url ?? this.embed;
-                                                    if (this.mime === 'application/pdf') {
-                                        // initialize pdf viewer
-                                        this.forceIframe = false;
-                                        // clear previous internal error (not exposed to users)
-                                        // Attach keyboard listener for navigation and close
-                                        this._keyHandler = this._onKeyDown.bind(this);
-                                        window.addEventListener('keydown', this._keyHandler);
-                                        this.loadPdf(this.embed).catch(e => {
-                                            // ensure we fall back to iframe rendering if pdf.js fails
-                                            console.warn('loadPdf failed, falling back to iframe', e);
-                                            this.forceIframe = true;
-                                            this.loading = false;
-                                        });
-                                    }
-                                    this.showNotPreviewable = false;
-                                    // keep loading until PDF rendered
-                                } else {
-                                    this.showNotPreviewable = true;
-                                    this.loading = false;
-                                }
-                            }).catch(err => {
-                                console.warn('preview info error', err);
-                                this.showNotPreviewable = true;
-                                this.loading = false;
-                            });
-                    } else {
-                        this.loading = false;
-                    }
-                },
-                close(){
-                    this.showModal = false;
-                    this.embed = null;
-                    this.embedWithZoom = null;
-                    this.title = '';
-                    this.loading = false;
-                    this.showNotPreviewable = false;
-                    this.mime = null;
-                    this.rotate = 0;
-                    this.pdfZoom = 'page-width';
-                    // Remove keyboard listener
-                    try { if (this._keyHandler) { window.removeEventListener('keydown', this._keyHandler); this._keyHandler = null; } } catch(e) { /* no-op */ }
-                    if (this.pdfDoc){ try{ this.pdfDoc.destroy(); }catch(e){/*no-op*/} this.pdfDoc = null; }
+                    })();
+                } catch (e) {
+                    console.warn('pdfjs worker setup failed', e);
                 }
             }
-        }
-    </script>
+        </script>
     @endonce
 </div>

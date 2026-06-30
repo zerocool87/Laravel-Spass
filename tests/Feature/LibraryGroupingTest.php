@@ -22,9 +22,9 @@ class LibraryGroupingTest extends TestCase
             ->get(route('library.index'))
             ->assertStatus(200)
             ->assertSee('Convocations')
-            ->assertSee('data-slug="convocations"', false)
+            ->assertSee('activeTab = \'Convocations\'', false)
             ->assertSee('Ordres du jour')
-            ->assertSee('Tous'); // French translation for "All"
+            ->assertSee('Toutes'); // French tab label for "All"
     }
 
     public function test_library_category_pagination()
