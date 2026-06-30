@@ -36,7 +36,7 @@ class ReunionController extends Controller
                 ->orderBy('start_time', 'desc');
         }
 
-        $reunions = $query->paginate(12)->withQueryString();
+        $reunions = $query->paginate(6)->withQueryString();
         $instances = Instance::orderBy('name')->get();
         $statuses = ReunionStatus::labels();
 
