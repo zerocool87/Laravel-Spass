@@ -50,7 +50,6 @@ class ForumController extends Controller
         $sort = $request->input('sort', 'latest');
         match ($sort) {
             'replies' => $query
-                ->orderByDesc('is_pinned')
                 ->orderByDesc(
                     ForumPost::selectRaw('count(*)')
                         ->whereColumn('forum_thread_id', 'forum_threads.id')

@@ -112,7 +112,6 @@ class ForumDemoSeeder extends Seeder
                     'thematique_id' => $thematique->id,
                     'title' => $data['title'],
                     'created_by' => $creator->id,
-                    'is_pinned' => $index === 0,
                 ]);
 
                 $thread->posts()->create([

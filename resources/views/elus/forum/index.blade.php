@@ -70,9 +70,6 @@
                                             </td>
                                             <td class="px-3 sm:px-6 py-2 sm:py-4">
                                                 <a href="{{ route('elus.forum.show', $thread) }}" class="text-sm font-semibold text-gray-900 hover:text-[#faa21b] flex items-center gap-2">
-                                                    @if($thread->is_pinned)
-                                                        <span class="flex-shrink-0">📌</span>
-                                                    @endif
                                                     <span class="truncate max-w-[200px] sm:max-w-xs">{{ $thread->title }}</span>
                                                     @php $isUnread = ! $thread->is_read; @endphp
                                                     @if($isUnread)

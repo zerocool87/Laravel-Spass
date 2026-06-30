@@ -21,14 +21,11 @@ class ForumThread extends Model
         'thematique_id',
         'title',
         'created_by',
-        'is_pinned',
     ];
 
     public function casts(): array
     {
-        return [
-            'is_pinned' => 'boolean',
-        ];
+        return [];
     }
 
     public function thematique(): BelongsTo

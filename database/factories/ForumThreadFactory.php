@@ -19,7 +19,6 @@ class ForumThreadFactory extends Factory
             'thematique_id' => Thematique::factory(),
             'title' => $this->faker->sentence(),
             'created_by' => User::factory(),
-            'is_pinned' => false,
         ];
     }
 }
