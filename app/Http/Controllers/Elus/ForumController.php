@@ -47,16 +47,18 @@ class ForumController extends Controller
             $query->where('title', 'like', '%'.$request->string('search').'%');
         }
 
-        $query->orderByDesc('is_pinned');
-
-        $sort = $request->input('sort', 'latest');
+        $sort = $request->input('sort', 'created');
         match ($sort) {
-            'replies' => $query->orderByDesc(
-                ForumPost::selectRaw('count(*)')
-                    ->whereColumn('forum_thread_id', 'forum_threads.id')
-                    ->groupBy('forum_thread_id')
-            ),
-            'created' => $query->orderByDesc('created_at'),
+            'replies' => $query
+                ->orderByDesc('is_pinned')
+                ->orderByDesc(
+                    ForumPost::selectRaw('count(*)')
+                        ->whereColumn('forum_thread_id', 'forum_threads.id')
+                        ->groupBy('forum_thread_id')
+                ),
+            'created' => $query
+                ->orderByDesc('is_pinned')
+                ->orderByDesc('created_at'),
             default => $query->orderByDesc(
                 ForumPost::select('created_at')
                     ->whereColumn('forum_thread_id', 'forum_threads.id')

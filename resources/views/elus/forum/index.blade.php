@@ -40,9 +40,9 @@
                     </div>
                     <div>
                         <select name="sort" class="select-orange" onchange="this.form.submit()">
-                            <option value="latest" {{ request('sort', 'latest') == 'latest' ? 'selected' : '' }}>{{ __('Plus récents') }}</option>
+                            <option value="created" {{ request('sort', 'created') == 'created' ? 'selected' : '' }}>{{ __('Plus récents (création)') }}</option>
+                            <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>{{ __('Plus récents (activité)') }}</option>
                             <option value="replies" {{ request('sort') == 'replies' ? 'selected' : '' }}>{{ __('Plus de réponses') }}</option>
-                            <option value="created" {{ request('sort') == 'created' ? 'selected' : '' }}>{{ __('Plus anciens') }}</option>
                         </select>
                     </div>
                 </form>
