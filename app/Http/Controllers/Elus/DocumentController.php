@@ -34,8 +34,8 @@ class DocumentController extends Controller
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%'.$request->search.'%')
-                    ->orWhere('description', 'like', '%'.$request->search.'%');
+                $q->where('title', 'like', '%'.$request->string('search').'%')
+                    ->orWhere('description', 'like', '%'.$request->string('search').'%');
             });
         }
 

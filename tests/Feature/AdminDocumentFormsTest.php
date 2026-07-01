@@ -31,11 +31,9 @@ class AdminDocumentFormsTest extends TestCase
     {
         $admin = User::factory()->create(['is_admin' => true, 'is_elu' => true]);
 
-        $document = Document::create([
+        $document = Document::factory()->create([
             'title' => 'Budget prévisionnel 2026',
             'description' => 'Document de budget',
-            'path' => 'documents/test.pdf',
-            'original_name' => 'test.pdf',
             'created_by' => $admin->id,
             'visible_to_all' => true,
             'category' => 'Rapports',

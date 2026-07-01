@@ -42,7 +42,7 @@ class UserController extends Controller
             $user->password = $data['password'];
         }
 
-        $user->saveQuietly();
+        $user->save();
 
         $user->eluProfile()->updateOrCreate(
             ['user_id' => $user->id],

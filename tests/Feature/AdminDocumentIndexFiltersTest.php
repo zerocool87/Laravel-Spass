@@ -12,31 +12,25 @@ class AdminDocumentIndexFiltersTest extends TestCase
     {
         $admin = User::factory()->create(['is_admin' => true, 'is_elu' => true]);
 
-        Document::create([
+        Document::factory()->create([
             'title' => 'Budget 2026',
             'description' => 'Document budgetaire',
-            'path' => 'documents/budget-2026.pdf',
-            'original_name' => 'budget-2026.pdf',
             'created_by' => $admin->id,
             'visible_to_all' => true,
             'category' => 'Rapports',
         ]);
 
-        Document::create([
+        Document::factory()->create([
             'title' => 'Note interne',
             'description' => 'Document interne',
-            'path' => 'documents/note-interne.pdf',
-            'original_name' => 'note-interne.pdf',
             'created_by' => $admin->id,
             'visible_to_all' => false,
             'category' => 'Guides',
         ]);
 
-        Document::create([
+        Document::factory()->create([
             'title' => 'Rapport 2024',
             'description' => 'Rapport annuel',
-            'path' => 'documents/rapport-2024.pdf',
-            'original_name' => 'rapport-2024.pdf',
             'created_by' => $admin->id,
             'visible_to_all' => true,
             'category' => 'Rapports',
@@ -57,21 +51,17 @@ class AdminDocumentIndexFiltersTest extends TestCase
     {
         $admin = User::factory()->create(['is_admin' => true, 'is_elu' => true]);
 
-        Document::create([
+        Document::factory()->create([
             'title' => 'Rapport fiscal',
             'description' => 'Rapport fiscal annuel',
-            'path' => 'documents/rapport-fiscal.pdf',
-            'original_name' => 'rapport-fiscal.pdf',
             'created_by' => $admin->id,
             'visible_to_all' => true,
             'category' => 'Rapports',
         ]);
 
-        Document::create([
+        Document::factory()->create([
             'title' => 'Guide utilisateur',
             'description' => 'Guide interne',
-            'path' => 'documents/guide-utilisateur.pdf',
-            'original_name' => 'guide-utilisateur.pdf',
             'created_by' => $admin->id,
             'visible_to_all' => true,
             'category' => 'Guides',

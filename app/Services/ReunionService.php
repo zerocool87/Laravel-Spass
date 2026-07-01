@@ -44,7 +44,7 @@ class ReunionService
      */
     public function suggestSlots(int $instanceId, Carbon $start, Carbon $end): array
     {
-        $duration = $end->diffInMinutes($start);
+        $duration = (int) $end->diffInMinutes($start);
         $alternatives = [];
         $current = $start->copy();
         $allConflicts = $this->loadAllPotentialConflicts($instanceId, $start, $duration);

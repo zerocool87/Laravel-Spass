@@ -81,7 +81,7 @@ composer run dev
 - **No `app/Http/Kernel.php`** — middleware is configured in `bootstrap/app.php` (Laravel 12).
 - **No `app/Console/Kernel.php`** — commands in `app/Console/Commands/` are auto-discovered.
 - **The `composer run dev` command** kills-others on exit, so all sub-processes stop together.
-- **Vite HMR** is hardcoded to host `192.168.1.14` in `vite.config.js`; adjust if your IP differs.
+- **Vite HMR** host is configurable via `VITE_HMR_HOST` env var (defaults to `localhost`).
 - **`routes/events/json` is intentionally public** — no auth middleware; used by calendar widgets.
 - **Database default is SQLite** (per `config/database.php`). The `DB_CONNECTION` env controls this.
 - **`boost.json`** sets `"sail": false` — the app runs directly, not via Docker.

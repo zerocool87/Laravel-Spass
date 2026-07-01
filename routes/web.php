@@ -48,7 +48,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'can:admin'])->group
 Route::middleware('auth')->group(function () {
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download')->middleware('throttle:30,1');
     Route::get('/documents/{document}/embed', [DocumentController::class, 'embed'])->name('documents.embed')->middleware('throttle:60,1');
-    Route::get('/documents/{document}/info', [DocumentController::class, 'info'])->name('documents.info');
+    Route::get('/documents/{document}/info', [DocumentController::class, 'info'])->name('documents.info')->middleware('throttle:30,1');
 
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
     Route::get('/events/calendar', [EventController::class, 'calendar'])->name('events.calendar');
