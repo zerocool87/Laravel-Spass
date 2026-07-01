@@ -267,8 +267,8 @@ input[type="text"], textarea, select, .input-text {
     color: white; /* text-white */
     border: 1px solid transparent; /* border border-transparent */
     border-radius: 0.75rem; /* rounded-xl */
-    padding: 0.75rem 1.5rem; /* px-6 py-3 */
-    font-size: 1rem; /* text-base */
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    font-size: 0.875rem; /* text-sm */
     font-weight: 700; /* font-bold */
     text-transform: uppercase; /* uppercase */
     letter-spacing: 0.05em; /* tracking-widest */
@@ -495,7 +495,7 @@ input[type="text"], textarea, select, .input-text {
   }
 
   .btn-primary-orange {
-    padding: 0.75rem 1.5rem;
+    padding: 0.5rem 1rem;
     font-size: 0.875rem;
   }
 
