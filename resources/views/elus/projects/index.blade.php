@@ -26,7 +26,7 @@
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Rechercher...') }}" class="w-full input-orange">
                     </div>
                     <div>
-                        <select name="type" class="select-orange">
+                        <select name="type" onchange="this.form.submit()" class="select-orange">
                             <option value="">{{ __('Tous les types') }}</option>
                             @foreach($types as $key => $label)
                                 <option value="{{ $key }}" {{ request('type') == $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -34,21 +34,14 @@
                         </select>
                     </div>
                     <div>
-                        <select name="status" class="select-orange">
+                        <select name="status" onchange="this.form.submit()" class="select-orange">
                             <option value="">{{ __('Tous les statuts') }}</option>
                             @foreach($statuses as $key => $label)
                                 <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div>
-                        <button type="submit" class="btn-primary-orange py-2 px-4 text-sm">
-                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                            {{ __('Filtrer') }}
-                        </button>
-                    </div>
+
                 </form>
             </div>
 
